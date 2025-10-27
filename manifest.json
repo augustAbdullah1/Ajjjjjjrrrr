@@ -1,0 +1,23 @@
+
+{
+  "short_name": "آجر",
+  "name": "آجر - تطبيق الذكر والأدعية",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#2d3748",
+  "background_color": "#1a365d",
+  "scope": "/",
+  "description": "تطبيق إسلامي شامل للأذكار والأدعية وقراءة القرآن وتتبع الختمة ومواقيت الصلاة."
+}

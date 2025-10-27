@@ -1,0 +1,7 @@
+{
+  "name": "Copy of Ajr - Dhikr and Dua App",
+  "description": "A comprehensive Islamic mobile application for daily dhikr, duas, Quran reading with a Khatmah tracker, prayer times, and an AI-powered Dua generator. Designed with a beautiful, modern, and customizable user interface.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

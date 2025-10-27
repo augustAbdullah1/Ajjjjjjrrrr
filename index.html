@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>آجر - تطبيق الذكر والأدعية</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2d3748" />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --theme-primary: #1a365d;
+        --theme-secondary: #2d3748;
+        --theme-accent: #cbd5e0;
+        --theme-text: #e2e8f0;
+        --theme-counter: #90cdf4;
+        --theme-reset: #e53e3e;
+        --theme-add: #3182ce;
+        --theme-card-bg: rgba(255, 255, 255, 0.08);
+        --theme-border-color: rgba(255, 255, 255, 0.1);
+      }
+      body {
+        font-family: 'Tajawal', sans-serif;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .font-amiri {
+        font-family: 'Amiri', serif;
+      }
+      .bg-theme-gradient {
+        background: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary));
+      }
+      .text-theme-primary { color: var(--theme-primary); }
+      .text-theme-secondary { color: var(--theme-secondary); }
+      .text-theme-accent { color: var(--theme-accent); }
+      .text-theme-text { color: var(--theme-text); }
+      .text-theme-counter { color: var(--theme-counter); }
+      .bg-theme-primary { background-color: var(--theme-primary); }
+      .bg-theme-secondary { background-color: var(--theme-secondary); }
+      .bg-theme-accent { background-color: var(--theme-accent); }
+      .bg-theme-counter { background-color: var(--theme-counter); }
+      .bg-theme-reset { background-color: var(--theme-reset); }
+      .bg-theme-add { background-color: var(--theme-add); }
+      .bg-theme-card { background-color: var(--theme-card-bg); }
+      .border-theme { border-color: var(--theme-border-color); }
+      .shadow-theme-counter { box-shadow: 0 0 20px var(--theme-counter); }
+      .ring-theme-accent { ring-color: var(--theme-accent); }
+      .stroke-theme-accent { stroke: var(--theme-accent); }
+      .stroke-theme-counter { stroke: var(--theme-counter); }
+
+      /* Scrollbar styles */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: rgba(0,0,0,0.1);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.3);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255,255,255,0.4);
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.27.0"
+  }
+}
+</script>
+</head>
+<body class="bg-theme-gradient text-theme-text">
+    <div id="root"></div>
+</body>
+</html>
