@@ -1,405 +1,299 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { getSurahList, getSurahContent } from '../../services/quranService';
+import React, { useState, useEffect } from 'react';
+import { getSurahList, getReciterList } from '../../services/quranService';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import type { SurahSummary, Surah, QuranUserData, Ayah } from '../../types';
+import type { SurahSummary, QuranUserData, Settings, Surah, AudioPlayerState, QuranReciter } from '../../types';
 import Spinner from '../ui/Spinner';
 import Modal from '../ui/Modal';
+import { BookmarkIcon, ReciterIcon } from '../icons/TabIcons';
 
-// --- Helper Functions ---
-const getAyahKey = (surah: number, ayah: number) => `${surah}-${ayah}`;
+interface QuranTabProps {
+    settings: Settings;
+    setReciterName: (name: string) => void;
+    selectedReciterId: string | number;
+    setSelectedReciterId: (id: string | number) => void;
+    onOpenReader: (surahNumber: number, startAtAyah: number | null) => void;
+}
 
-// --- Ayah Action Menu Component ---
-const AyahActionMenu: React.FC<{
-    ayah: { surah: number, numberInSurah: number, text: string };
-    onClose: () => void;
-    onAction: (action: 'highlight' | 'note' | 'share') => void;
-}> = ({ ayah, onClose, onAction }) => {
-    
-    const handleShare = async () => {
-        const shareText = `${ayah.text} (القرآن ${ayah.surah}:${ayah.numberInSurah})`;
-        if (navigator.share) {
-            try {
-                await navigator.share({
-                    title: `آية من القرآن الكريم`,
-                    text: shareText,
-                });
-            } catch (error) {
-                console.error('Error sharing:', error);
-            }
-        } else {
-            navigator.clipboard.writeText(shareText);
-            alert('تم نسخ الآية إلى الحافظة');
-        }
-        onClose();
-    };
-
-    return (
-         <div className="fixed bottom-0 left-0 right-0 bg-theme-secondary p-4 rounded-t-2xl shadow-lg z-[150] animate-in slide-in-from-bottom-5">
-            <div className="flex justify-around">
-                <button onClick={() => onAction('highlight')} className="flex flex-col items-center gap-1 text-theme-accent"><div className="w-12 h-12 bg-yellow-400/20 rounded-full flex items-center justify-center">🎨</div><span>تمييز</span></button>
-                <button onClick={() => onAction('note')} className="flex flex-col items-center gap-1 text-theme-accent"><div className="w-12 h-12 bg-blue-400/20 rounded-full flex items-center justify-center">📝</div><span>ملاحظة</span></button>
-                <button onClick={handleShare} className="flex flex-col items-center gap-1 text-theme-accent"><div className="w-12 h-12 bg-green-400/20 rounded-full flex items-center justify-center">🔗</div><span>مشاركة</span></button>
-            </div>
-         </div>
-    );
-};
-
-
-// --- Quran Reader Component ---
-const QuranReader: React.FC<{
-    surah: Surah;
-    onClose: () => void;
-    userData: QuranUserData;
-    onUserDataChange: (data: QuranUserData) => void;
-}> = ({ surah, onClose, userData, onUserDataChange }) => {
-    const [selectedAyah, setSelectedAyah] = useState<Ayah | null>(null);
-    const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
-    const [noteText, setNoteText] = useState('');
-    
-    // Audio Player State
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [currentPlayingAyah, setCurrentPlayingAyah] = useState<number | null>(null);
-    const [currentTime, setCurrentTime] = useState(0);
-    const [duration, setDuration] = useState(0);
-    const audioRef = useRef<HTMLAudioElement>(null);
-    const contentRef = useRef<HTMLDivElement>(null);
-
-
-    const handleAyahClick = (ayah: Ayah) => {
-        setSelectedAyah(ayah);
-        // FIX: Used surah.number instead of ayah.number for the surah number.
-        onUserDataChange({
-            ...userData,
-            khatmah: { ...userData.khatmah, lastRead: { surah: surah.number, ayah: ayah.numberInSurah } }
-        });
-    };
-    
-    const handleAction = (action: 'highlight' | 'note' | 'share') => {
-        if (!selectedAyah) return;
-        // FIX: Used surah.number instead of selectedAyah.number for the surah number.
-        const ayahKey = getAyahKey(surah.number, selectedAyah.numberInSurah);
-        
-        if (action === 'highlight') {
-            const newHighlights = { ...userData.highlights };
-            if (newHighlights[ayahKey]) {
-                delete newHighlights[ayahKey]; // Un-highlight
-            } else {
-                // FIX: Used surah.number instead of selectedAyah.number for the surah number.
-                newHighlights[ayahKey] = { surah: surah.number, ayah: selectedAyah.numberInSurah, color: 'yellow' };
-            }
-            onUserDataChange({ ...userData, highlights: newHighlights });
-            setSelectedAyah(null);
-        }
-        
-        if (action === 'note') {
-            setNoteText(userData.notes[ayahKey]?.text || '');
-            setIsNoteModalOpen(true);
-        }
-    };
-    
-    const saveNote = () => {
-        if (!selectedAyah) return;
-        // FIX: Used surah.number instead of selectedAyah.number for the surah number.
-        const ayahKey = getAyahKey(surah.number, selectedAyah.numberInSurah);
-        const newNotes = { ...userData.notes };
-        if (noteText.trim()) {
-            // FIX: Used surah.number instead of selectedAyah.number for the surah number.
-            newNotes[ayahKey] = { surah: surah.number, ayah: selectedAyah.numberInSurah, text: noteText, date: new Date().toISOString() };
-        } else {
-            delete newNotes[ayahKey];
-        }
-        onUserDataChange({ ...userData, notes: newNotes });
-        setIsNoteModalOpen(false);
-        setSelectedAyah(null);
-    };
-
-    // --- Audio Logic ---
-    useEffect(() => {
-        const audio = audioRef.current;
-        if (!audio) return;
-
-        const onPlay = () => setIsPlaying(true);
-        const onPause = () => setIsPlaying(false);
-        const onEnded = () => {
-            if (currentPlayingAyah !== null) {
-                const nextAyahIndex = surah.ayahs.findIndex(a => a.numberInSurah === currentPlayingAyah);
-                if (nextAyahIndex > -1 && nextAyahIndex < surah.ayahs.length - 1) {
-                    playAyah(surah.ayahs[nextAyahIndex + 1]);
-                } else {
-                    setCurrentPlayingAyah(null);
-                    setIsPlaying(false);
-                }
-            }
-        };
-        const onTimeUpdate = () => setCurrentTime(audio.currentTime);
-        const onLoadedData = () => setDuration(audio.duration);
-        
-        audio.addEventListener('play', onPlay);
-        audio.addEventListener('pause', onPause);
-        audio.addEventListener('ended', onEnded);
-        audio.addEventListener('timeupdate', onTimeUpdate);
-        audio.addEventListener('loadedmetadata', onLoadedData);
-
-        return () => {
-            audio.removeEventListener('play', onPlay);
-            audio.removeEventListener('pause', onPause);
-            audio.removeEventListener('ended', onEnded);
-            audio.removeEventListener('timeupdate', onTimeUpdate);
-            audio.removeEventListener('loadedmetadata', onLoadedData);
-        };
-    }, [currentPlayingAyah, surah.ayahs]);
-    
-    useEffect(() => {
-        if (currentPlayingAyah && contentRef.current) {
-            const element = contentRef.current.querySelector(`[data-ayah-num="${currentPlayingAyah}"]`);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        }
-    }, [currentPlayingAyah]);
-
-    const playAyah = (ayah: Ayah) => {
-        if (audioRef.current) {
-            audioRef.current.src = ayah.audio;
-            audioRef.current.play().catch(e => console.error("Audio play failed:", e));
-            setCurrentPlayingAyah(ayah.numberInSurah);
-        }
-    };
-
-    const togglePlayPause = () => {
-        if (isPlaying) {
-            audioRef.current?.pause();
-        } else {
-            if (currentPlayingAyah === null) {
-                playAyah(surah.ayahs[0]);
-            } else {
-                audioRef.current?.play();
-            }
-        }
-    };
-    
-    const formatTime = (seconds: number) => {
-        const minutes = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-    };
-
-    return (
-        <>
-            <div className="fixed inset-0 bg-theme-gradient p-4 flex flex-col z-[100] text-theme-text animate-in fade-in-0">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold">{surah.name}</h2>
-                    <button onClick={onClose} className="text-2xl font-bold w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">&times;</button>
-                </div>
-                <div ref={contentRef} className="flex-1 overflow-y-auto font-amiri text-2xl leading-loose text-right space-y-2 p-4 bg-black/10 rounded-lg mb-24">
-                    {surah.ayahs.map(ayah => {
-                        const ayahKey = getAyahKey(surah.number, ayah.numberInSurah);
-                        const isHighlighted = !!userData.highlights[ayahKey];
-                        const hasNote = !!userData.notes[ayahKey];
-                        const isPlaying = currentPlayingAyah === ayah.numberInSurah;
-                        return (
-                            <span key={ayah.number} data-ayah-num={ayah.numberInSurah} onClick={() => handleAyahClick(ayah)} 
-                                className={`cursor-pointer rounded-md p-1 transition-colors ${isPlaying ? 'bg-theme-counter/30 text-theme-counter' : isHighlighted ? 'bg-yellow-400/30' : 'hover:bg-white/10'}`}>
-                                {ayah.text} 
-                                <span className={`text-sm border rounded-full px-1.5 py-0.5 mx-1 ${hasNote ? 'border-blue-400 text-blue-400' : 'border-gray-500'}`}>{ayah.numberInSurah}</span>
-                            </span>
-                        );
-                    })}
-                </div>
-                {/* Audio Player Controls */}
-                <div className="fixed bottom-0 left-0 right-0 p-4 bg-theme-secondary/80 backdrop-blur-md z-[110] rounded-t-2xl">
-                    <audio ref={audioRef} />
-                    <div className="flex items-center gap-4">
-                        <button onClick={togglePlayPause} className="w-12 h-12 bg-theme-counter text-theme-primary rounded-full flex items-center justify-center text-2xl">
-                           {isPlaying ? '❚❚' : '▶'}
-                        </button>
-                        <div className="flex-1 flex flex-col gap-1">
-                             <input 
-                                type="range" 
-                                value={currentTime}
-                                max={duration || 0}
-                                onChange={(e) => { if(audioRef.current) audioRef.current.currentTime = Number(e.target.value) }}
-                                className="w-full h-1 bg-white/20 rounded-lg appearance-none cursor-pointer"
-                            />
-                            <div className="flex justify-between text-xs font-mono">
-                                <span>{formatTime(currentTime)}</span>
-                                <span>{formatTime(duration)}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {selectedAyah && <div className="fixed inset-0 bg-black/50 z-[140]" onClick={() => setSelectedAyah(null)}></div>}
-            {/* FIX: Pass the surah number to AyahActionMenu as it's required by its prop type. */}
-            {selectedAyah && <AyahActionMenu ayah={{...selectedAyah, surah: surah.number}} onClose={() => setSelectedAyah(null)} onAction={handleAction} />}
-            <Modal isOpen={isNoteModalOpen} onClose={() => setIsNoteModalOpen(false)} title="إضافة ملاحظة">
-                 <textarea value={noteText} onChange={e => setNoteText(e.target.value)} className="w-full h-32 p-3 my-4 bg-black/20 text-white rounded-lg text-right resize-none"></textarea>
-                 <button onClick={saveNote} className="w-full p-3 bg-green-500 text-white rounded-full font-bold">حفظ الملاحظة</button>
-            </Modal>
-        </>
-    );
-};
-
-// --- Khatmah Tracker Component ---
-const KhatmahTracker: React.FC<{ 
-    userData: QuranUserData; 
-    onUpdate: (data: QuranUserData) => void; 
-    surahList: SurahSummary[];
-}> = ({ userData, onUpdate, surahList }) => {
-    const totalAyahs = 6236;
-    const [currentAyahCount, setCurrentAyahCount] = useState(0);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [targetDaysInput, setTargetDaysInput] = useState(userData.khatmah.targetDays || 30);
-
-    useEffect(() => {
-        const calculateProgress = () => {
-            if (!userData.khatmah.active || !userData.khatmah.lastRead || surahList.length === 0) {
-                setCurrentAyahCount(0);
-                return;
-            }
-            let count = 0;
-            for(let i=0; i < userData.khatmah.lastRead.surah - 1; i++) {
-                count += surahList[i].numberOfAyahs;
-            }
-            count += userData.khatmah.lastRead.ayah;
-            setCurrentAyahCount(count);
-        };
-        calculateProgress();
-    }, [userData.khatmah, surahList]);
-
-    const progressPercentage = totalAyahs > 0 ? (currentAyahCount / totalAyahs) * 100 : 0;
-    const dailyTarget = userData.khatmah.targetDays > 0 ? Math.ceil(totalAyahs / userData.khatmah.targetDays) : 0;
-
-    const startKhatmah = () => {
-        onUpdate({
-            ...userData,
-            khatmah: {
-                active: true,
-                startDate: new Date().toISOString(),
-                lastRead: null,
-                targetDays: targetDaysInput,
-                history: [],
-            }
-        });
-        setIsModalOpen(false);
-    };
-
-    const resetKhatmah = () => {
-        if(window.confirm("هل أنت متأكد من إعادة تعيين الختمة؟ سيتم حذف التقدم الحالي.")) {
-            onUpdate({ ...userData, khatmah: { active: false, startDate: null, lastRead: null, targetDays: 30, history: [] } });
-        }
-    };
-
-    if (!userData.khatmah.active) {
-        return (
-            <>
-                <div className="p-4 bg-theme-add/20 rounded-xl text-center">
-                    <h3 className="font-bold text-lg mb-2">ابدأ ختمة جديدة</h3>
-                    <p className="text-sm mb-4">تتبع تقدمك في قراءة القرآن الكريم.</p>
-                    <button onClick={() => setIsModalOpen(true)} className="px-6 py-2 bg-theme-add text-white rounded-full font-bold">ابدأ الآن</button>
-                </div>
-                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="بدء ختمة جديدة">
-                    <label className="block text-right mb-2">حدد هدفك (عدد الأيام للختم):</label>
-                    <input type="number" value={targetDaysInput} onChange={e => setTargetDaysInput(Number(e.target.value))} className="w-full p-3 my-2 bg-black/20 text-white rounded-lg text-center"/>
-                    <button onClick={startKhatmah} className="w-full mt-4 p-3 bg-green-500 text-white rounded-full font-bold">تأكيد وبدء</button>
-                </Modal>
-            </>
-        );
-    }
-    
-    return (
-        <div className="p-4 bg-white/5 rounded-xl">
-            <div className="flex justify-between items-center mb-2">
-                <h3 className="font-bold text-lg text-theme-accent">تقدم الختمة</h3>
-                <button onClick={resetKhatmah} className="text-xs text-red-400">إعادة تعيين</button>
-            </div>
-            <div className="w-full bg-black/20 rounded-full h-2.5">
-                <div className="bg-green-500 h-2.5 rounded-full" style={{ width: `${progressPercentage}%` }}></div>
-            </div>
-            <div className="text-xs text-theme-accent/80 mt-1 text-center">{progressPercentage.toFixed(2)}% مكتمل</div>
-             <div className="text-center text-sm mt-2">
-                الهدف اليومي: ~{dailyTarget} آيات
-            </div>
-             {userData.khatmah.lastRead && surahList.length > 0 && (
-                <div className="text-center text-sm mt-1">
-                    آخر ما قرأت: سورة {surahList.find(s => s.number === userData.khatmah.lastRead?.surah)?.name}، آية {userData.khatmah.lastRead.ayah}
-                </div>
-            )}
-        </div>
-    );
-};
-
-// --- Main QuranTab Component ---
-const QuranTab: React.FC = () => {
+const QuranTab: React.FC<QuranTabProps> = ({ 
+    settings, setReciterName, selectedReciterId, setSelectedReciterId, onOpenReader
+}) => {
     const [surahList, setSurahList] = useState<SurahSummary[]>([]);
-    const [activeSurahContent, setActiveSurahContent] = useState<Surah | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
-    const [userData, setUserData] = useLocalStorage<QuranUserData>('quranUserData_v2', {
+    const [userData, setUserData] = useLocalStorage<QuranUserData>('quranUserData', {
         khatmah: { active: false, startDate: null, lastRead: null, targetDays: 30, history: [] },
         highlights: {},
-        notes: {}
     });
+    const [isKhatmahModalOpen, setIsKhatmahModalOpen] = useState(false);
+    const [khatmahTargetDays, setKhatmahTargetDays] = useState(30);
+    const [currentReciterName, setCurrentReciterName] = useState('');
+
+    // Reciter Modal State
+    const [isReciterModalOpen, setIsReciterModalOpen] = useState(false);
+    const [reciterList, setReciterList] = useState<QuranReciter[]>([]);
+    const [isReciterListLoading, setIsReciterListLoading] = useState(false);
+    const [reciterSearchQuery, setReciterSearchQuery] = useState('');
+
+    const safeKhatmah = userData.khatmah || { active: false, startDate: null, lastRead: null, targetDays: 30, history: [] };
 
     useEffect(() => {
-        getSurahList().then(data => {
-            setSurahList(data);
-            setIsLoading(false);
+        getSurahList().then(list => {
+          setSurahList(list);
+          setIsLoading(false);
         });
     }, []);
 
-    const openSurah = async (surahNumber: number) => {
-        setIsLoading(true);
-        setActiveSurahContent(null);
-        const content = await getSurahContent(surahNumber);
-        setActiveSurahContent(content);
-        setIsLoading(false);
+    useEffect(() => {
+        getReciterList().then(reciters => {
+            const currentReciter = reciters.find(r => String(r.id) === String(selectedReciterId));
+            if(currentReciter) {
+                const name = currentReciter.translated_name.name;
+                setReciterName(name);
+                setCurrentReciterName(name);
+            } else {
+                 const defaultReciterId = 7; // Default to Mishary Rashid Alafasy from quran.com
+                 const newReciter = reciters.find(r => String(r.id) === String(defaultReciterId));
+                 if(newReciter) {
+                    const name = newReciter.translated_name.name;
+                    setReciterName(name);
+                    setCurrentReciterName(name);
+                    setSelectedReciterId(defaultReciterId);
+                 }
+            }
+        });
+    }, [selectedReciterId, setReciterName, setSelectedReciterId]);
+
+    const handleContinueReading = () => {
+        if (safeKhatmah.lastRead) {
+            onOpenReader(safeKhatmah.lastRead.surah, safeKhatmah.lastRead.ayah);
+        }
+    };
+
+    const handleStartKhatmah = () => {
+        setIsKhatmahModalOpen(true);
     };
     
-    if (isLoading && surahList.length === 0) {
-        return <div className="flex justify-center items-center h-64"><Spinner /></div>;
-    }
+    const handleConfirmStartKhatmah = () => {
+        const newKhatmah = {
+            active: true,
+            startDate: new Date().toISOString(),
+            lastRead: null,
+            targetDays: khatmahTargetDays > 0 ? khatmahTargetDays : 30,
+            history: []
+        };
+        setUserData(prev => ({ ...prev, khatmah: newKhatmah }));
+        setIsKhatmahModalOpen(false);
+    };
+
+    const handleEndKhatmah = () => {
+        if (window.confirm('هل أنت متأكد من رغبتك في إنهاء الختمة الحالية؟')) {
+            const updatedUserData: QuranUserData = {
+                ...userData,
+                khatmah: { 
+                    active: false, 
+                    startDate: null, 
+                    lastRead: null, 
+                    targetDays: 30, 
+                    history: [] 
+                }
+            };
+            setUserData(updatedUserData);
+        }
+    };
     
-    const filteredSurahs = surahList.filter(s =>
-        s.name.includes(searchQuery) ||
-        s.englishName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        s.number.toString() === searchQuery
+    const handleOpenReciterModal = () => {
+        setIsReciterModalOpen(true);
+        setIsReciterListLoading(true);
+        getReciterList().then(list => {
+            setReciterList(list);
+            setIsReciterListLoading(false);
+        });
+    };
+
+    const handleSelectReciter = (reciter: QuranReciter) => {
+        setSelectedReciterId(reciter.id);
+        setIsReciterModalOpen(false);
+        setReciterSearchQuery('');
+    };
+
+    const KhatmahCard = () => {
+        if (isLoading || surahList.length === 0) return null;
+
+        if (!safeKhatmah.active) {
+            return (
+                <div className="p-4 container-luminous bg-theme-accent-card rounded-theme-card text-center flex flex-col items-center gap-3">
+                    <h3 className="font-bold text-lg heading-amiri">تتبع ختمتك للقرآن</h3>
+                    <p className="text-sm text-theme-secondary">ابدأ ختمة جديدة، تابع تقدمك، وحافظ على وردك اليومي.</p>
+                    <button onClick={handleStartKhatmah} className="px-6 py-2 button-luminous bg-theme-accent-primary text-theme-accent-primary-text rounded-theme-full font-bold">
+                        ابدأ ختمة جديدة
+                    </button>
+                </div>
+            );
+        }
+        
+        const totalAyahsInQuran = 6236;
+        let progress = 0;
+        let lastReadSurahName = '';
+        let dailyWird = 0;
+
+        if (safeKhatmah.lastRead && safeKhatmah.startDate) {
+             const cumulativeAyahs = surahList.slice(0, safeKhatmah.lastRead.surah - 1).reduce((sum, s) => sum + s.numberOfAyahs, 0);
+             const totalAyahsRead = cumulativeAyahs + safeKhatmah.lastRead.ayah;
+             progress = (totalAyahsRead / totalAyahsInQuran) * 100;
+             lastReadSurahName = surahList.find(s => s.number === safeKhatmah.lastRead!.surah)?.name || '';
+
+             const daysPassed = Math.max(0, Math.floor((new Date().getTime() - new Date(safeKhatmah.startDate).getTime()) / (1000 * 60 * 60 * 24)));
+             const daysRemaining = Math.max(1, safeKhatmah.targetDays - daysPassed);
+             const ayahsRemaining = totalAyahsInQuran - totalAyahsRead;
+             if (ayahsRemaining > 0) {
+                 dailyWird = Math.ceil(ayahsRemaining / daysRemaining);
+             }
+        }
+        
+        const circumference = 54 * 2 * Math.PI; // 2 * pi * r
+
+        return (
+             <div className="p-4 container-luminous rounded-theme-card relative space-y-3 flex flex-col items-center">
+                <button onClick={handleEndKhatmah} className="absolute top-2 left-2 text-xs text-theme-danger hover:opacity-80">إنهاء</button>
+                <h3 className="font-bold text-xl text-theme-accent heading-amiri">ختمتي الحالية</h3>
+                 
+                <div className="relative w-32 h-32 flex items-center justify-center my-2">
+                    <svg className="absolute w-full h-full transform -rotate-90" viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" strokeWidth="8" className="opacity-10 text-theme-accent" />
+                        <circle cx="60" cy="60" r="54" fill="none" stroke="var(--theme-primary-accent)" strokeWidth="8" strokeLinecap="round"
+                            strokeDasharray={circumference}
+                            strokeDashoffset={circumference - (progress / 100) * circumference}
+                            className="transition-all duration-1000 ease-out"
+                        />
+                    </svg>
+                    <div className="absolute flex flex-col items-center justify-center">
+                        <span className="text-4xl font-black text-white" style={{textShadow: '0 1px 5px rgba(0,0,0,0.4)'}}>{progress.toFixed(0)}%</span>
+                        <span className="text-xs text-theme-secondary font-semibold">مكتمل</span>
+                    </div>
+                </div>
+
+                <div className="text-center w-full">
+                     {safeKhatmah.lastRead ? (
+                        <p className="text-xs text-theme-secondary/80">
+                            آخر قراءة: سورة {lastReadSurahName}، آية {safeKhatmah.lastRead.ayah}
+                        </p>
+                     ) : (
+                        <p className="text-sm text-theme-secondary/80">لم تبدأ القراءة بعد.</p>
+                     )}
+                     {dailyWird > 0 && (
+                        <p className="text-sm font-semibold mt-1"> وردك اليومي: <span className="text-theme-accent-primary">{dailyWird}</span> آية</p>
+                     )}
+                </div>
+
+                {safeKhatmah.lastRead ? (
+                     <button onClick={handleContinueReading} className="w-full mt-2 px-5 py-2 button-luminous bg-theme-accent-primary text-theme-accent-primary-text rounded-theme-full text-sm font-bold">
+                        أكمل القراءة
+                    </button>
+                ) : (
+                     <button onClick={() => onOpenReader(1, null)} className="w-full mt-2 px-5 py-2 button-luminous bg-theme-accent-primary text-theme-accent-primary-text rounded-theme-full text-sm font-bold">
+                        ابدأ القراءة
+                    </button>
+                )}
+            </div>
+        );
+    };
+
+    const filteredSurahs = surahList.filter(surah => 
+        surah.name.includes(searchQuery) ||
+        surah.englishName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const filteredReciters = reciterList.filter(reciter => 
+        reciter.translated_name.name.includes(reciterSearchQuery)
     );
 
     return (
         <>
-            {activeSurahContent && (
-                <QuranReader 
-                    surah={activeSurahContent} 
-                    onClose={() => setActiveSurahContent(null)} 
-                    userData={userData}
-                    onUserDataChange={setUserData}
-                />
-            )}
-            <div className="flex flex-col gap-4">
-                <KhatmahTracker userData={userData} onUpdate={setUserData} surahList={surahList}/>
-                <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="ابحث عن سورة بالاسم أو الرقم"
-                    className="w-full p-3 bg-black/20 text-white rounded-lg text-right border-2 border-transparent focus:border-theme-accent outline-none"
-                />
-                {isLoading && !activeSurahContent ? (
-                     <div className="flex justify-center items-center h-32"><Spinner /></div>
+            <div className="flex flex-col gap-4 animate-in fade-in-0">
+                <KhatmahCard />
+
+                <div className="flex items-center gap-2">
+                    <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="ابحث عن سورة..." className="w-full p-3 input-luminous text-theme-primary rounded-theme-card text-right" />
+                    <button onClick={handleOpenReciterModal} className="p-3 button-luminous text-theme-primary rounded-theme-card flex-shrink-0 flex items-center gap-2">
+                        <ReciterIcon className="w-5 h-5 stroke-theme-accent"/>
+                        <span className="text-sm font-semibold whitespace-nowrap">{currentReciterName || 'اختر القارئ'}</span>
+                    </button>
+                </div>
+                
+                {isLoading ? (
+                    <div className="flex justify-center items-center h-48"><Spinner /></div>
                 ) : (
-                    <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
-                        {filteredSurahs.map(surah => (
-                            <button key={surah.number} onClick={() => openSurah(surah.number)} className="w-full flex justify-between items-center p-3 bg-white/5 hover:bg-white/10 rounded-lg text-right transition-colors">
-                                <div>
-                                    <p className="font-bold">{surah.number}. {surah.name}</p>
-                                    <p className="text-xs text-theme-accent/70">{surah.englishName}</p>
+                    <div className="space-y-2 pr-2">
+                        {filteredSurahs.map((surah, index) => (
+                            <button 
+                                key={surah.number} 
+                                onClick={() => onOpenReader(surah.number, null)}
+                                className="w-full p-4 container-luminous rounded-theme-card flex justify-between items-center text-right transition-all duration-200 stagger-item"
+                                style={{ animationDelay: `${index * 30}ms` }}
+                            >
+                                <div className="flex items-center gap-4">
+                                    <span className="text-lg font-bold text-theme-secondary">{surah.number}</span>
+                                    <div>
+                                        <p className="font-bold text-lg">{surah.englishName}</p>
+                                        <p className="text-xs text-theme-secondary/70">{surah.englishNameTranslation}</p>
+                                    </div>
                                 </div>
-                                <span className="text-sm font-semibold">{surah.numberOfAyahs} آيات</span>
+                                <div className="flex items-center gap-3">
+                                    {safeKhatmah.lastRead?.surah === surah.number && (
+                                        <div className="flex items-center gap-1 text-yellow-400" title={`آخر آية مقروءة: ${safeKhatmah.lastRead.ayah}`}>
+                                            <BookmarkIcon className="w-4 h-4" fill="currentColor" />
+                                            <span className="text-xs font-bold">{safeKhatmah.lastRead.ayah}</span>
+                                        </div>
+                                    )}
+                                    <span className="font-amiri text-3xl text-theme-accent-primary">{surah.name}</span>
+                                </div>
                             </button>
                         ))}
                     </div>
                 )}
+                 <Modal isOpen={isKhatmahModalOpen} onClose={() => setIsKhatmahModalOpen(false)} title="بدء ختمة جديدة">
+                    <div className="text-right my-4 space-y-2">
+                        <label htmlFor="khatmah-days" className="font-semibold">المدة المستهدفة (بالأيام):</label>
+                        <input 
+                            id="khatmah-days"
+                            type="number"
+                            min="1"
+                            value={khatmahTargetDays}
+                            onChange={e => setKhatmahTargetDays(parseInt(e.target.value))}
+                            className="w-full p-3 input-luminous text-theme-primary rounded-theme-card text-center"
+                        />
+                    </div>
+                    <button onClick={handleConfirmStartKhatmah} className="w-full p-3 button-luminous bg-green-500 text-white rounded-theme-full font-bold">
+                        ابدأ الختمة
+                    </button>
+                </Modal>
+
+                 <Modal isOpen={isReciterModalOpen} onClose={() => setIsReciterModalOpen(false)} title="اختر القارئ">
+                    <div className="flex flex-col gap-3">
+                        <input 
+                            type="text" 
+                            value={reciterSearchQuery} 
+                            onChange={e => setReciterSearchQuery(e.target.value)} 
+                            placeholder="ابحث عن قارئ..." 
+                            className="w-full p-2 input-luminous text-theme-primary rounded-md text-right" 
+                        />
+                        <div className="max-h-64 overflow-y-auto space-y-2">
+                            {isReciterListLoading ? (
+                                <div className="flex justify-center items-center h-24"><Spinner /></div>
+                            ) : (
+                                filteredReciters.map(reciter => (
+                                    <button 
+                                        key={reciter.id} 
+                                        onClick={() => handleSelectReciter(reciter)} 
+                                        className={`w-full p-3 text-right font-semibold rounded-lg transition-colors ${String(selectedReciterId) === String(reciter.id) ? 'bg-theme-accent-primary text-theme-accent-primary-text' : 'container-luminous'}`}
+                                    >
+                                        {reciter.translated_name.name}
+                                    </button>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                </Modal>
             </div>
         </>
     );

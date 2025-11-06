@@ -1,17 +1,29 @@
-
 import React from 'react';
+import { SettingsIcon, ProfileIcon } from './icons/TabIcons';
 
 interface LayoutProps {
     children: React.ReactNode;
+    onOpenProfile: () => void;
+    onOpenSettings: () => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = ({ children, onOpenProfile, onOpenSettings }) => {
     return (
-        <div className="w-full max-w-md bg-theme-card backdrop-blur-2xl border-2 border-theme rounded-3xl p-5 shadow-2xl flex flex-col gap-4 my-auto relative">
-            <div className="header flex justify-between items-center mb-1">
-                <h1 className="font-black text-3xl text-theme-accent">آجر</h1>
-            </div>
-            {children}
+        <div className="w-full h-[100dvh] flex flex-col flex-grow">
+            <header className="flex-shrink-0 flex justify-between items-center p-4">
+                 <button onClick={onOpenSettings} className="button-luminous p-2.5 text-theme-secondary hover:text-theme-primary">
+                    <SettingsIcon className="w-6 h-6 stroke-theme-accent" />
+                </button>
+                <div className="flex items-center justify-center">
+                    <h1 className="logo-main">آجر</h1>
+                </div>
+                <button onClick={onOpenProfile} className="button-luminous p-2.5 text-theme-secondary hover:text-theme-primary">
+                    <ProfileIcon className="w-6 h-6 stroke-theme-accent" />
+                </button>
+            </header>
+            <main className="flex-grow overflow-y-auto px-4 pb-40 flex flex-col">
+                 {children}
+            </main>
         </div>
     );
 };

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -6,65 +5,246 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>آجر - تطبيق الذكر والأدعية</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2d3748" />
+    <meta name="theme-color" content="#1A202C" />
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       :root {
-        --theme-primary: #1a365d;
-        --theme-secondary: #2d3748;
-        --theme-accent: #cbd5e0;
-        --theme-text: #e2e8f0;
-        --theme-counter: #90cdf4;
-        --theme-reset: #e53e3e;
-        --theme-add: #3182ce;
-        --theme-card-bg: rgba(255, 255, 255, 0.08);
-        --theme-border-color: rgba(255, 255, 255, 0.1);
+        /* Base Fonts */
+        --font-family-sans: 'Tajawal', sans-serif;
+        --font-family-serif: 'Amiri', serif;
+        
+        /* Default Theme: Midnight */
+        --theme-bg-gradient-start: #0D1A2E;
+        --theme-bg-gradient-end: #151E29;
+        --theme-text-primary: #F0F4F8;
+        --theme-text-secondary: #A0AEC0;
+        --theme-text-accent: #CBD5E1;
+        --theme-primary-accent: #38BDF8; /* Electric Blue */
+        --theme-primary-accent-text: #0D1A2E;
+        --theme-card-bg: rgba(29, 41, 58, 0.7);
+        --theme-card-bg-rgb: 29, 41, 58;
+        --theme-tab-bar-bg: rgba(29, 41, 58, 0.6);
+        --theme-border-color: rgba(127, 212, 253, 0.15);
+        --theme-shadow-color-rgb: 56, 189, 248;
+        --theme-accent-hsl: 204, 94%, 61%;
+        --theme-danger-color: #E53E3E;
+        --theme-border-radius-card: 1rem;
+        --theme-border-radius-container: 1.25rem;
+        --theme-border-radius-full: 9999px;
       }
+      
+      .quran-reader-theme-override {
+        --theme-bg-gradient-start: #18191A;
+        --theme-bg-gradient-end: #121212;
+        --theme-text-primary: #E4E6EB;
+        --theme-text-secondary: #B0B3B8;
+        --theme-text-accent: #B0B3B8;
+        --theme-primary-accent: #D4AF37; /* Gold */
+        --theme-primary-accent-text: #121212;
+        --theme-card-bg: #1E1E1E;
+        --theme-card-bg-rgb: 30, 30, 30;
+        --theme-tab-bar-bg: rgba(30, 30, 30, 0.7);
+        --theme-border-color: rgba(212, 175, 55, 0.2);
+        --theme-shadow-color-rgb: 212, 175, 55;
+        --theme-accent-hsl: 45, 74%, 55%;
+        --theme-border-radius-card: 1rem;
+        --theme-border-radius-container: 1.25rem;
+      }
+      
+      @keyframes background-pan {
+        from { background-position: 0% 0%; }
+        to { background-position: 200% 200%; }
+      }
+      
       body {
-        font-family: 'Tajawal', sans-serif;
+        font-family: var(--font-family-sans);
         -webkit-tap-highlight-color: transparent;
+        color: var(--theme-text-primary);
+        background-color: var(--theme-bg-gradient-end);
+        background-image: 
+          radial-gradient(at 20% 25%, hsla(var(--theme-accent-hsl),0.25) 0px, transparent 50%),
+          radial-gradient(at 79% 23%, hsla(var(--theme-accent-hsl),0.2) 0px, transparent 50%),
+          radial-gradient(at 8% 85%, hsla(var(--theme-accent-hsl),0.3) 0px, transparent 50%),
+          radial-gradient(at 80% 80%, hsla(var(--theme-accent-hsl),0.15) 0px, transparent 50%),
+          linear-gradient(135deg, var(--theme-bg-gradient-start), var(--theme-bg-gradient-end));
+        background-size: 200% 200%;
+        animation: background-pan 45s linear infinite;
       }
-      .font-amiri {
-        font-family: 'Amiri', serif;
-      }
-      .bg-theme-gradient {
-        background: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary));
-      }
-      .text-theme-primary { color: var(--theme-primary); }
-      .text-theme-secondary { color: var(--theme-secondary); }
-      .text-theme-accent { color: var(--theme-accent); }
-      .text-theme-text { color: var(--theme-text); }
-      .text-theme-counter { color: var(--theme-counter); }
-      .bg-theme-primary { background-color: var(--theme-primary); }
-      .bg-theme-secondary { background-color: var(--theme-secondary); }
-      .bg-theme-accent { background-color: var(--theme-accent); }
-      .bg-theme-counter { background-color: var(--theme-counter); }
-      .bg-theme-reset { background-color: var(--theme-reset); }
-      .bg-theme-add { background-color: var(--theme-add); }
+      .font-amiri { font-family: var(--font-family-serif); }
+      .heading-amiri { font-family: var(--font-family-serif); font-weight: 700; }
+      
+      /* UTILITY CLASSES */
+      .text-theme-primary { color: var(--theme-text-primary); }
+      .text-theme-secondary { color: var(--theme-text-secondary); }
+      .text-theme-accent { color: var(--theme-text-accent); }
+      .text-theme-accent-primary { color: var(--theme-primary-accent); }
+      .text-theme-accent-primary-text { color: var(--theme-primary-accent-text); }
+      .text-theme-danger { color: var(--theme-danger-color); }
+      
+      .bg-theme-primary { background-color: var(--theme-bg-gradient-end); }
+      .bg-theme-secondary { background-color: var(--theme-card-bg); }
       .bg-theme-card { background-color: var(--theme-card-bg); }
+      .bg-theme-accent-primary { background-color: var(--theme-primary-accent); }
+      .bg-theme-danger { background-color: var(--theme-danger-color); }
+      .bg-theme-tab-bar { background-color: var(--theme-tab-bar-bg); }
+      .bg-theme-accent-card { background-color: rgba(var(--theme-shadow-color-rgb), 0.15); }
+
       .border-theme { border-color: var(--theme-border-color); }
-      .shadow-theme-counter { box-shadow: 0 0 20px var(--theme-counter); }
-      .ring-theme-accent { ring-color: var(--theme-accent); }
-      .stroke-theme-accent { stroke: var(--theme-accent); }
-      .stroke-theme-counter { stroke: var(--theme-counter); }
+      .border-theme-accent { border-color: var(--theme-primary-accent); }
+      .border-theme-accent-faded { border-color: rgba(var(--theme-shadow-color-rgb), 0.3); }
+
+      .shadow-theme-accent { box-shadow: 0 0 20px rgba(var(--theme-shadow-color-rgb), 0.5); }
+      .shadow-theme-accent-lg { box-shadow: 0 10px 25px rgba(var(--theme-shadow-color-rgb), 0.2), 0 0 10px rgba(var(--theme-shadow-color-rgb), 0.1); }
+      
+      .ring-theme-accent { ring-color: var(--theme-primary-accent); }
+      .stroke-theme-accent { stroke: var(--theme-text-accent); }
+      .stroke-theme-accent-primary { stroke: var(--theme-primary-accent); }
+
+      .rounded-theme-card { border-radius: var(--theme-border-radius-card); }
+      .rounded-theme-container { border-radius: var(--theme-border-radius-container); }
+      .rounded-theme-full { border-radius: var(--theme-border-radius-full); }
+      
 
       /* Scrollbar styles */
-      ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; }
+      ::-webkit-scrollbar-thumb { background: rgba(var(--theme-shadow-color-rgb), 0.5); border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(var(--theme-shadow-color-rgb), 0.7); }
+
+      /* --- NEW "WOW" ANIMATION SYSTEM --- */
+      @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+      @keyframes slide-in-from-right { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+      @keyframes slide-out-to-left { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-100%); opacity: 0; } }
+      @keyframes fade-in-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+      
+      .view-container {
+        position: relative;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
       }
-      ::-webkit-scrollbar-track {
-        background: rgba(0,0,0,0.1);
-        border-radius: 10px;
+      .view-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        animation-duration: 0.4s;
+        animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+        animation-fill-mode: forwards;
       }
-      ::-webkit-scrollbar-thumb {
-        background: rgba(255,255,255,0.3);
-        border-radius: 10px;
+
+      .view-enter { animation-name: slide-in-from-right; }
+      .view-exit { animation-name: slide-out-to-left; }
+
+      .stagger-item {
+        opacity: 0;
+        animation: fade-in-up 0.5s ease forwards;
       }
-      ::-webkit-scrollbar-thumb:hover {
-        background: rgba(255,255,255,0.4);
+
+      /* Animation keyframes */
+      @keyframes pulse-slow { 50% { opacity: .85; } }
+      .animate-pulse-slow { animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+      @keyframes pop { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+      .animate-pop { animation: pop 0.2s ease-out; }
+
+      /* Quran Player Specific Styles */
+      .quran-reader-font {
+        font-family: 'Amiri', serif;
+        font-size: 1.75rem; /* 28px */
+        line-height: 2.5;
+        text-align: justify;
+        direction: rtl;
+      }
+      .ayah-marker {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border: 1.5px solid var(--theme-primary-accent);
+        border-radius: 50%;
+        color: var(--theme-primary-accent);
+        font-size: 0.8rem;
+        font-weight: bold;
+        margin: 0 0.5rem;
+        vertical-align: middle;
+      }
+      .surah-title-banner {
+        position: relative;
+        padding: 0.75rem 2rem;
+        text-align: center;
+        background-color: transparent;
+        border-top: 2px solid var(--theme-primary-accent);
+        border-bottom: 2px solid var(--theme-primary-accent);
+      }
+      .counter-bg-pattern {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='rgb(var(--theme-shadow-color-rgb))' fill-opacity='0.03'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41zM0 1.4l2.83 2.83 1.41-1.41L1.41 0H0v1.41zM38.59 40l-2.83-2.83 1.41-1.41L40 38.59V40h-1.41zM40 1.41l-2.83 2.83-1.41-1.41L38.59 0H40v1.41zM20 18.6l2.83-2.83 1.41 1.41L21.41 20l2.83 2.83-1.41 1.41L20 21.41l-2.83 2.83-1.41-1.41L18.59 20l-2.83-2.83 1.41-1.41L20 18.59z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      }
+      .ayah-highlighted {
+        background-color: rgba(var(--theme-shadow-color-rgb), 0.25);
+        transition: background-color 0.4s ease-out;
+      }
+      
+      /* --- NEW "LUMINOUS" (Glassmorphism) DESIGN SYSTEM --- */
+      .container-luminous, .tab-bar-luminous {
+        background: rgba(var(--theme-card-bg-rgb), 0.5);
+        backdrop-filter: blur(16px) saturate(180%);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.125);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease-out;
+      }
+      .container-luminous:hover {
+        background: rgba(var(--theme-card-bg-rgb), 0.65);
+        transform: translateY(-2px);
+      }
+      
+      .logo-main {
+        font-family: var(--font-family-serif);
+        font-size: 3.5rem; /* 56px */
+        font-weight: bold;
+        color: var(--theme-text-accent);
+      }
+      
+      .button-luminous {
+        padding: 0.375rem 1rem; /* 6px 16px */
+        border-radius: var(--theme-border-radius-full);
+        font-weight: 600;
+        transition: all 0.2s ease-out;
+        background: rgba(var(--theme-card-bg-rgb), 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+      }
+      .button-luminous:hover {
+        background: rgba(var(--theme-card-bg-rgb), 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+      .button-luminous:active {
+        transform: scale(0.98) translateY(0);
+        background: rgba(var(--theme-card-bg-rgb), 0.5);
+      }
+      
+      .input-luminous {
+        background-color: rgba(var(--theme-card-bg-rgb), 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        outline: none;
+      }
+      .input-luminous:focus {
+        border-color: var(--theme-primary-accent);
+        box-shadow: 0 0 0 2px rgba(var(--theme-shadow-color-rgb), 0.4);
+      }
+
+      .tab-indicator-luminous {
+        background-color: var(--theme-primary-accent);
+        box-shadow: 0 0 15px 2px var(--theme-primary-accent), 0 0 25px 5px rgba(var(--theme-shadow-color-rgb), 0.3);
       }
     </style>
 <script type="importmap">
@@ -78,7 +258,7 @@
 }
 </script>
 </head>
-<body class="bg-theme-gradient text-theme-text">
+<body>
     <div id="root"></div>
 </body>
 </html>

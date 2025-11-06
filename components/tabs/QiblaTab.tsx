@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Spinner from '../ui/Spinner';
 
-// Coordinates of the Kaaba in Mecca
 const KAABA_LAT = 21.4225;
 const KAABA_LON = 39.8262;
 
-// Helper to convert degrees to radians
 const toRadians = (deg: number) => deg * (Math.PI / 180);
 const toDegrees = (rad: number) => rad * (180 / Math.PI);
 
-const QiblaTab: React.FC = () => {
+interface QiblaTabProps {
+    onBack?: () => void;
+}
+
+const QiblaTab: React.FC<QiblaTabProps> = ({ onBack }) => {
     const [qiblaDirection, setQiblaDirection] = useState<number | null>(null);
     const [deviceHeading, setDeviceHeading] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -33,130 +35,125 @@ const QiblaTab: React.FC = () => {
         setIsLoading(false);
     }, []);
     
-    const handleOrientation = (event: DeviceOrientationEvent) => {
-        // 'webkitCompassHeading' is for iOS compatibility
+    const handleOrientation = useCallback((event: DeviceOrientationEvent) => {
         const heading = (event as any).webkitCompassHeading || event.alpha;
         if (heading !== null) {
-            setDeviceHeading(360 - heading); // Adjust for CSS rotation
+            setDeviceHeading(360 - heading);
         }
-    };
+    }, []);
 
     const requestPermissionsAndStart = async () => {
         setIsLoading(true);
         setError(null);
 
-        // 1. Geolocation Permission
-        if (!navigator.geolocation) {
-            setError("خدمة تحديد الموقع غير مدعومة في هذا المتصفح.");
-            setIsLoading(false);
-            return;
+        try {
+            const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                });
+            });
+            calculateQiblaDirection(position.coords.latitude, position.coords.longitude);
+        } catch (geoError) {
+             setError("يرجى تفعيل خدمة الموقع لتحديد اتجاه القبلة.");
+             setIsLoading(false);
+             return;
         }
-
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const { latitude, longitude } = position.coords;
-                calculateQiblaDirection(latitude, longitude);
-            },
-            () => {
-                setError("يرجى تفعيل خدمة الموقع لتحديد اتجاه القبلة.");
-                setIsLoading(false);
-            }
-        );
         
-        // 2. Device Orientation Permission (for iOS 13+)
         const DO = window.DeviceOrientationEvent as any;
         if (typeof DO.requestPermission === 'function') {
-            try {
-                const permission = await DO.requestPermission();
-                if (permission === 'granted') {
-                    window.addEventListener('deviceorientation', handleOrientation);
-                    setPermissionState('granted');
-                } else {
-                    setError("يرجى السماح بالوصول إلى حساسات الحركة لعرض البوصلة.");
-                    setPermissionState('denied');
-                }
-            } catch (err) {
-                 setError("حدث خطأ أثناء طلب الأذونات.");
-                 setPermissionState('denied');
+            const permission = await DO.requestPermission();
+            if (permission === 'granted') {
+                window.addEventListener('deviceorientation', handleOrientation);
+                setPermissionState('granted');
+            } else {
+                setError("يرجى السماح بالوصول إلى حساسات الحركة لعرض البوصلة.");
+                setPermissionState('denied');
+                 setIsLoading(false);
             }
         } else {
-            // For Android and other browsers
              window.addEventListener('deviceorientation', handleOrientation);
              setPermissionState('granted');
         }
     };
     
     useEffect(() => {
-        // Cleanup listener on component unmount
+       // Automatically request permissions when component mounts
+       requestPermissionsAndStart();
         return () => {
             window.removeEventListener('deviceorientation', handleOrientation);
         };
-    }, []);
+    }, [handleOrientation]);
 
     const renderContent = () => {
-        if (permissionState === 'prompt' || error) {
+        if (isLoading) {
             return (
-                <div className="text-center">
-                    <h2 className="text-xl font-bold mb-2">بوصلة القبلة</h2>
-                    <p className="text-sm text-theme-accent/80 mb-6">
-                       لتحديد اتجاه القبلة بدقة، نحتاج إلى الوصول لموقعك وحساسات الحركة في جهازك.
-                    </p>
-                    <button 
-                        onClick={requestPermissionsAndStart}
-                        className="px-6 py-3 bg-theme-add text-white rounded-full font-bold transition-transform hover:scale-105"
-                    >
-                        تحديد القبلة
-                    </button>
-                    {error && <p className="text-red-400 mt-4 text-sm">{error}</p>}
+                <div className="flex flex-col justify-center items-center h-64 gap-4">
+                    <Spinner />
+                    <p>جاري طلب الأذونات والمعايرة...</p>
                 </div>
             );
         }
         
-        if (isLoading || qiblaDirection === null || deviceHeading === null) {
-            return (
+        if (error) {
+             return (
+                <div className="text-center p-4">
+                    <h2 className="text-xl font-bold mb-2">خطأ</h2>
+                    <p className="text-theme-danger mt-4 text-sm mb-6">{error}</p>
+                     <button onClick={requestPermissionsAndStart} className="px-6 py-3 bg-theme-accent-primary text-theme-accent-primary-text rounded-theme-full font-bold transition-transform hover:scale-105">
+                        حاول مرة أخرى
+                    </button>
+                </div>
+            )
+        }
+
+        if (qiblaDirection === null || deviceHeading === null) {
+             return (
                 <div className="flex flex-col justify-center items-center h-64 gap-4">
                     <Spinner />
-                    <p>جاري المعايرة...</p>
+                    <p>في انتظار بيانات الحساسات...</p>
                 </div>
             );
         }
 
-        // The compass needle should point towards the Qibla relative to the device's orientation.
         const needleRotation = qiblaDirection - deviceHeading;
 
         return (
             <div className="flex flex-col items-center gap-4">
                  <h2 className="text-xl font-bold">اتجاه القبلة</h2>
-                <div className="w-56 h-56 rounded-full bg-black/10 border-4 border-white/20 flex items-center justify-center relative">
-                    {/* Compass background */}
-                    <div className="absolute w-full h-full text-theme-accent/50">
-                        <div className="absolute top-1 left-1/2 -translate-x-1/2 text-xs font-bold">ش</div>
-                        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-xs">ج</div>
-                        <div className="absolute left-1 top-1/2 -translate-y-1/2 text-xs">غ</div>
-                        <div className="absolute right-1 top-1/2 -translate-y-1/2 text-xs">ش</div>
+                <div className="w-64 h-64 rounded-theme-full bg-black/10 border-4 border-theme flex items-center justify-center relative my-4">
+                    <div className="absolute w-full h-full text-theme-secondary/50" style={{ transform: `rotate(${deviceHeading}deg)`}}>
+                        <div className="absolute -top-1 left-1/2 -translate-x-1/2 text-lg font-bold">N</div>
+                        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-sm">S</div>
+                        <div className="absolute -left-1 top-1/2 -translate-y-1/2 text-sm">W</div>
+                        <div className="absolute -right-1 top-1/2 -translate-y-1/2 text-sm">E</div>
                     </div>
-
-                    {/* Qibla Needle */}
-                    <div 
-                        className="w-full h-full transition-transform duration-200"
-                        style={{ transform: `rotate(${needleRotation}deg)` }}
-                    >
-                        <svg viewBox="0 0 100 100" className="w-full h-full">
-                            <polygon points="50,0 60,50 50,100 40,50" fill="var(--theme-counter)" />
-                        </svg>
+                    <div className="w-full h-full transition-transform duration-200" style={{ transform: `rotate(${needleRotation}deg)` }}>
+                        {/* Kaaba Icon as the needle head */}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="var(--theme-primary-accent)" className="absolute top-2 left-1/2 -translate-x-1/2"><path d="M2 3h20v14h-5.992l-4.004 5.994-4.004-5.994h-6v-14zm2 2v10h16v-10h-16zm5 4h6v2h-6v-2z"/></svg>
+                        {/* Needle Body */}
+                        <div className="w-1.5 h-24 bg-theme-accent-primary absolute top-10 left-1/2 -translate-x-1/2 rounded-theme-full"></div>
                     </div>
-                     <div className="absolute w-3 h-3 bg-theme-secondary rounded-full border-2 border-theme-counter"></div>
+                    <div className="absolute w-4 h-4 bg-theme-primary rounded-theme-full border-2 border-theme-accent-primary"></div>
                 </div>
                 <div className="text-center">
-                     <p className="text-lg font-bold text-theme-counter">{qiblaDirection.toFixed(1)}°</p>
-                     <p className="text-sm text-theme-accent/80">قم بتدوير هاتفك حتى يشير السهم للأعلى</p>
+                     <p className="text-lg font-bold text-theme-accent-primary">{qiblaDirection.toFixed(0)}°</p>
+                     <p className="text-sm text-theme-secondary/80">ضع هاتفك بشكل مسطح وقم بتدويره حتى يتجه السهم للأعلى</p>
+                     <p className="text-xs text-theme-secondary/60 mt-2">لأفضل دقة، قم بمعايرة البوصلة بتحريك الجهاز على شكل الرقم 8.</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-[400px]">
+        <div className="flex flex-col items-center justify-center min-h-[450px] relative">
+            {onBack && (
+                 <button onClick={onBack} className="absolute top-0 right-0 flex items-center gap-2 font-semibold text-theme-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                    رجوع
+                </button>
+            )}
             {renderContent()}
         </div>
     );
