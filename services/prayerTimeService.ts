@@ -22,20 +22,3 @@ export const getPrayerTimes = async (latitude: number, longitude: number, method
         return null;
     }
 };
-
-export const getHijriCalendar = async (month: number, year: number, latitude: number, longitude: number, method: PrayerMethod): Promise<any | null> => {
-    try {
-        const response = await fetch(`${PRAYER_API_BASE}/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}&method=${method}`);
-        if (!response.ok) {
-            throw new Error('Failed to fetch calendar data');
-        }
-        const data = await response.json();
-        if (data.code === 200) {
-            return data.data;
-        }
-        return null;
-    } catch (error) {
-        console.error('Error fetching Hijri calendar:', error);
-        return null;
-    }
-};

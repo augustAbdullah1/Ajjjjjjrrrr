@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import type { Tab } from '../types';
 import { CounterIcon, DuaIcon, QuranIcon, PrayerIcon, OtherIcon } from './icons/TabIcons';
 
@@ -16,71 +16,36 @@ const TABS: { id: Tab; label: string; icon: React.FC<React.SVGProps<SVGSVGElemen
 ];
 
 const TabBar: React.FC<TabBarProps> = ({ activeTab, setActiveTab }) => {
-    const navRef = useRef<HTMLElement>(null);
     const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
-    const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
-
-    useEffect(() => {
-        const calculateIndicator = () => {
-            const activeIndex = TABS.findIndex(tab => tab.id === activeTab);
-            const activeTabElem = tabsRef.current[activeIndex];
-            if (activeTabElem) {
-                setIndicatorStyle({
-                    left: activeTabElem.offsetLeft,
-                    width: activeTabElem.clientWidth,
-                    opacity: 1,
-                });
-            }
-        };
-
-        calculateIndicator();
-
-        // Recalculate on resize to handle orientation changes
-        const resizeObserver = new ResizeObserver(calculateIndicator);
-        if (navRef.current) {
-            resizeObserver.observe(navRef.current);
-        }
-        return () => resizeObserver.disconnect();
-
-    }, [activeTab]);
 
     return (
-        <nav ref={navRef} className="fixed bottom-4 inset-x-0 h-20 z-50 flex justify-center pointer-events-none">
-            <div className="relative w-[95%] max-w-sm tab-bar-luminous rounded-theme-container pointer-events-auto flex justify-around items-center px-2">
-                
-                <div 
-                    className="absolute h-14 tab-indicator-luminous rounded-theme-full transition-all duration-300 ease-in-out"
-                    style={{
-                        left: `${indicatorStyle.left}px`,
-                        width: `${indicatorStyle.width}px`,
-                        opacity: indicatorStyle.opacity,
-                    }}
-                />
-
+        <nav 
+            className="fixed inset-x-0 bottom-0 z-50 h-[calc(4rem+env(safe-area-inset-bottom))] bg-theme-tab-bar border-t border-theme"
+            style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+        >
+            <div className="relative w-full h-full flex justify-around items-center">
                 {TABS.map((tab, index) => {
                     const isActive = activeTab === tab.id;
                     const Icon = tab.icon;
                     return (
                         <button
                             key={tab.id}
-                            ref={el => tabsRef.current[index] = el}
+                            // Fix: The ref callback should not return a value. Added curly braces to ensure a void return type.
+                            ref={el => { tabsRef.current[index] = el; }}
                             onClick={() => setActiveTab(tab.id)}
-                            className="relative z-10 flex-1 h-16 flex flex-col items-center justify-center transition-colors duration-300 ease-out focus:outline-none"
+                            className={`tab-button relative z-10 flex-1 h-full flex flex-col items-center justify-center focus:outline-none group ${isActive ? 'active' : ''}`}
                             aria-label={tab.label}
                         >
-                            <Icon
-                                className={`w-7 h-7 stroke-current transition-all duration-300
-                                    ${isActive ? 'text-theme-accent-primary-text scale-110' : 'text-theme-secondary group-hover:text-theme-primary'}`
-                                }
-                                strokeWidth={2.5}
-                            />
-                            <span 
-                                className={`absolute bottom-1.5 text-xs font-bold transition-all duration-300
-                                ${isActive ? 'opacity-100 translate-y-0 text-theme-accent-primary-text' : 'opacity-0 translate-y-2 text-theme-secondary'}`
-                                }
-                            >
-                                {tab.label}
-                            </span>
+                             <div className={`w-14 h-14 flex items-center justify-center rounded-full transition-colors duration-300 ${isActive ? 'bg-theme-accent-primary shadow-theme-accent' : ''}`}>
+                                <Icon
+                                    className={`w-7 h-7 stroke-current transition-colors duration-300 ${tab.id === 'home' ? 'prayer-icon' : ''}
+                                        ${isActive 
+                                            ? 'text-theme-accent-primary-text' 
+                                            : 'text-theme-secondary group-hover:text-theme-primary'}`
+                                    }
+                                    strokeWidth={2}
+                                />
+                            </div>
                         </button>
                     );
                 })}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { Profile, AchievementId, Settings, QuranUserData, Dhikr } from '../../types';
 import { ACHIEVEMENTS_LIST } from '../../constants';
 import useLocalStorage from '../../hooks/useLocalStorage';
@@ -93,12 +93,7 @@ const WeeklyActivityChart: React.FC = () => {
     )
 };
 
-const KhatmahProgressCard: React.FC = () => {
-    const [userData] = useLocalStorage<QuranUserData>('quranUserData', {
-        khatmah: { active: false, startDate: null, lastRead: null, targetDays: 30, history: [] },
-        highlights: {},
-    });
-    
+const KhatmahProgressCard: React.FC<{ userData: QuranUserData }> = ({ userData }) => {
     if (!userData.khatmah?.active) return null;
     
     const { lastRead, targetDays, startDate } = userData.khatmah;
@@ -163,16 +158,40 @@ const ProfileEditView: React.FC<{
     const [avatarColor, setAvatarColor] = useState(profile.avatarColor);
     const [favoriteDhikrId, setFavoriteDhikrId] = useState<number | null>(profile.favoriteDhikrId);
     const [dhikrList] = useLocalStorage<Dhikr[]>('dhikrList', []);
+    const [avatarDataUrl, setAvatarDataUrl] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleAvatarClick = () => fileInputRef.current?.click();
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (file.size > 2 * 1024 * 1024) { // 2MB limit
+            alert("حجم الصورة كبير جداً. يرجى اختيار صورة أصغر من 2 ميجابايت.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            setAvatarDataUrl(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+    };
 
     const handleSave = () => {
-        onSave({
+        const dataToSave: Partial<Profile> = {
             name: name.trim() || 'المستخدم',
             bio,
             title,
             dailyGoal,
             avatarColor,
-            favoriteDhikrId
-        });
+            favoriteDhikrId,
+        };
+        if (avatarDataUrl) {
+            dataToSave.avatarImage = avatarDataUrl;
+        }
+        onSave(dataToSave);
     };
 
     return (
@@ -189,9 +208,20 @@ const ProfileEditView: React.FC<{
             <main className="flex-grow overflow-y-auto p-4 space-y-6">
                 {/* Avatar Preview */}
                 <div className="flex flex-col items-center gap-4">
-                     <div className="w-28 h-28 rounded-theme-full flex items-center justify-center text-6xl font-black ring-4 ring-white/10 shadow-lg leading-none container-luminous" style={{ backgroundColor: avatarColor, color: 'rgba(0,0,0,0.5)' }}>
-                        {name.charAt(0)}
+                     <div 
+                        className="w-28 h-28 rounded-theme-full flex items-center justify-center text-6xl font-black ring-4 ring-white/10 shadow-lg leading-none container-luminous cursor-pointer overflow-hidden"
+                        style={{ backgroundColor: avatarColor, color: 'rgba(0,0,0,0.5)' }}
+                        onClick={handleAvatarClick}
+                     >
+                        {avatarDataUrl ? (
+                            <img src={avatarDataUrl} className="w-full h-full object-cover" alt="الصورة الشخصية الجديدة" />
+                        ) : profile.avatarImage ? (
+                            <img src={profile.avatarImage} className="w-full h-full object-cover" alt="الصورة الشخصية" />
+                        ) : (
+                            name.charAt(0)
+                        )}
                     </div>
+                    <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
                     <div className="flex gap-2">
                         {AVATAR_COLORS.map(color => (
                             <button key={color} onClick={() => setAvatarColor(color)} className={`w-8 h-8 rounded-theme-full transition-all ${avatarColor === color ? 'ring-2 ring-offset-2 ring-offset-theme-primary ring-white' : ''}`} style={{ backgroundColor: color }} />
@@ -238,12 +268,19 @@ interface ProfileTabProps {
     setProfile: React.Dispatch<React.SetStateAction<Profile>>;
     settings: Settings;
     onClose: () => void;
+    userData: QuranUserData;
 }
 
-const ProfileTab: React.FC<ProfileTabProps> = ({ profile, setProfile, onClose }) => {
+const ProfileTab: React.FC<ProfileTabProps> = ({ profile, setProfile, onClose, userData }) => {
     const [isEditing, setIsEditing] = useState(false);
+    const [isClosing, setIsClosing] = useState(false);
     const [dhikrList] = useLocalStorage<Dhikr[]>('dhikrList', []);
     const favoriteDhikr = dhikrList.find(d => d.id === profile.favoriteDhikrId);
+
+    const handleClose = () => {
+        setIsClosing(true);
+        setTimeout(onClose, 300); // Corresponds to animation duration
+    };
 
     useEffect(() => {
         const checkAchievements = () => {
@@ -257,8 +294,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({ profile, setProfile, onClose })
             if (profile.streak >= 7 && !profile.achievements.streak_7) unlocked.push('streak_7');
             if (profile.streak >= 30 && !profile.achievements.streak_30) unlocked.push('streak_30');
 
-            const khatmahActive = JSON.parse(localStorage.getItem('quranUserData') || '{}')?.khatmah?.active;
-            if (khatmahActive && !profile.achievements.khatmah_start) unlocked.push('khatmah_start');
+            if (userData.khatmah.active && !profile.achievements.khatmah_start) unlocked.push('khatmah_start');
             
             if (unlocked.length > 0) {
                  setProfile(p => {
@@ -269,7 +305,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({ profile, setProfile, onClose })
             }
         };
         checkAchievements();
-    }, [profile, setProfile]);
+    }, [profile, setProfile, userData.khatmah.active]);
 
     const handleSaveProfile = (newProfileData: Partial<Profile>) => {
         setProfile(p => ({ ...p, ...newProfileData }));
@@ -279,15 +315,15 @@ const ProfileTab: React.FC<ProfileTabProps> = ({ profile, setProfile, onClose })
     const achievementsUnlocked = Object.values(profile.achievements).filter(Boolean).length;
     
     return (
-        <div className="fixed inset-0 bg-theme-primary z-[100] overflow-y-auto">
+        <div className={`fixed inset-0 bg-theme-primary z-[100] overflow-y-auto ${isClosing ? 'animate-scale-out-tl' : 'animate-scale-in-tl'}`}>
             {isEditing ? (
                 <ProfileEditView profile={profile} onSave={handleSaveProfile} onClose={() => setIsEditing(false)} />
             ) : (
-                <div className="animate-in fade-in-0">
+                <div>
                     <header className="sticky top-0 z-20 bg-theme-primary/80 backdrop-blur-md flex items-center justify-between p-4">
                         <div className="w-14"></div>
                         <h1 className="font-bold text-2xl text-theme-accent heading-amiri">الملف الشخصي</h1>
-                        <button onClick={onClose} className="p-2 text-theme-secondary hover:text-theme-primary transition-colors w-14 flex justify-end">
+                        <button onClick={handleClose} className="p-2 text-theme-secondary hover:text-theme-primary transition-colors w-14 flex justify-end">
                             <ChevronLeftIcon className="w-7 h-7 stroke-current" style={{transform: 'scaleX(-1)'}} />
                         </button>
                     </header>
@@ -296,8 +332,12 @@ const ProfileTab: React.FC<ProfileTabProps> = ({ profile, setProfile, onClose })
                         <div className="w-full h-32 bg-gradient-to-br from-theme-card to-transparent relative counter-bg-pattern">
                             <div className="absolute inset-0 bg-gradient-to-t from-theme-primary to-transparent"></div>
                         </div>
-                        <div className="w-28 h-28 rounded-theme-full flex items-center justify-center text-6xl font-black ring-4 ring-theme-primary shadow-lg -mt-20 z-10 leading-none container-luminous" style={{ backgroundColor: profile.avatarColor, color: 'rgba(0,0,0,0.5)' }}>
-                            {profile.name.charAt(0)}
+                        <div className="w-28 h-28 rounded-theme-full flex items-center justify-center text-6xl font-black ring-4 ring-theme-primary shadow-lg -mt-20 z-10 leading-none container-luminous overflow-hidden" style={{ backgroundColor: profile.avatarColor, color: 'rgba(0,0,0,0.5)' }}>
+                            {profile.avatarImage ? (
+                                <img src={profile.avatarImage} className="w-full h-full object-cover" alt="الصورة الشخصية" />
+                            ) : (
+                                profile.name.charAt(0)
+                            )}
                         </div>
                         
                         <div className="text-center -mt-2">
@@ -329,7 +369,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({ profile, setProfile, onClose })
                         
                         <div className="w-full px-4 space-y-4">
                             <WeeklyActivityChart />
-                            <KhatmahProgressCard />
+                            <KhatmahProgressCard userData={userData} />
                             <div className="container-luminous rounded-theme-card p-4">
                                 <h3 className="font-bold text-xl text-theme-accent mb-4 text-center heading-amiri">الإنجازات ({achievementsUnlocked}/{ACHIEVEMENTS_LIST.length})</h3>
                                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">

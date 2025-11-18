@@ -1,197 +1,117 @@
-import type { PrayerTimes, NotificationSettings } from '../types';
-import { HISNUL_MUSLIM_DUAS } from '../constants';
+import type { PrayerTimes, Settings } from '../types';
 
-let prayerTimeouts: number[] = [];
-let reminderInterval: number | null = null;
-const PERSISTENT_NOTIFICATION_TAG = 'persistent-prayer-times';
+const NOTIFICATION_TAG_PREFIX = 'prayer-time-';
 
-const ALL_DUAS = HISNUL_MUSLIM_DUAS.flatMap(category => category.duas);
-const nativeBridge = (window as any).Android;
+// Helper to parse time string (e.g., "05:30") into a Date object for today or tomorrow
+const parseTimeToDate = (time: string): Date => {
+    const now = new Date();
+    const [hours, minutes] = time.split(':').map(Number);
+    const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0, 0);
 
-/**
- * Tries to call a function on the native Android bridge if it exists.
- * @param funcName The name of the function to call on the `window.Android` object.
- * @param args The arguments to pass to the native function.
- * @returns `true` if the native function was called successfully, `false` otherwise.
- */
-const tryNative = (funcName: string, ...args: any[]): boolean => {
-    if (nativeBridge && typeof nativeBridge[funcName] === 'function') {
-        try {
-            // Native bridges typically expect string arguments.
-            const stringArgs = args.map(arg => (typeof arg === 'object' ? JSON.stringify(arg) : String(arg)));
-            nativeBridge[funcName](...stringArgs);
-            console.log(`Called native function: ${funcName}`);
-            return true;
-        } catch (e) {
-            console.error(`Error calling native function ${funcName}:`, e);
-            return false;
-        }
+    // If the time has already passed for today, schedule it for tomorrow
+    if (date < now) {
+        date.setDate(date.getDate() + 1);
     }
-    return false;
+    return date;
 };
-
-const formatTime12h = (time: string): string => {
-    if (!time || !time.includes(':')) return '00:00';
-    const [h, m] = time.split(':').map(Number);
-    const ampm = h >= 12 ? 'م' : 'ص';
-    const hour12 = h % 12 || 12;
-    return `${hour12}:${m.toString().padStart(2, '0')} ${ampm}`;
-};
-
 
 export const requestPermission = async (): Promise<boolean> => {
     if (!('Notification' in window)) {
-        alert('This browser does not support desktop notification');
+        console.error('This browser does not support desktop notification');
         return false;
     }
+
     if (Notification.permission === 'granted') {
         return true;
     }
+
+    // We can only ask for permission if it's not denied
     if (Notification.permission !== 'denied') {
         const permission = await Notification.requestPermission();
         return permission === 'granted';
     }
+
     return false;
 };
 
-interface ExtendedNotificationOptions extends NotificationOptions {
-    vibrate?: number[];
-    sound?: string;
-    renotify?: boolean;
-}
+export const cancelAllNotifications = async () => {
+    if (!('serviceWorker' in navigator) || !navigator.serviceWorker.ready) return;
+    
+    try {
+        const registration = await navigator.serviceWorker.getRegistration();
+        if (!registration || !registration.getNotifications) return;
 
-const showNotification = async (title: string, options: NotificationOptions) => {
-    const registration = await navigator.serviceWorker.getRegistration();
-    if (registration) {
-        registration.showNotification(title, options);
+        const notifications = await registration.getNotifications();
+        notifications.forEach(notification => {
+            if (notification.tag && notification.tag.startsWith(NOTIFICATION_TAG_PREFIX)) {
+                notification.close();
+            }
+        });
+    } catch (e) {
+        console.error("Error cancelling notifications:", e);
     }
 };
 
-const scheduleWebPrayerNotifications = (prayerTimes: PrayerTimes, settings: NotificationSettings) => {
-    stopWebPrayerNotifications(); // Clear any existing timeouts
 
-    const now = new Date();
+export const schedulePrayerNotifications = async (
+    prayerTimes: PrayerTimes,
+    notificationSettings: Settings['prayerNotifications']
+) => {
+    await cancelAllNotifications(); // Clear old notifications first
 
-    Object.entries(prayerTimes).forEach(([prayerName, time]) => {
-        if (prayerName === 'Sunrise') return;
+    if (!notificationSettings.enabled) {
+        return;
+    }
 
-        const [hours, minutes] = time.split(':').map(Number);
-        const prayerDate = new Date();
-        prayerDate.setHours(hours, minutes, 0, 0);
+    // We don't need to ask for permission here again because it's handled in the UI
+    if (Notification.permission !== 'granted') {
+        console.warn('Cannot schedule notifications, permission not granted.');
+        return;
+    }
+    
+    if (!('serviceWorker' in navigator) || !navigator.serviceWorker.ready) {
+        console.error('Service worker not ready to schedule notifications.');
+        return;
+    }
 
-        if (prayerDate > now) {
-            const timeout = prayerDate.getTime() - now.getTime();
-            const prayerTimeout = setTimeout(() => {
-                const options: ExtendedNotificationOptions = {
-                    body: `حان الآن موعد أذان ${prayerName}`,
+    // Check for TimestampTrigger support
+    if (typeof (window as any).TimestampTrigger === 'undefined') {
+        console.warn('TimestampTrigger for notifications is not supported in this browser.');
+        // Maybe alert the user once
+        return;
+    }
+
+    try {
+        const registration = await navigator.serviceWorker.getRegistration();
+        if (!registration) return;
+
+        const prayersToSchedule: { name: string; time: string; key: keyof typeof notificationSettings }[] = [
+            { name: 'الفجر', time: prayerTimes.Fajr, key: 'fajr' },
+            { name: 'الظهر', time: prayerTimes.Dhuhr, key: 'dhuhr' },
+            { name: 'العصر', time: prayerTimes.Asr, key: 'asr' },
+            { name: 'المغرب', time: prayerTimes.Maghrib, key: 'maghrib' },
+            { name: 'العشاء', time: prayerTimes.Isha, key: 'isha' },
+        ];
+
+        console.log("Scheduling notifications for:", prayersToSchedule.filter(p => notificationSettings[p.key]).map(p => p.name).join(', '));
+
+        for (const prayer of prayersToSchedule) {
+            if (notificationSettings[prayer.key]) {
+                const prayerTime = parseTimeToDate(prayer.time);
+                const timestamp = prayerTime.getTime();
+
+                // Fix(line 107): Cast NotificationOptions to 'any' to allow for the experimental 'showTrigger' property.
+                await registration.showNotification('حان وقت الصلاة', {
+                    body: `حان الآن وقت أذان ${prayer.name}`,
                     icon: '/icon-192.png',
-                    tag: `prayer-${prayerName}-${prayerDate.getDate()}`,
-                    silent: settings.sound === 'silent' || settings.sound === 'vibrate',
-                };
-                
-                if (settings.sound === 'vibrate') options.vibrate = [200, 100, 200];
-                
-                if (settings.sound === 'adhan') {
-                     const audio = new Audio('/sounds/adhan.mp3');
-                     audio.play().catch(e => console.error("Error playing adhan sound:", e));
-                }
-
-                showNotification(`صلاة ${prayerName}`, options);
-
-            }, timeout);
-            prayerTimeouts.push(prayerTimeout);
+                    tag: `${NOTIFICATION_TAG_PREFIX}${prayer.key}`,
+                    showTrigger: new (window as any).TimestampTrigger(timestamp),
+                    vibrate: [200, 100, 200],
+                } as any);
+                 console.log(`Scheduled notification for ${prayer.name} at ${prayerTime.toLocaleString()}`);
+            }
         }
-    });
-};
-
-const stopWebPrayerNotifications = () => {
-    prayerTimeouts.forEach(clearTimeout);
-    prayerTimeouts = [];
-};
-
-const startWebDhikrReminders = (settings: NotificationSettings) => {
-    stopWebDhikrReminders();
-    const intervalMillis = settings.reminderInterval * 60 * 1000;
-
-    reminderInterval = setInterval(() => {
-        const randomDua = ALL_DUAS[Math.floor(Math.random() * ALL_DUAS.length)];
-        const options: ExtendedNotificationOptions = {
-            body: randomDua.ARABIC_TEXT,
-            icon: '/icon-192.png',
-            tag: 'dhikr-reminder',
-            renotify: true,
-            silent: settings.sound === 'silent' || settings.sound === 'vibrate' || settings.sound === 'adhan',
-             vibrate: settings.sound === 'vibrate' ? [100, 50, 100] : undefined,
-        };
-        showNotification('تذكير', options);
-    }, intervalMillis);
-};
-
-const stopWebDhikrReminders = () => {
-    if (reminderInterval) {
-        clearInterval(reminderInterval);
-        reminderInterval = null;
-    }
-};
-
-const showWebPersistentPrayerNotification = (prayerTimes: PrayerTimes) => {
-    const body = `الفجر: ${formatTime12h(prayerTimes.Fajr)} | الظهر: ${formatTime12h(prayerTimes.Dhuhr)} | العصر: ${formatTime12h(prayerTimes.Asr)} | المغرب: ${formatTime12h(prayerTimes.Maghrib)} | العشاء: ${formatTime12h(prayerTimes.Isha)}`;
-    const options: NotificationOptions = {
-        body: body,
-        icon: '/icon-192.png',
-        tag: PERSISTENT_NOTIFICATION_TAG,
-        requireInteraction: true, // Keep it until user dismisses it
-        silent: true,
-    };
-    showNotification('مواقيت الصلاة لليوم', options);
-};
-
-const hideWebPersistentPrayerNotification = async () => {
-    const registration = await navigator.serviceWorker.getRegistration();
-    if (registration) {
-        const notifications = await registration.getNotifications({ tag: PERSISTENT_NOTIFICATION_TAG });
-        notifications.forEach(notification => notification.close());
-    }
-};
-
-// --- Public Hybrid Functions ---
-
-export const schedulePrayerNotifications = (prayerTimes: PrayerTimes, settings: NotificationSettings) => {
-    // Try native first, if it fails, fallback to web notifications
-    if (!tryNative('schedulePrayerNotifications', prayerTimes, settings)) {
-        console.log("Using web fallback for prayer notifications.");
-        scheduleWebPrayerNotifications(prayerTimes, settings);
-    }
-};
-
-export const stopPrayerNotifications = () => {
-    if (!tryNative('stopPrayerNotifications')) {
-        stopWebPrayerNotifications();
-    }
-};
-
-export const startDhikrReminders = (settings: NotificationSettings) => {
-    if (!tryNative('startDhikrReminders', settings)) {
-        console.log("Using web fallback for dhikr reminders.");
-        startWebDhikrReminders(settings);
-    }
-};
-
-export const stopDhikrReminders = () => {
-    if (!tryNative('stopDhikrReminders')) {
-        stopWebDhikrReminders();
-    }
-};
-
-export const showPersistentPrayerNotification = (prayerTimes: PrayerTimes) => {
-    if (!tryNative('showPersistentPrayerNotification', prayerTimes)) {
-        console.log("Using web fallback for persistent prayer notification.");
-        showWebPersistentPrayerNotification(prayerTimes);
-    }
-};
-
-export const hidePersistentPrayerNotification = () => {
-    if (!tryNative('hidePersistentPrayerNotification')) {
-        hideWebPersistentPrayerNotification();
+    } catch(e) {
+        console.error("Failed to schedule notifications", e);
     }
 };

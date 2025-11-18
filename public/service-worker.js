@@ -1,4 +1,4 @@
-// This service worker handles caching for offline support and notification clicks.
+// This service worker handles caching for offline support.
 
 const CACHE_NAME = 'ajr-app-cache-v2';
 const API_HOSTS = ['api.aladhan.com', 'api.alquran.cloud', 'api.quran.com', 'www.mp3quran.net'];
@@ -76,24 +76,4 @@ self.addEventListener('fetch', event => {
                 })
         );
     }
-});
-
-
-// Notification Click: Focuses or opens the app
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      if (clientList.length > 0) {
-        let client = clientList[0];
-        for (let i = 0; i < clientList.length; i++) {
-          if (clientList[i].focused) {
-            client = clientList[i];
-          }
-        }
-        return client.focus();
-      }
-      return clients.openWindow('/');
-    })
-  );
 });

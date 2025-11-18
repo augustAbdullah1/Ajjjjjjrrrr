@@ -4,12 +4,14 @@ const useLongPress = <T,>(
   onLongPress: (item: T) => void,
   ms: number = 300
 ) => {
-  const timeout = useRef<number>();
-  const targetItem = useRef<T>();
+  // Fix: Initialize useRef with null to provide an explicit initial value, which can prevent confusing TypeScript errors.
+  const timeout = useRef<number | null>(null);
+  // Fix: Initialize useRef with null to provide an explicit initial value.
+  const targetItem = useRef<T | null>(null);
 
   const start = useCallback((item: T) => {
     targetItem.current = item;
-    timeout.current = setTimeout(() => {
+    timeout.current = window.setTimeout(() => {
       if (targetItem.current) {
         onLongPress(targetItem.current);
       }
@@ -17,7 +19,9 @@ const useLongPress = <T,>(
   }, [onLongPress, ms]);
 
   const clear = useCallback(() => {
-    timeout.current && clearTimeout(timeout.current);
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+    }
   }, []);
 
   const onTouchStart = (item: T) => () => start(item);

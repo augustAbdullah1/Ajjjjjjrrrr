@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { getPrayerTimes } from '../../services/prayerTimeService';
-import type { PrayerTimesData, Settings, Profile, AudioPlayerState } from '../../types';
+import type { PrayerTimesData, Settings, Profile } from '../../types';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import Spinner from '../ui/Spinner';
 import { DAILY_HADITH_DATA } from '../../constants';
-import { CounterIcon, PlayFilledIcon, PauseFilledIcon, NextTrackIcon, PrevTrackIcon, QuranIcon } from '../icons/TabIcons';
+import { CounterIcon } from '../icons/TabIcons';
 
 
 // --- HELPER FUNCTIONS ---
@@ -63,9 +63,9 @@ const NextPrayerCard: React.FC<{ nextPrayer: { name: string; time: string } | nu
     return (
         <div className="container-luminous rounded-theme-container p-6 flex flex-col items-center justify-center text-center stagger-item" style={{ animationDelay: '100ms' }}>
             <p className="text-lg font-semibold text-theme-secondary">الصلاة القادمة</p>
-            <h3 className="text-4xl font-bold text-theme-accent-primary my-1">{nextPrayer.name}</h3>
+            <h3 className="text-4xl font-bold text-theme-accent my-1">{nextPrayer.name}</h3>
             <p className="text-xl font-semibold text-theme-secondary mb-3">({formatTime(nextPrayer.time, timeFormat)})</p>
-            <p className="text-6xl font-black text-theme-primary tracking-tighter" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>{countdown}</p>
+            <p className="text-6xl font-black text-theme-accent tracking-tighter" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>{countdown}</p>
         </div>
     );
 };
@@ -89,8 +89,8 @@ const PrayerTimesCard: React.FC<{
             <div className="flex justify-between items-center mb-3">
                 <h3 className="font-bold text-lg text-theme-accent">مواقيت الصلاة</h3>
                 <div className="flex items-center text-xs font-bold p-1 bg-black/20 rounded-theme-full">
-                    <button onClick={() => onFormatChange('12h')} className={`px-3 py-1 rounded-theme-full ${timeFormat === '12h' ? 'bg-theme-accent-primary text-theme-accent-primary-text' : 'text-theme-secondary'}`}>12 ساعة</button>
-                    <button onClick={() => onFormatChange('24h')} className={`px-3 py-1 rounded-theme-full ${timeFormat === '24h' ? 'bg-theme-accent-primary text-theme-accent-primary-text' : 'text-theme-secondary'}`}>24 ساعة</button>
+                    <button onClick={() => onFormatChange('12h')} className={`px-3 py-1 rounded-theme-full ${timeFormat === '12h' ? 'bg-theme-accent-primary text-white' : 'text-theme-secondary'}`}>12 ساعة</button>
+                    <button onClick={() => onFormatChange('24h')} className={`px-3 py-1 rounded-theme-full ${timeFormat === '24h' ? 'bg-theme-accent-primary text-white' : 'text-theme-secondary'}`}>24 ساعة</button>
                 </div>
             </div>
             <div className="space-y-2">
@@ -133,31 +133,6 @@ const DailyDhikrCard: React.FC<{ dailyCount: number; dailyGoal: number }> = ({ d
     );
 };
 
-const QuranPlayerCard: React.FC<{ playerState: AudioPlayerState; onTogglePlay: () => void; onNext: () => void; onPrev: () => void; }> = ({ playerState, onTogglePlay, onNext, onPrev }) => {
-    if (!playerState.isVisible || !playerState.surah) return null;
-    const progressPercent = playerState.duration > 0 ? (playerState.currentTime / playerState.duration) * 100 : 0;
-
-    return (
-        <div className="container-luminous rounded-theme-container p-3 flex flex-col gap-2 stagger-item" style={{ animationDelay: '500ms' }}>
-             <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-theme-accent-card rounded-lg flex items-center justify-center text-theme-accent-primary"><QuranIcon className="w-7 h-7 stroke-current" /></div>
-                <div className="flex-grow overflow-hidden">
-                    <p className="font-bold text-theme-primary truncate">{playerState.surah.name}</p>
-                    <p className="text-xs text-theme-secondary truncate">{playerState.reciterName}</p>
-                </div>
-                <div className="flex items-center gap-1 text-theme-primary">
-                    <button onClick={onPrev} disabled={playerState.surah.number <= 1} className="p-1 disabled:opacity-50"><PrevTrackIcon className="w-5 h-5"/></button>
-                    <button onClick={onTogglePlay} className="w-10 h-10 bg-theme-accent-primary text-theme-accent-primary-text rounded-full flex items-center justify-center">
-                        {playerState.isPlaying ? <PauseFilledIcon className="w-6 h-6"/> : <PlayFilledIcon className="w-6 h-6 pl-0.5"/>}
-                    </button>
-                    <button onClick={onNext} disabled={playerState.surah.number >= 114} className="p-1 disabled:opacity-50"><NextTrackIcon className="w-5 h-5"/></button>
-                </div>
-             </div>
-             <div className="w-full bg-black/20 rounded-full h-1 p-0.5"><div className="bg-theme-accent-primary h-full rounded-full" style={{ width: `${progressPercent}%` }}></div></div>
-        </div>
-    );
-}
-
 // --- MAIN COMPONENT ---
 
 interface HomeTabProps {
@@ -165,13 +140,9 @@ interface HomeTabProps {
     setSettings: React.Dispatch<React.SetStateAction<Settings>>;
     onPrayerTimesLoaded: (data: PrayerTimesData) => void;
     profile: Profile;
-    playerState: AudioPlayerState;
-    onTogglePlay: () => void;
-    onNext: () => void;
-    onPrev: () => void;
 }
 
-const HomeTab: React.FC<HomeTabProps> = ({ settings, setSettings, onPrayerTimesLoaded, profile, playerState, onTogglePlay, onNext, onPrev }) => {
+const HomeTab: React.FC<HomeTabProps> = ({ settings, setSettings, onPrayerTimesLoaded, profile }) => {
     const [prayerData, setPrayerData] = useState<PrayerTimesData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [countdown, setCountdown] = useState("00:00:00");
@@ -257,7 +228,7 @@ const HomeTab: React.FC<HomeTabProps> = ({ settings, setSettings, onPrayerTimesL
             {error && !prayerData && (
                 <div className="text-center p-4 container-luminous rounded-theme-card">
                     <p className="text-theme-danger mb-4">{error}</p>
-                    <button onClick={fetchPrayerData} className="px-5 py-2 button-luminous bg-theme-accent-primary text-theme-accent-primary-text rounded-theme-full text-sm font-bold">
+                    <button onClick={fetchPrayerData} className="px-5 py-2 button-luminous bg-theme-accent-primary text-white rounded-theme-full text-sm font-bold">
                         إعادة المحاولة
                     </button>
                 </div>
@@ -274,7 +245,6 @@ const HomeTab: React.FC<HomeTabProps> = ({ settings, setSettings, onPrayerTimesL
                     />
                     <DailyInspirationCard />
                     <DailyDhikrCard dailyCount={dailyCount} dailyGoal={profile.dailyGoal} />
-                    <QuranPlayerCard playerState={playerState} onTogglePlay={onTogglePlay} onNext={onNext} onPrev={onPrev} />
                 </>
             )}
         </div>

@@ -1,10 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import { HISNUL_MUSLIM_DUAS } from '../../constants';
 import type { DuaCategory, Dua } from '../../types';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import DuaSequence from './DuaSequence';
 import Modal from '../ui/Modal';
-import { BookmarkIcon, CopyIcon, ChevronLeftIcon, CheckCircleIcon, TrashIcon, SaveIcon, PlusIcon, SettingsIcon, ProfileIcon } from '../icons/TabIcons';
+import { BookmarkIcon, CopyIcon, ChevronLeftIcon, CheckCircleIcon, TrashIcon, SaveIcon, PlusIcon } from '../icons/TabIcons';
 
 // --- CONSTANTS & TYPES ---
 const FEATURED_ADHAKR_IDS = [1001, 1002, 1003, 1004]; // Morning, Evening, Post-Prayer, Sleep
@@ -37,13 +38,8 @@ const useCompletionStatus = () => {
 };
 
 
-interface DuasTabProps {
-    onOpenProfile: () => void;
-    onOpenSettings: () => void;
-}
-
 // --- Main Dua Tab Component ---
-const DuasTab: React.FC<DuasTabProps> = ({ onOpenProfile, onOpenSettings }) => {
+const DuasTab: React.FC = () => {
     const [activeView, setActiveView] = useState<View>('main');
     const [previousView, setPreviousView] = useState<View>('main');
     const [activeSequence, setActiveSequence] = useState<DuaCategory | null>(null);
@@ -94,28 +90,13 @@ const DuasTab: React.FC<DuasTabProps> = ({ onOpenProfile, onOpenSettings }) => {
     }
 
     return (
-       <div className="w-full h-[100dvh] flex flex-col">
-            <header className="flex-shrink-0 flex justify-between items-center p-4">
-                 <button onClick={onOpenSettings} className="button-luminous p-2.5 text-theme-secondary hover:text-theme-primary">
-                    <SettingsIcon className="w-6 h-6 stroke-theme-accent" />
-                </button>
-                <div className="flex items-center justify-center">
-                    <h1 className="logo-main">آجر</h1>
-                </div>
-                <button onClick={onOpenProfile} className="button-luminous p-2.5 text-theme-secondary hover:text-theme-primary">
-                    <ProfileIcon className="w-6 h-6 stroke-theme-accent" />
-                </button>
-            </header>
-            <main className="flex-grow px-4 flex flex-col overflow-hidden">
-                 <div className="view-container">
-                    <div 
-                        key={activeView} 
-                        className={`view-content pb-32 ${activeView !== previousView ? 'view-enter' : ''}`}
-                    >
-                        {renderViewContent(activeView)}
-                    </div>
-                </div>
-            </main>
+       <div className="view-container">
+            <div 
+                key={activeView} 
+                className={`view-content ${activeView !== previousView ? 'view-enter' : ''}`}
+            >
+                {renderViewContent(activeView)}
+            </div>
         </div>
     );
 };
@@ -138,7 +119,7 @@ const MainDuaView: React.FC<{
     );
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 p-4 pb-28" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}>
             <h2 className="text-3xl font-bold text-center heading-amiri">حصن المسلم</h2>
 
             {/* Featured Adhkar Carousel */}
@@ -146,7 +127,7 @@ const MainDuaView: React.FC<{
                 <h3 className="font-bold text-xl mb-2 text-theme-accent heading-amiri">الأذكار اليومية</h3>
                 <div className="flex gap-3 overflow-x-auto pb-3 -mx-4 px-4">
                     {featuredAdhkar.map((category, index) => (
-                        <div key={category.ID} className="container-luminous flex-shrink-0 w-40 h-48 rounded-theme-card p-4 flex flex-col justify-between items-start text-right relative stagger-item" style={{ animationDelay: `${index * 70}ms` }}>
+                        <div key={category.ID} className="container-luminous flex-shrink-0 w-48 h-56 rounded-theme-card p-4 flex flex-col justify-between items-start text-right relative stagger-item" style={{ animationDelay: `${index * 70}ms` }}>
                              {completionStatus[category.ID] && (
                                 <div className="absolute top-2 left-2 p-1 bg-green-500/20 rounded-theme-full">
                                     <CheckCircleIcon className="w-5 h-5 text-green-400"/>
@@ -235,12 +216,12 @@ const MyDuasView: React.FC<{
     };
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 p-4 pb-28" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}>
             <header className="flex items-center gap-4">
                 <button onClick={onBack} className="p-2 text-theme-secondary hover:text-theme-primary"><ChevronLeftIcon className="w-7 h-7" style={{ transform: 'scaleX(-1)' }}/></button>
                 <h2 className="text-2xl font-bold heading-amiri">أدعيتي المحفوظة</h2>
             </header>
-            <div className="space-y-3 pr-2 pb-4">
+            <div className="space-y-3 pr-2">
                 <button 
                     onClick={() => setIsAddModalOpen(true)}
                     className="w-full p-4 container-luminous rounded-theme-card border-2 border-dashed border-theme-accent-faded flex flex-col items-center justify-center gap-2 text-theme-accent-primary hover:border-theme-accent-primary transition-all"
@@ -291,12 +272,12 @@ const DuaCategoryDetailView: React.FC<{
     category: DuaCategory;
     onBack: () => void;
 }> = ({ category, onBack }) => (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 p-4 pb-28" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}>
         <header className="flex items-center gap-4">
             <button onClick={onBack} className="p-2 text-theme-secondary hover:text-theme-primary"><ChevronLeftIcon className="w-7 h-7" style={{ transform: 'scaleX(-1)' }} /></button>
             <h2 className="text-2xl font-bold heading-amiri">{category.icon} {category.TITLE}</h2>
         </header>
-        <div className="space-y-3 pr-2 pb-4">
+        <div className="space-y-3 pr-2">
             {category.duas.map((dua, index) => (
                 <div key={dua.ID} className="p-4 container-luminous rounded-theme-card flex flex-col items-end gap-2 text-right stagger-item" style={{ animationDelay: `${index * 50}ms` }}>
                     <p className="font-amiri text-2xl leading-relaxed text-theme-primary">{dua.ARABIC_TEXT}</p>

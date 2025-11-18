@@ -1,6 +1,8 @@
+
+
 export type Tab = 'counter' | 'duas' | 'quran' | 'home' | 'other';
 
-export type Theme = 'midnight' | 'serenity' | 'dusk' | 'daylight';
+export type Theme = 'dark' | 'light' | 'amoled';
 
 export interface Dhikr {
   id: number;
@@ -28,6 +30,7 @@ export interface DuaCategory {
 export interface SurahSummary {
   number: number;
   name: string;
+  nameSimple?: string;
   englishName: string;
   englishNameTranslation: string;
   revelationType: string;
@@ -109,6 +112,7 @@ export interface Profile {
   bio: string;
   title: string;
   avatarColor: string;
+  avatarImage?: string | null;
   favoriteDhikrId: number | null;
   totalCount: number;
   streak: number;
@@ -125,24 +129,23 @@ export interface AyahHighlight {
 
 export type PrayerMethod = 2 | 3 | 4 | 5 | 8 | 15;
 
-export interface NotificationSettings {
-    prayers: boolean;
-    reminders: boolean;
-    reminderInterval: number;
-    sound: 'adhan' | 'default' | 'vibrate' | 'silent';
-    persistentPrayerTimes: boolean;
-}
-
 export interface Settings {
     vibration: boolean;
     showAddDhikr: boolean;
     showDhikrSelection: boolean;
     prayerMethod: PrayerMethod;
-    notifications: NotificationSettings;
     quranReaderFontSize: number;
     autoScrollAudio: boolean;
     tapAnywhere: boolean;
     timeFormat: '12h' | '24h';
+    prayerNotifications: {
+        enabled: boolean;
+        fajr: boolean;
+        dhuhr: boolean;
+        asr: boolean;
+        maghrib: boolean;
+        isha: boolean;
+    };
 }
 
 export interface QuranUserData {
@@ -151,20 +154,26 @@ export interface QuranUserData {
 }
 
 export interface QuranReciter {
-    id: number | string;
-    name: string;
-    recitation_style: string | null;
-    translated_name: {
-        language_name: string;
-        name: string;
-    };
+    id: string; // The server URL from mp3quran API
+    name: string; // The combined name e.g., "Mishary Alafasy - Murattal"
 }
 
+// FIX: Add DownloadedSurah interface for audio library
+export interface DownloadedSurah {
+    id: string; // Unique ID, e.g., yt-{videoId} or mp3quran-{reciterId}-{surahNumber}
+    reciterId: string; // Identifier for the reciter (YouTube query or mp3quran ID)
+    surahNumber: number;
+    reciterName: string;
+    surahName: string;
+    audioBlob: Blob;
+}
+
+// FIX: Add PopularReciter interface for YouTube download feature
 export interface PopularReciter {
     name: string;
     style: string;
-    imageUrl: string;
     youtubeQuery: string;
+    imageUrl: string;
 }
 
 export interface Sunnah {
@@ -189,4 +198,20 @@ export interface AudioPlayerState {
     duration: number;
     isLoadingNextPrev?: boolean;
     isRepeatOn?: boolean;
+}
+
+export interface ChallengeParticipant {
+  id: string; // 'user' or a timestamp for friends
+  name: string;
+  count: number;
+  isUser: boolean;
+  startCount?: number; // For the user, to track progress since challenge start
+}
+
+export interface Challenge {
+  id: string;
+  name: string;
+  goal: number;
+  participants: ChallengeParticipant[];
+  createdAt: string;
 }

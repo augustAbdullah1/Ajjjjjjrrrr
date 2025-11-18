@@ -1,11 +1,11 @@
-import React, { useRef } from 'react';
-import type { Theme, Settings, PrayerMethod, NotificationSettings, Profile } from '../../types';
-import { PRAYER_METHODS, REMINDER_INTERVALS } from '../../constants';
-import ToggleSwitch from '../ui/ToggleSwitch';
+import React, { useRef, useState } from 'react';
+import type { Theme, Settings, PrayerMethod, Profile } from '../../types';
+import { PRAYER_METHODS } from '../../constants';
 import { requestPermission } from '../../services/notificationService';
+import ToggleSwitch from '../ui/ToggleSwitch';
 import { 
-    ChevronLeftIcon, AppearanceIcon, BellIcon, DataIcon, InfoIcon, FontSizeIcon,
-    BackupIcon, RestoreIcon, ResetIcon, ShareIcon, StarIcon, FeedbackIcon, WorshipIcon, QuranIcon
+    ChevronLeftIcon, AppearanceIcon, InfoIcon, FontSizeIcon,
+    WorshipIcon, QuranIcon, InstagramIcon, BellIcon, CounterIcon
 } from '../icons/TabIcons';
 
 interface SettingsTabProps {
@@ -19,10 +19,9 @@ interface SettingsTabProps {
 }
 
 const THEMES_PREVIEW: { id: Theme, name: string, gradient: string, colors: string[] }[] = [
-    { id: 'midnight', name: 'منتصف الليل', gradient: 'from-[#0D1A2E] to-[#151E29]', colors: ['#F0F4F8', '#A0AEC0', '#38BDF8'] },
-    { id: 'serenity', name: 'سكينة', gradient: 'from-[#1A2A27] to-[#1F2D2B]', colors: ['#D8E2DC', '#8A9B97', '#6A998B'] },
-    { id: 'dusk', name: 'شفق', gradient: 'from-[#2C2A4A] to-[#4F3A65]', colors: ['#E2DDF0', '#9D8DB0', '#F5C3AF'] },
-    { id: 'daylight', name: 'ضياء النهار', gradient: 'from-[#F9FAFB] to-[#F3F4F6]', colors: ['#1F2937', '#6B7280', '#3B82F6'] },
+    { id: 'dark', name: 'مظلم', gradient: 'from-[#1E1E1E] to-[#121212]', colors: ['#E0E0E0', '#9E9E9E', '#FFFFFF'] },
+    { id: 'light', name: 'فاتح', gradient: 'from-[#FAFAFA] to-[#F5F5F5]', colors: ['#212121', '#757575', '#212121'] },
+    { id: 'amoled', name: 'AMOLED', gradient: 'from-[#0A0A0A] to-[#000000]', colors: ['#D1D1D1', '#8A8A8A', '#FFFFFF'] },
 ];
 
 const SettingHeader: React.FC<{ title: string; onClose: () => void }> = ({ title, onClose }) => (
@@ -56,114 +55,48 @@ const SettingRow: React.FC<{ label: string; description?: string; children: Reac
 );
 
 const SettingsTab: React.FC<SettingsTabProps> = ({ theme, setTheme, settings, setSettings, profile, setProfile, onClose }) => {
-    const restoreInputRef = useRef<HTMLInputElement>(null);
+    const [isClosing, setIsClosing] = useState(false);
+
+    const handleClose = () => {
+        setIsClosing(true);
+        setTimeout(onClose, 300); // Corresponds to animation duration
+    };
 
     const handleSettingChange = <K extends keyof Settings>(key: K, value: Settings[K]) => {
         setSettings(s => ({ ...s, [key]: value }));
     };
 
-    const handleNotificationToggleChange = async (key: 'prayers' | 'reminders' | 'persistentPrayerTimes', value: boolean) => {
-        const originalNotifications = settings.notifications;
-        setSettings(s => ({ ...s, notifications: { ...s.notifications, [key]: value } }));
-        if (value && Notification.permission !== 'granted') {
-            const granted = await requestPermission();
-            if (!granted) {
-                alert('لا يمكن تفعيل الإشعارات بدون إذن منك.');
-                setSettings(s => ({ ...s, notifications: originalNotifications }));
+    const handlePrayerNotificationToggle = async (enabled: boolean) => {
+        if (enabled) {
+            const hasPermission = await requestPermission();
+            if (hasPermission) {
+                handleSettingChange('prayerNotifications', { ...settings.prayerNotifications, enabled: true });
+            } else {
+                alert('يرجى منح إذن الإشعارات من إعدادات المتصفح لتفعيل هذه الميزة.');
             }
-        }
-    };
-    
-    const handleNotificationValueChange = (key: keyof Omit<NotificationSettings, 'prayers' | 'reminders' | 'persistentPrayerTimes'>, value: any) => {
-        setSettings(s => ({ ...s, notifications: { ...s.notifications, [key]: value } }));
-    };
-
-    const handleBackup = () => {
-        try {
-            const dataToBackup: Record<string, any> = {};
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key) {
-                    dataToBackup[key] = localStorage.getItem(key);
-                }
-            }
-            const jsonString = JSON.stringify(dataToBackup, null, 2);
-            const blob = new Blob([jsonString], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `ajr_backup_${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            alert('تم إنشاء ملف النسخة الاحتياطية بنجاح.');
-        } catch (error) {
-            alert('فشل إنشاء النسخة الاحتياطية.');
-            console.error(error);
+        } else {
+            handleSettingChange('prayerNotifications', { ...settings.prayerNotifications, enabled: false });
         }
     };
 
-    const handleRestoreClick = () => {
-        restoreInputRef.current?.click();
-    };
-
-    const handleRestore = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
-
-        if (!window.confirm('سيتم استبدال جميع بياناتك الحالية بالبيانات الموجودة في ملف النسخ الاحتياطي. هل أنت متأكد؟')) {
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const result = e.target?.result as string;
-                const data = JSON.parse(result);
-                Object.keys(data).forEach(key => {
-                    localStorage.setItem(key, data[key]);
-                });
-                alert('تم استعادة البيانات بنجاح. سيتم إعادة تحميل التطبيق الآن.');
-                window.location.reload();
-            } catch (error) {
-                alert('ملف النسخ الاحتياطي غير صالح.');
-                console.error(error);
-            }
-        };
-        reader.readAsText(file);
-    };
-    
-    const handleReset = () => {
-        if (window.confirm('هل أنت متأكد من إعادة تعيين جميع الإعدادات؟ لن يتم حذف بياناتك الشخصية (مثل عدد الأذكار).')) {
-            localStorage.removeItem('settings');
-            localStorage.removeItem('appTheme');
-            alert('تمت إعادة تعيين الإعدادات. سيتم إعادة تحميل التطبيق.');
-            window.location.reload();
-        }
-    };
-    
-    const handleShare = () => {
-        if(navigator.share) {
-            navigator.share({
-                title: 'تطبيق آجر',
-                text: 'اكتشف تطبيق آجر للذكر والدعاء والقرآن الكريم. حمله الآن!',
-                url: window.location.href
-            });
-        }
+    const handlePrayerNotificationChange = (prayer: keyof Omit<Settings['prayerNotifications'], 'enabled'>, value: boolean) => {
+        handleSettingChange('prayerNotifications', {
+            ...settings.prayerNotifications,
+            [prayer]: value,
+        });
     };
 
     return (
-        <div className="fixed inset-0 bg-theme-primary z-[100] flex flex-col items-center animate-in fade-in-0 slide-in-from-bottom-5">
-            <SettingHeader title="الإعدادات" onClose={onClose} />
-            <main className="flex-grow overflow-y-auto w-full max-w-md p-2 space-y-3">
+        <div className={`fixed inset-0 bg-theme-primary z-[100] flex flex-col ${isClosing ? 'animate-scale-out-tr' : 'animate-scale-in-tr'}`}>
+            <SettingHeader title="الإعدادات" onClose={handleClose} />
+            <main className="flex-grow overflow-y-auto w-full max-w-md mx-auto p-2 space-y-3">
                 
                 <SettingSection title="المظهر" icon={<AppearanceIcon className="w-6 h-6"/>}>
                     <div className="bg-white/5 p-3 rounded-lg text-right">
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-3 gap-3">
                             {THEMES_PREVIEW.map(t => (
                                 <button key={t.id} onClick={() => setTheme(t.id)}
-                                    className={`p-3 rounded-theme-card border-2 transition-all ${theme === t.id ? 'border-theme-accent-primary' : 'border-transparent'}`}
+                                    className={`p-3 rounded-theme-card border-2 transition-all ${theme === t.id ? 'border-theme-primary-accent' : 'border-transparent'}`}
                                 >
                                     <div className={`w-full h-12 rounded-lg bg-gradient-to-br ${t.gradient} mb-2`}></div>
                                     <h4 className="font-semibold text-sm text-center text-theme-primary">{t.name}</h4>
@@ -174,6 +107,18 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ theme, setTheme, settings, se
                             ))}
                         </div>
                     </div>
+                </SettingSection>
+
+                <SettingSection title="إعدادات السبحة" icon={<CounterIcon className="w-6 h-6"/>}>
+                    <SettingRow label="اهتزاز عند التسبيح" description="تفعيل الاهتزاز عند كل تسبيحة">
+                        <ToggleSwitch 
+                            checked={settings.vibration}
+                            onChange={v => handleSettingChange('vibration', v)}
+                        />
+                    </SettingRow>
+                    <SettingRow label="الضغط في أي مكان للتسبيح">
+                        <ToggleSwitch checked={settings.tapAnywhere} onChange={v => handleSettingChange('tapAnywhere', v)} />
+                    </SettingRow>
                 </SettingSection>
 
                 <SettingSection title="القرآن الكريم" icon={<QuranIcon className="w-6 h-6 stroke-current"/>}>
@@ -205,63 +150,67 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ theme, setTheme, settings, se
                            onChange={(e) => setProfile(p => ({ ...p, dailyGoal: parseInt(e.target.value) || 100 }))}
                            className="w-20 p-1 input-luminous text-theme-primary rounded text-center font-bold" />
                       </SettingRow>
-                       <SettingRow label="الضغط في أي مكان للتسبيح">
-                        <ToggleSwitch checked={settings.tapAnywhere} onChange={v => handleSettingChange('tapAnywhere', v)} />
-                    </SettingRow>
                     <SettingRow label="تنسيق الوقت">
                         <div className="flex items-center text-xs font-bold p-1 bg-black/20 rounded-theme-full">
                             <button onClick={() => handleSettingChange('timeFormat', '12h')} className={`px-3 py-1 rounded-theme-full ${settings.timeFormat === '12h' ? 'bg-theme-accent-primary text-theme-accent-primary-text' : 'text-theme-secondary'}`}>12 ساعة</button>
                             <button onClick={() => handleSettingChange('timeFormat', '24h')} className={`px-3 py-1 rounded-theme-full ${settings.timeFormat === '24h' ? 'bg-theme-accent-primary text-theme-accent-primary-text' : 'text-theme-secondary'}`}>24 ساعة</button>
                         </div>
                     </SettingRow>
+                    <div className="bg-white/5 p-3 rounded-lg flex flex-col gap-3 text-right">
+                        <div className="flex justify-between items-center">
+                            <ToggleSwitch checked={settings.prayerNotifications.enabled} onChange={handlePrayerNotificationToggle} />
+                            <div className="flex items-center gap-2 pr-1">
+                                <BellIcon className="w-5 h-5" />
+                                <span className="font-semibold text-sm text-theme-primary">تنبيهات الصلاة</span>
+                            </div>
+                        </div>
+                        {settings.prayerNotifications.enabled && (
+                            <div className="border-t border-white/10 pt-3 space-y-2 pr-2 animate-in fade-in-0">
+                                <div className="flex justify-between items-center">
+                                    <ToggleSwitch checked={settings.prayerNotifications.fajr} onChange={v => handlePrayerNotificationChange('fajr', v)} />
+                                    <span>الفجر</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <ToggleSwitch checked={settings.prayerNotifications.dhuhr} onChange={v => handlePrayerNotificationChange('dhuhr', v)} />
+                                    <span>الظهر</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <ToggleSwitch checked={settings.prayerNotifications.asr} onChange={v => handlePrayerNotificationChange('asr', v)} />
+                                    <span>العصر</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <ToggleSwitch checked={settings.prayerNotifications.maghrib} onChange={v => handlePrayerNotificationChange('maghrib', v)} />
+                                    <span>المغرب</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <ToggleSwitch checked={settings.prayerNotifications.isha} onChange={v => handlePrayerNotificationChange('isha', v)} />
+                                    <span>العشاء</span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </SettingSection>
 
-                <SettingSection title="الإشعارات" icon={<BellIcon className="w-6 h-6"/>}>
-                    <SettingRow label="تنبيهات الصلاة"><ToggleSwitch checked={settings.notifications.prayers} onChange={v => handleNotificationToggleChange('prayers', v)} /></SettingRow>
-                    <SettingRow label="إشعار المواقيت الدائم"><ToggleSwitch checked={settings.notifications.persistentPrayerTimes} onChange={v => handleNotificationToggleChange('persistentPrayerTimes', v)} /></SettingRow>
-                    <SettingRow label="تذكيرات الأذكار"><ToggleSwitch checked={settings.notifications.reminders} onChange={v => handleNotificationToggleChange('reminders', v)} /></SettingRow>
-                    {settings.notifications.reminders && (
-                         <SettingRow label="الفاصل الزمني للتذكير">
-                           <select value={settings.notifications.reminderInterval} onChange={(e) => handleNotificationValueChange('reminderInterval', parseInt(e.target.value))}
-                                className="p-1 input-luminous text-theme-primary rounded text-xs text-right outline-none">
-                                {REMINDER_INTERVALS.map(interval => (<option key={interval.value} value={interval.value}>{interval.label}</option>))}
-                           </select>
-                         </SettingRow>
-                    )}
+                <SettingSection title="عن التطبيق" icon={<InfoIcon className="w-6 h-6"/>}>
+                    <div className="bg-white/5 p-4 rounded-lg text-right text-sm space-y-2">
+                        <div className="flex justify-between"><span>إصدار التطبيق</span><span className="font-bold">3.00</span></div>
+                        <div className="flex justify-between"><span>المطور</span><span className="font-bold">عبدالله أبوشكير</span></div>
+                        <p className="text-xs text-theme-secondary/70 pt-2">هذا التطبيق صدقة جارية لصاحبه ووالديه واخوانه ومن يحب.</p>
+                    </div>
                 </SettingSection>
-
-                 <SettingSection title="البيانات" icon={<DataIcon className="w-6 h-6"/>}>
-                    <SettingRow label="نسخ احتياطي للبيانات" description="احفظ جميع بياناتك في ملف.">
-                        <button onClick={handleBackup} className="p-2 button-luminous rounded-md"><BackupIcon className="w-5 h-5"/></button>
-                    </SettingRow>
-                    <SettingRow label="استعادة البيانات" description="استورد بياناتك من ملف.">
-                        <button onClick={handleRestoreClick} className="p-2 button-luminous rounded-md"><RestoreIcon className="w-5 h-5"/></button>
-                        <input type="file" accept=".json" ref={restoreInputRef} onChange={handleRestore} className="hidden" />
-                    </SettingRow>
-                     <SettingRow label="إعادة تعيين الإعدادات" description="العودة إلى الإعدادات الافتراضية.">
-                        <button onClick={handleReset} className="p-2 button-luminous bg-red-500/20 text-red-400 rounded-md"><ResetIcon className="w-5 h-5"/></button>
-                    </SettingRow>
-                 </SettingSection>
-                 
-                 <SettingSection title="عن التطبيق" icon={<InfoIcon className="w-6 h-6"/>}>
-                    <SettingRow label="الإصدار">
-                         <span className="font-semibold text-sm text-theme-secondary">2.0.1</span>
-                    </SettingRow>
-                     <SettingRow label="شارك التطبيق">
-                        <button onClick={handleShare} className="p-2 button-luminous rounded-md"><ShareIcon className="w-5 h-5"/></button>
-                    </SettingRow>
-                     <SettingRow label="أرسل ملاحظاتك">
-                        <a href="mailto:feedback@example.com" className="p-2 button-luminous rounded-md inline-block"><FeedbackIcon className="w-5 h-5"/></a>
-                    </SettingRow>
-                 </SettingSection>
-
-                 <div className="text-center text-xs text-theme-secondary/70 p-4 space-y-2">
-                    <p>هذا التطبيق صدقة جارية له ولوالديه واخوانه واخواته ومن يحب.</p>
-                    <p className="font-semibold">
-                        &copy; {new Date().getFullYear()} عبدالله أبوشكير. جميع الحقوق محفوظة.
-                    </p>
-                </div>
             </main>
+            
+            <footer className="w-full max-w-md mx-auto text-center p-4 flex-shrink-0">
+                <a 
+                    href="https://www.instagram.com/7ir7u/" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="inline-flex items-center gap-2 button-luminous py-2 px-4 rounded-theme-full"
+                >
+                    <InstagramIcon className="w-5 h-5"/>
+                    <span className="font-semibold text-sm">حساب المطور</span>
+                </a>
+            </footer>
         </div>
     );
 };

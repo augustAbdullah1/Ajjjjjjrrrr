@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import type { Surah, SurahSummary, QuranReciter, Settings, AudioPlayerState } from '../../types';
 import { getSurahList, getReciterList, getSurahContent } from '../../services/quranService';
@@ -16,13 +17,12 @@ const QuranAudioTab: React.FC<QuranAudioTabProps> = ({ onBack, settings, updateA
     const [surahList, setSurahList] = useState<SurahSummary[]>([]);
     const [reciterList, setReciterList] = useState<QuranReciter[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedReciterId, setSelectedReciterId] = useLocalStorage<string | number>('selectedReciter', 7);
+    const [selectedReciterId, setSelectedReciterId] = useLocalStorage<string>('selectedReciter', 'https://server7.mp3quran.net/basit/Almusshaf-Al-Mojawwad/');
     const [reciterSearch, setReciterSearch] = useState('');
 
     useEffect(() => {
         if (view === 'reciters') {
             setIsLoading(true);
-            // Fix: getReciterList does not accept any arguments.
             getReciterList().then(list => {
                 setReciterList(list);
                 setIsLoading(false);
@@ -37,7 +37,7 @@ const QuranAudioTab: React.FC<QuranAudioTabProps> = ({ onBack, settings, updateA
         }
     }, [view, surahList]);
 
-    const handleReciterSelect = (reciterId: number | string) => {
+    const handleReciterSelect = (reciterId: string) => {
         setSelectedReciterId(reciterId);
         setView('surahs');
     };
@@ -45,8 +45,7 @@ const QuranAudioTab: React.FC<QuranAudioTabProps> = ({ onBack, settings, updateA
     const handleSurahSelect = async (surahSummary: SurahSummary) => {
         setIsLoading(true);
         updateAudioPlayer({ duration: 0, currentTime: 0 }); // Indicate loading
-        const reciterName = reciterList.find(r => r.id === selectedReciterId)?.translated_name.name || '';
-        // Fix: getSurahContent's third argument is a boolean `audioOnly`, not `audioApiSource`. Omitting it defaults to `false` which is correct here.
+        const reciterName = reciterList.find(r => r.id === selectedReciterId)?.name || '';
         const surahContent = await getSurahContent(surahSummary.number, selectedReciterId);
         
         if (surahContent) {
@@ -54,7 +53,6 @@ const QuranAudioTab: React.FC<QuranAudioTabProps> = ({ onBack, settings, updateA
                 isVisible: true,
                 surah: surahContent as Surah,
                 reciterName: reciterName,
-                audioUrl: surahContent.audioUrl,
                 isPlaying: true,
                 currentTime: 0,
             });
@@ -65,10 +63,10 @@ const QuranAudioTab: React.FC<QuranAudioTabProps> = ({ onBack, settings, updateA
         setIsLoading(false);
     };
 
-    const reciterName = reciterList.find(r => r.id === selectedReciterId)?.translated_name.name || '';
+    const reciterName = reciterList.find(r => r.id === selectedReciterId)?.name || '';
     
     const filteredReciters = reciterList.filter(reciter =>
-        reciter.translated_name.name.toLowerCase().includes(reciterSearch.toLowerCase())
+        reciter.name.toLowerCase().includes(reciterSearch.toLowerCase())
     );
 
     return (
@@ -97,7 +95,7 @@ const QuranAudioTab: React.FC<QuranAudioTabProps> = ({ onBack, settings, updateA
                     isLoading ? <div className="flex justify-center h-64 items-center"><Spinner /></div> :
                     filteredReciters.map(reciter => (
                         <button key={reciter.id} onClick={() => handleReciterSelect(reciter.id)} className="w-full p-4 bg-white/5 hover:bg-white/10 rounded-lg text-right font-semibold text-lg transition-colors flex items-center gap-4">
-                           <span>{reciter.translated_name.name}</span>
+                           <span>{reciter.name}</span>
                         </button>
                     ))
                 ) : (

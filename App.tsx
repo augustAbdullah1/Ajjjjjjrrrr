@@ -9,108 +9,82 @@ import ProfileTab from './components/tabs/ProfileTab';
 import SettingsTab from './components/tabs/SettingsTab';
 import OtherTab from './components/tabs/OtherTab';
 import QuranReader from './components/tabs/QuranReader';
-import type { Tab, Theme, Profile, Settings, PrayerTimesData, Surah, AudioPlayerState } from './types';
+import type { Tab, Theme, Profile, Settings, PrayerTimesData, Surah, AudioPlayerState, QuranUserData } from './types';
 import { DEFAULT_PROFILE, DEFAULT_SETTINGS } from './constants';
 import useLocalStorage from './hooks/useLocalStorage';
 import { getSurahContent } from './services/quranService';
-import { 
-    schedulePrayerNotifications, 
-    stopPrayerNotifications,
-    startDhikrReminders, 
-    stopDhikrReminders,
-    showPersistentPrayerNotification,
-    hidePersistentPrayerNotification
-} from './services/notificationService';
+import { schedulePrayerNotifications, cancelAllNotifications } from './services/notificationService';
+import FloatingAudioPlayer from './components/FloatingAudioPlayer';
+import { ProfileIcon, SettingsIcon } from './components/icons/TabIcons';
 
 const THEMES_STYLES: Record<Theme, Record<string, string>> = {
-  midnight: {
-    '--theme-bg-gradient-start': '#0D1A2E',
-    '--theme-bg-gradient-end': '#151E29',
-    '--theme-text-primary': '#F0F4F8',
-    '--theme-text-secondary': '#A0AEC0',
-    '--theme-text-accent': '#CBD5E1',
-    '--theme-primary-accent': '#38BDF8',
-    '--theme-primary-accent-text': '#0D1A2E',
-    '--theme-card-bg': 'rgba(29, 41, 58, 0.7)',
-    '--theme-card-bg-rgb': '29, 41, 58',
-    '--theme-tab-bar-bg': 'rgba(29, 41, 58, 0.6)',
-    '--theme-border-color': 'rgba(127, 212, 253, 0.15)',
-    '--theme-shadow-color-rgb': '56, 189, 248',
-    '--theme-accent-hsl': '204, 94%, 61%',
-    '--theme-danger-color': '#E53E3E',
-    '--theme-border-radius-card': '1rem',
-    '--theme-border-radius-container': '1.25rem',
-    '--theme-border-radius-full': '9999px',
+  dark: {
+    '--theme-bg-gradient-start': '#1E1E1E',
+    '--theme-bg-gradient-end': '#121212',
+    '--theme-text-primary': '#E0E0E0',
+    '--theme-text-secondary': '#9E9E9E',
+    '--theme-text-accent': '#FFFFFF',
+    '--theme-primary-accent': '#FFFFFF',
+    '--theme-primary-accent-text': '#121212',
+    '--theme-card-bg': 'rgba(30, 30, 30, 0.7)',
+    '--theme-card-bg-rgb': '30, 30, 30',
+    '--theme-tab-bar-bg': '#1A1A1A',
+    '--theme-border-color': 'rgba(255, 255, 255, 0.12)',
+    '--theme-shadow-color-rgb': '255, 255, 255',
+    '--theme-accent-hsl': '0, 0%, 100%',
+    '--theme-danger-color': '#E0E0E0',
   },
-  serenity: {
-    '--theme-bg-gradient-start': '#1A2A27',
-    '--theme-bg-gradient-end': '#1F2D2B',
-    '--theme-text-primary': '#D8E2DC',
-    '--theme-text-secondary': '#8A9B97',
-    '--theme-text-accent': '#A3B5B0',
-    '--theme-primary-accent': '#6A998B',
-    '--theme-primary-accent-text': '#1A2A27',
-    '--theme-card-bg': 'rgba(45, 66, 60, 0.7)',
-    '--theme-card-bg-rgb': '45, 66, 60',
-    '--theme-tab-bar-bg': 'rgba(45, 66, 60, 0.6)',
-    '--theme-border-color': 'rgba(106, 153, 139, 0.15)',
-    '--theme-shadow-color-rgb': '106, 153, 139',
-    '--theme-accent-hsl': '161, 18%, 51%',
-    '--theme-danger-color': '#E57373',
-    '--theme-border-radius-card': '1.5rem',
-    '--theme-border-radius-container': '1.75rem',
-    '--theme-border-radius-full': '9999px',
-  },
-  dusk: {
-    '--theme-bg-gradient-start': '#2C2A4A',
-    '--theme-bg-gradient-end': '#4F3A65',
-    '--theme-text-primary': '#E2DDF0',
-    '--theme-text-secondary': '#9D8DB0',
-    '--theme-text-accent': '#BEA6D8',
-    '--theme-primary-accent': '#F5C3AF',
-    '--theme-primary-accent-text': '#2C2A4A',
-    '--theme-card-bg': 'rgba(59, 46, 79, 0.7)',
-    '--theme-card-bg-rgb': '59, 46, 79',
-    '--theme-tab-bar-bg': 'rgba(59, 46, 79, 0.6)',
-    '--theme-border-color': 'rgba(245, 195, 175, 0.15)',
-    '--theme-shadow-color-rgb': '245, 195, 175',
-    '--theme-accent-hsl': '21, 82%, 82%',
-    '--theme-danger-color': '#F472B6',
-    '--theme-border-radius-card': '0.75rem',
-    '--theme-border-radius-container': '1rem',
-    '--theme-border-radius-full': '9999px',
-  },
-  daylight: {
-    '--theme-bg-gradient-start': '#F9FAFB',
-    '--theme-bg-gradient-end': '#F3F4F6',
-    '--theme-text-primary': '#1F2937',
-    '--theme-text-secondary': '#6B7280',
-    '--theme-text-accent': '#4B5563',
-    '--theme-primary-accent': '#3B82F6',
+  light: {
+    '--theme-bg-gradient-start': '#FAFAFA',
+    '--theme-bg-gradient-end': '#F5F5F5',
+    '--theme-text-primary': '#212121',
+    '--theme-text-secondary': '#757575',
+    '--theme-text-accent': '#000000',
+    '--theme-primary-accent': '#212121',
     '--theme-primary-accent-text': '#FFFFFF',
-    '--theme-card-bg': 'rgba(255, 255, 255, 0.9)',
-    '--theme-card-bg-rgb': '245, 245, 245',
-    '--theme-tab-bar-bg': 'rgba(249, 250, 251, 0.7)',
-    '--theme-border-color': 'rgba(0, 0, 0, 0.1)',
-    '--theme-shadow-color-rgb': '59, 130, 246',
-    '--theme-accent-hsl': '217, 91%, 60%',
-    '--theme-danger-color': '#EF4444',
-    '--theme-border-radius-card': '1rem',
-    '--theme-border-radius-container': '1.25rem',
-    '--theme-border-radius-full': '9999px',
+    '--theme-card-bg': 'rgba(255, 255, 255, 0.8)',
+    '--theme-card-bg-rgb': '255, 255, 255',
+    '--theme-tab-bar-bg': '#FFFFFF',
+    '--theme-border-color': 'rgba(0, 0, 0, 0.08)',
+    '--theme-shadow-color-rgb': '0, 0, 0',
+    '--theme-accent-hsl': '0, 0%, 0%',
+    '--theme-danger-color': '#212121',
+  },
+  amoled: {
+    '--theme-bg-gradient-start': '#0A0A0A',
+    '--theme-bg-gradient-end': '#000000',
+    '--theme-text-primary': '#D1D1D1',
+    '--theme-text-secondary': '#8A8A8A',
+    '--theme-text-accent': '#FFFFFF',
+    '--theme-primary-accent': '#FFFFFF',
+    '--theme-primary-accent-text': '#000000',
+    '--theme-card-bg': 'rgba(18, 18, 18, 0.75)',
+    '--theme-card-bg-rgb': '18, 18, 18',
+    '--theme-tab-bar-bg': '#080808',
+    '--theme-border-color': 'rgba(255, 255, 255, 0.15)',
+    '--theme-shadow-color-rgb': '255, 255, 255',
+    '--theme-accent-hsl': '0, 0%, 100%',
+    '--theme-danger-color': '#D1D1D1',
   },
 };
+
+const MemoizedOtherTab = React.memo(OtherTab);
 
 const App: React.FC = () => {
     const [activeTab, setActiveTab] = useState<Tab>('home');
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [otherTabView, setOtherTabView] = useState<'menu' | string>('menu');
     
-    const [theme, setTheme] = useLocalStorage<Theme>('appTheme', 'midnight');
+    const [theme, setTheme] = useLocalStorage<Theme>('appTheme', 'dark');
     const [profile, setProfile] = useLocalStorage<Profile>('profile', DEFAULT_PROFILE);
     const [settings, setSettings] = useLocalStorage<Settings>('settings', DEFAULT_SETTINGS);
     const [prayerTimesData, setPrayerTimesData] = useState<PrayerTimesData | null>(null);
-    
+    const [quranUserData, setQuranUserData] = useLocalStorage<QuranUserData>('quranUserData', {
+        khatmah: { active: false, startDate: null, lastRead: null, targetDays: 30, history: [] },
+        highlights: {},
+    });
+
     // Quran Player State
     const [audioPlayerState, setAudioPlayerState] = useState<AudioPlayerState>({
         isVisible: false,
@@ -123,7 +97,7 @@ const App: React.FC = () => {
         isRepeatOn: false,
     });
     const audioRef = useRef<HTMLAudioElement>(null);
-    const [selectedReciterId, setSelectedReciterId] = useLocalStorage<string | number>('selectedReciter', '7');
+    const [selectedReciterId, setSelectedReciterId] = useLocalStorage<string>('selectedReciter', '7');
 
     // Quran Reader State
     const [isReaderOpen, setIsReaderOpen] = useState(false);
@@ -153,31 +127,18 @@ const App: React.FC = () => {
         });
         document.querySelector('meta[name="theme-color"]')?.setAttribute('content', currentThemeStyles['--theme-bg-gradient-end']);
     }, [theme]);
-
-    // Effect for handling notifications
-    useEffect(() => {
-        if (settings.notifications.prayers && prayerTimesData) {
-            schedulePrayerNotifications(prayerTimesData.timings, settings.notifications);
-        } else {
-            stopPrayerNotifications();
-        }
-        if (settings.notifications.reminders) {
-            startDhikrReminders(settings.notifications);
-        } else {
-            stopDhikrReminders();
-        }
-        if (settings.notifications.persistentPrayerTimes && prayerTimesData) {
-            showPersistentPrayerNotification(prayerTimesData.timings);
-        } else {
-            hidePersistentPrayerNotification();
-        }
-        return () => {
-             stopPrayerNotifications();
-             stopDhikrReminders();
-             hidePersistentPrayerNotification();
-        }
-    }, [settings.notifications, prayerTimesData]);
     
+    // Effect for handling prayer notifications
+    useEffect(() => {
+        if (prayerTimesData) {
+            schedulePrayerNotifications(prayerTimesData.timings, settings.prayerNotifications);
+        }
+        
+        if (!settings.prayerNotifications.enabled) {
+            cancelAllNotifications();
+        }
+    }, [prayerTimesData, settings.prayerNotifications]);
+
 
     // --- Quran Reader Logic ---
     const handleOpenReader = useCallback((surahNumber: number, startAtAyah: number | null) => {
@@ -312,21 +273,41 @@ const App: React.FC = () => {
     useEffect(() => {
         const audio = audioRef.current;
         const { surah, isPlaying } = audioPlayerState;
-        if (audio && surah?.audioUrl) {
-            if (audio.src !== surah.audioUrl) {
-                audio.src = surah.audioUrl;
-                audio.load();
-            }
-            if (isPlaying) {
-                audio.play().catch(e => console.error("Autoplay failed", e));
-            } else {
-                audio.pause();
-            }
+    
+        if (audio && surah) {
+            const playAudio = async () => {
+                let audioSource = surah.audioUrl;
+    
+                console.log("Playing from network");
+                
+                if (audio.src !== audioSource) {
+                    // Revoke old blob URL if it exists to prevent memory leaks
+                    if (audio.src.startsWith('blob:')) {
+                        URL.revokeObjectURL(audio.src);
+                    }
+                    if (audioSource) {
+                        audio.src = audioSource;
+                        audio.load();
+                    }
+                }
+    
+                if (isPlaying && audio.src) {
+                    audio.play().catch(e => console.error("Autoplay failed", e));
+                } else {
+                    audio.pause();
+                }
+            };
+    
+            playAudio();
+    
         } else if (audio && !isPlaying && !surah) {
+            if (audio.src.startsWith('blob:')) {
+                URL.revokeObjectURL(audio.src);
+            }
             audio.pause();
             audio.src = '';
         }
-    }, [audioPlayerState.surah?.audioUrl, audioPlayerState.isPlaying, audioPlayerState.surah]);
+    }, [audioPlayerState.surah, audioPlayerState.isPlaying]);
 
 
     const handleTogglePlay = () => {
@@ -341,6 +322,9 @@ const App: React.FC = () => {
     
     const handleClosePlayer = () => {
          if (audioRef.current) {
+            if (audioRef.current.src.startsWith('blob:')) {
+                URL.revokeObjectURL(audioRef.current.src);
+            }
             audioRef.current.pause();
             audioRef.current.src = '';
         }
@@ -351,48 +335,84 @@ const App: React.FC = () => {
         setAudioPlayerState(s => ({...s, reciterName: name}));
     }, []);
 
-    const renderMainContent = () => {
-        if (activeTab === 'duas') {
-            return <DuasTab onOpenProfile={() => setIsProfileOpen(true)} onOpenSettings={() => setIsSettingsOpen(true)} />;
-        }
-        if (activeTab === 'other') {
-            return <OtherTab onOpenProfile={() => setIsProfileOpen(true)} onOpenSettings={() => setIsSettingsOpen(true)} />;
-        }
-        return (
-            <Layout onOpenProfile={() => setIsProfileOpen(true)} onOpenSettings={() => setIsSettingsOpen(true)}>
-                <div style={{ display: activeTab === 'home' ? 'flex' : 'none', flexGrow: 1, flexDirection: 'column' }}>
-                    <HomeTab
-                        settings={settings}
-                        setSettings={setSettings}
-                        onPrayerTimesLoaded={setPrayerTimesData}
-                        profile={profile}
-                        playerState={audioPlayerState}
-                        onTogglePlay={handleTogglePlay}
-                        onNext={handleNextSurah}
-                        onPrev={handlePrevSurah}
-                    />
-                </div>
-                <div style={{ display: activeTab === 'quran' ? 'flex' : 'none', flexGrow: 1, flexDirection: 'column' }}>
-                    <QuranTab 
-                        settings={settings} 
-                        setReciterName={handleSetReciterName}
-                        selectedReciterId={selectedReciterId}
-                        setSelectedReciterId={setSelectedReciterId}
-                        onOpenReader={handleOpenReader}
-                    />
-                </div>
-                <div style={{ display: activeTab === 'counter' ? 'flex' : 'none', flexGrow: 1, flexDirection: 'column' }}>
-                    <CounterTab settings={settings} profile={profile} setProfile={setProfile} />
-                </div>
-            </Layout>
-        );
-    };
+    const isFullScreenTab = activeTab === 'duas' || activeTab === 'other';
+    const isPlayerUiHidden = activeTab === 'other' && otherTabView === 'menu';
+    const showPlayer = audioPlayerState.isVisible && !isReaderOpen && !isPlayerUiHidden;
+
+    const headerHeight = '4.5rem';
+    const playerHeight = '5.5rem';
+    const topOffset = `calc(${headerHeight} + env(safe-area-inset-top) + ${showPlayer ? playerHeight : '0px'})`;
 
     return (
         <>
             <audio ref={audioRef} />
+            
+            <header 
+                className="fixed top-0 inset-x-0 z-40 h-[4.5rem] flex justify-between items-center p-4 bg-theme-primary/50 backdrop-blur-md border-b border-theme"
+                style={{ paddingTop: 'env(safe-area-inset-top)' }}
+            >
+                <button onClick={() => setIsSettingsOpen(true)} className="button-luminous p-2.5 text-theme-secondary hover:text-theme-primary">
+                    <SettingsIcon className="w-6 h-6 stroke-theme-accent" />
+                </button>
+                <h1 className="logo-main text-4xl">آجر</h1>
+                <button onClick={() => setIsProfileOpen(true)} className="button-luminous w-11 h-11 p-0 flex items-center justify-center text-theme-secondary hover:text-theme-primary overflow-hidden">
+                    {profile.avatarImage ? (
+                        <img src={profile.avatarImage} className="w-full h-full object-cover" alt="Profile" />
+                    ) : (
+                        <ProfileIcon className="w-6 h-6 stroke-theme-accent" />
+                    )}
+                </button>
+            </header>
 
-            {renderMainContent()}
+            {showPlayer && (
+                <FloatingAudioPlayer
+                    playerState={audioPlayerState}
+                    onClose={handleClosePlayer}
+                    onTogglePlay={handleTogglePlay}
+                    onSeek={handleSeek}
+                    onNext={handleNextSurah}
+                    onPrev={handlePrevSurah}
+                    onReplay={handleReplay}
+                    onToggleRepeat={handleToggleRepeat}
+                />
+            )}
+            
+            <div className="w-full h-[100dvh] flex flex-col" style={{ paddingTop: topOffset, transition: 'padding-top 0.4s cubic-bezier(0.25, 1, 0.5, 1)' }}>
+                {isFullScreenTab ? (
+                    <>
+                        {activeTab === 'duas' && <DuasTab />}
+                        {activeTab === 'other' && <MemoizedOtherTab 
+                            onViewSet={setOtherTabView} 
+                            profile={profile}
+                        />}
+                    </>
+                ) : (
+                    <Layout>
+                        <div style={{ display: activeTab === 'home' ? 'flex' : 'none', flexGrow: 1, flexDirection: 'column' }}>
+                            <HomeTab
+                                settings={settings}
+                                setSettings={setSettings}
+                                onPrayerTimesLoaded={setPrayerTimesData}
+                                profile={profile}
+                            />
+                        </div>
+                        <div style={{ display: activeTab === 'quran' ? 'flex' : 'none', flexGrow: 1, flexDirection: 'column' }}>
+                            <QuranTab 
+                                settings={settings} 
+                                setReciterName={handleSetReciterName}
+                                selectedReciterId={selectedReciterId}
+                                setSelectedReciterId={setSelectedReciterId}
+                                onOpenReader={handleOpenReader}
+                                userData={quranUserData}
+                                setUserData={setQuranUserData}
+                            />
+                        </div>
+                        <div style={{ display: activeTab === 'counter' ? 'flex' : 'none', flexGrow: 1, flexDirection: 'column' }}>
+                            <CounterTab settings={settings} profile={profile} setProfile={setProfile} />
+                        </div>
+                    </Layout>
+                )}
+            </div>
             
             <TabBar activeTab={activeTab} setActiveTab={setActiveTab} />
 
@@ -406,6 +426,7 @@ const App: React.FC = () => {
                     setSettings={setSettings}
                     reciterId={selectedReciterId}
                     setSelectedReciterId={setSelectedReciterId}
+                    setReciterName={handleSetReciterName}
                     onSwitchSurah={handleSwitchSurah}
                     playerState={audioPlayerState}
                     onClosePlayer={handleClosePlayer}
@@ -415,6 +436,8 @@ const App: React.FC = () => {
                     onPrev={handlePrevSurah}
                     onReplay={handleReplay}
                     onToggleRepeat={handleToggleRepeat}
+                    userData={quranUserData}
+                    setUserData={setQuranUserData}
                 />
             )}
             
@@ -424,6 +447,7 @@ const App: React.FC = () => {
                     profile={profile}
                     setProfile={setProfile}
                     settings={settings}
+                    userData={quranUserData}
                 />
             )}
 

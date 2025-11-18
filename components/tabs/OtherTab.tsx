@@ -1,22 +1,31 @@
+
+
+
+
 import React, { useState } from 'react';
-import QiblaTab from './QiblaTab';
 import SunnahGuideTab from './SunnahSearchTab';
 import Spinner from '../ui/Spinner';
 import AsmaulHusnaTab from './AsmaulHusnaTab';
-import { IstikharahIcon, StarIcon, ListIcon, SearchIcon, QiblaIcon, MapPinIcon, ChevronLeftIcon, SettingsIcon, ProfileIcon } from '../icons/TabIcons';
+import type { Profile } from '../../types';
+import { 
+    StarIcon, ListIcon, SearchIcon, MapPinIcon, 
+    ChevronLeftIcon, WorshipIcon
+} from '../icons/TabIcons';
 
-const MenuItem: React.FC<{ label: string; icon: React.ReactNode; onClick: () => void; disabled?: boolean; style?: React.CSSProperties, className?: string }> = ({ label, icon, onClick, disabled, style, className }) => (
+
+const Card: React.FC<{ title: string; subtitle: string; icon: React.ReactNode; onClick: () => void; style?: React.CSSProperties }> = ({ title, subtitle, icon, onClick, style }) => (
     <button
         onClick={onClick}
-        disabled={disabled}
-        className={`w-full p-4 container-luminous rounded-theme-card text-right font-semibold text-lg flex justify-between items-center disabled:opacity-50 ${className}`}
+        className="container-luminous rounded-theme-card p-4 text-right flex flex-col justify-between items-start gap-2 min-h-[150px] transition-all duration-300 stagger-item hover:-translate-y-1"
         style={style}
     >
-        <div className="flex items-center gap-4">
-            <div className="w-8 h-8 flex items-center justify-center text-theme-accent-primary">{icon}</div>
-            <span>{label}</span>
+        <div className="w-12 h-12 flex items-center justify-center container-luminous rounded-2xl text-theme-accent-primary">
+            {icon}
         </div>
-        <ChevronLeftIcon className="w-5 h-5 text-theme-secondary" style={{ transform: 'scaleX(-1)' }} />
+        <div>
+            <h3 className="font-bold text-lg text-theme-primary">{title}</h3>
+            <p className="text-xs text-theme-secondary/80">{subtitle}</p>
+        </div>
     </button>
 );
 
@@ -33,16 +42,16 @@ const SunnahSearch: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const searchSuggestions = ["فضل الصلاة", "بر الوالدين", "أذكار النوم", "فضل الصدقة"];
 
     return (
-        <div className="flex flex-col gap-4 min-h-[450px] relative">
-             <button onClick={onBack} className="absolute top-0 right-0 flex items-center gap-2 font-semibold text-theme-secondary">
+        <div className="flex flex-col gap-4 min-h-full p-4 pb-28 animate-in fade-in-0" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}>
+             <button onClick={onBack} className="self-start flex items-center gap-2 font-semibold text-theme-secondary">
                 <ChevronLeftIcon className="w-5 h-5 text-theme-secondary" />
                 رجوع
             </button>
-             <div className="text-center w-full pt-8 flex flex-col items-center">
+             <div className="text-center w-full flex-grow flex flex-col items-center justify-center">
                 <div className="w-16 h-16 container-luminous rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <SearchIcon className="w-8 h-8 text-theme-accent-primary"/>
                 </div>
-                <h2 className="text-2xl font-bold mb-2 heading-amiri">البحث في السنة</h2>
+                <h2 className="text-2xl font-bold mb-2 heading-amiri">البحث في الحديث</h2>
                 <p className="text-sm text-theme-secondary/80 mb-6 max-w-xs">
                    ابحث في موسوعة الحديث الشاملة في موقع الدرر السنية.
                 </p>
@@ -54,7 +63,7 @@ const SunnahSearch: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                         placeholder="اكتب كلمة أو جملة للبحث..."
                         className="w-full p-3 input-luminous text-theme-primary rounded-theme-card text-right"
                     />
-                    <button onClick={handleSearch} className="w-full p-3 button-luminous bg-theme-accent-primary text-theme-accent-primary-text rounded-theme-full font-bold">
+                    <button onClick={handleSearch} className="w-full p-3 button-luminous bg-theme-accent-primary text-white rounded-theme-full font-bold">
                         بحث
                     </button>
                 </div>
@@ -74,17 +83,17 @@ const SunnahSearch: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 };
 
 const IstikharahGuideTab: React.FC<{ onBack: () => void }> = ({ onBack }) => {
-    const duaText = "اللَّهُمَّ إِنِّي أَسْتَخِيرُكَ بِعِلْمِكَ، وَأَسْتَقْدِرُكَ بِقُدْرَتِكَ، وَأَسْأَلُكَ مِنْ فَضْلِكَ الْعَظِيمِ، فَإِنَّكَ تَقْدِرُ وَلاَ أَقْدِرُ، وَتَعْلَمُ وَلاَ أَعْلَمُ، وَأَنْتَ عَلاَّمُ الْغُيُوبِ، اللَّهُمَّ إِنْ كُنْتَ تَعْلَمُ أَنَّ هَذَا الأَمْرَ - وَيُسَمِّي حَاجَتَهُ - خَيْرٌ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي فَاقْدُرْهُ لِي وَيَسِّرْهُ لِي، ثُمَّ بَارِكْ لِي فِيهِ، وَإِنْ كُنْتَ تَعْلَمُ أَنَّ هَذَا الأَمْرَ شَرٌّ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي فَاصْرِفْهُ عَنِّي وَاصْرِفْنِي عَنْهُ، وَاقْدُرْ لِي الْخَيْرَ حَيْثُ كَانَ، ثُمَّ أَرْضِنِي بِهِ.";
+    const duaText = "اللَّهُمَّ إِنِّي أَسْتَخِيرُكَ بِعِلْمِكَ، وَأَسْتَقْدِرُكَ بِقُدْرَتِكَ، وَأَسْأَلُكَ مِنْ فَضْلِكَ الْعَظِيمِ، فَإِنَّكَ تَقْدِرُ وَلاَ أَقْدِرُ، وَتَعْلَمُ وَلاَ أَعْلَمُ، وَأَنْتَ عَلاَّمُ الْغُيُوبِ. اللَّهُمَّ إِنْ كُنْتَ تَعْلَمُ أَنَّ هَذَا الأَمْرَ - ويسمي حاجته - خَيْرٌ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي فَاقْدُرْهُ لِي وَيَسِّرْهُ لِي، ثُمَّ بَارِكْ لِي فِي Fيهِ، وَإِنْ كُنْتَ تَعْلَمُ أَنَّ هَذَا الأَمْرَ شَرٌّ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي فَاصْرِفْهُ عَنِّي وَاصْرِفْنِي عَنْهُ، وَاقْدُرْ لِي الْخَيْرَ حَيْثُ كَانَ، ثُمَّ أَرْضِنِي بِهِ.";
 
     return (
-        <div className="flex flex-col gap-4 min-h-[450px] relative">
-            <button onClick={onBack} className="absolute top-0 right-0 flex items-center gap-2 font-semibold text-theme-secondary">
+        <div className="flex flex-col gap-4 p-4 pb-28 animate-in fade-in-0" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}>
+            <button onClick={onBack} className="self-start flex items-center gap-2 font-semibold text-theme-secondary">
                  <ChevronLeftIcon className="w-5 h-5 text-theme-secondary" />
                 رجوع
             </button>
-            <div className="text-center w-full pt-8 flex flex-col items-center">
+            <div className="text-center w-full flex flex-col items-center">
                 <div className="w-16 h-16 container-luminous rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <IstikharahIcon className="w-8 h-8 text-theme-accent-primary" />
+                    <WorshipIcon className="w-8 h-8 text-theme-accent-primary" />
                 </div>
                 <h2 className="text-2xl font-bold mb-2 heading-amiri">دليل صلاة الاستخارة</h2>
                 <p className="text-sm text-theme-secondary/80 mb-6 max-w-xs">
@@ -128,15 +137,14 @@ const IstikharahGuideTab: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     );
 };
 
-
-type View = 'menu' | 'qibla' | 'sunnahGuide' | 'sunnahSearch' | 'asmaulHusna' | 'istikharah';
+type View = 'menu' | 'sunnahGuide' | 'sunnahSearch' | 'asmaulHusna' | 'istikharah';
 
 interface OtherTabProps {
-    onOpenProfile: () => void;
-    onOpenSettings: () => void;
+    onViewSet: (view: View | 'menu') => void;
+    profile: Profile;
 }
 
-const OtherTab: React.FC<OtherTabProps> = ({ onOpenProfile, onOpenSettings }) => {
+const OtherTab: React.FC<OtherTabProps> = ({ onViewSet, profile }) => {
     const [activeView, setActiveView] = useState<View>('menu');
     const [previousView, setPreviousView] = useState<View>('menu');
     const [isFindingMosque, setIsFindingMosque] = useState(false);
@@ -144,6 +152,7 @@ const OtherTab: React.FC<OtherTabProps> = ({ onOpenProfile, onOpenSettings }) =>
     const changeView = (newView: View) => {
         setPreviousView(activeView);
         setActiveView(newView);
+        onViewSet(newView);
     };
 
     const findNearestMosque = () => {
@@ -169,31 +178,39 @@ const OtherTab: React.FC<OtherTabProps> = ({ onOpenProfile, onOpenSettings }) =>
     };
 
     const menuItems = [
-        { label: "أسماء الله الحسنى", onClick: () => changeView('asmaulHusna'), icon: <StarIcon className="w-6 h-6"/> },
-        { label: "دليل السنن", onClick: () => changeView('sunnahGuide'), icon: <ListIcon className="w-6 h-6"/> },
-        { label: "دليل صلاة الاستخارة", onClick: () => changeView('istikharah'), icon: <IstikharahIcon className="w-6 h-6"/> },
-        { label: "البحث في الدرر السنية", onClick: () => changeView('sunnahSearch'), icon: <SearchIcon className="w-6 h-6"/> },
-        { label: "بوصلة القبلة", onClick: () => changeView('qibla'), icon: <QiblaIcon className="w-6 h-6"/> },
+        { view: 'asmaulHusna', title: "أسماء الله الحسنى", subtitle: "تعرف على أسماء الله ومعانيها.", icon: <StarIcon className="w-6 h-6"/> },
+        { view: 'sunnahGuide', title: "دليل السنن", subtitle: "اكتشف السنن النبوية.", icon: <ListIcon className="w-6 h-6"/> },
+        { view: 'istikharah', title: "صلاة الاستخارة", subtitle: "دليل و دعاء صلاة طلب الخيرة.", icon: <WorshipIcon className="w-6 h-6"/> },
+        { view: 'sunnahSearch', title: "البحث في الحديث", subtitle: "ابحث في موسوعة الدرر السنية.", icon: <SearchIcon className="w-6 h-6"/> },
     ];
     
     const MainMenuView = () => (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6 p-4 pb-28" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}>
             <h2 className="text-3xl font-bold text-center heading-amiri">أدوات إسلامية</h2>
-            <div className="space-y-3">
-                {menuItems.map((item, index) => <MenuItem key={item.label} {...item} style={{ animationDelay: `${index * 50}ms` }} className="stagger-item" />)}
+            <div className="grid grid-cols-2 gap-4">
+                {menuItems.map((item, index) => (
+                    <Card 
+                        key={item.view}
+                        title={item.title}
+                        subtitle={item.subtitle}
+                        icon={item.icon}
+                        onClick={() => changeView(item.view as View)} 
+                        style={{ animationDelay: `${index * 50}ms` }}
+                    />
+                ))}
                 <button
                     onClick={findNearestMosque}
                     disabled={isFindingMosque}
-                    className="w-full p-4 container-luminous rounded-theme-card text-right font-semibold text-lg flex justify-between items-center disabled:opacity-50 disabled:cursor-not-allowed stagger-item"
+                    className="container-luminous rounded-theme-card p-4 text-right flex flex-col justify-between items-start gap-2 min-h-[150px] transition-all duration-300 stagger-item hover:-translate-y-1 disabled:opacity-50"
                     style={{ animationDelay: `${menuItems.length * 50}ms` }}
                 >
-                    <div className="flex items-center gap-4">
-                         <div className="w-8 h-8 flex items-center justify-center text-theme-accent-primary">
-                            {isFindingMosque ? <Spinner /> : <MapPinIcon className="w-6 h-6"/>}
-                        </div>
-                        <span>{isFindingMosque ? 'جاري تحديد موقعك...' : 'البحث عن أقرب مسجد'}</span>
+                    <div className="w-12 h-12 flex items-center justify-center container-luminous rounded-2xl text-theme-accent-primary">
+                        {isFindingMosque ? <Spinner/> : <MapPinIcon className="w-7 h-7"/>}
                     </div>
-                    {!isFindingMosque && <ChevronLeftIcon className="w-5 h-5 text-theme-secondary" style={{ transform: 'scaleX(-1)' }} />}
+                    <div>
+                        <h3 className="font-bold text-lg text-theme-primary">{isFindingMosque ? 'جاري البحث...' : 'أقرب مسجد'}</h3>
+                        <p className="text-xs text-theme-secondary/80">اعثر على المساجد القريبة منك.</p>
+                    </div>
                 </button>
             </div>
         </div>
@@ -201,7 +218,6 @@ const OtherTab: React.FC<OtherTabProps> = ({ onOpenProfile, onOpenSettings }) =>
 
     const renderViewContent = (view: View) => {
         switch(view) {
-            case 'qibla': return <QiblaTab onBack={() => changeView('menu')} />;
             case 'sunnahGuide': return <SunnahGuideTab onBack={() => changeView('menu')} />;
             case 'sunnahSearch': return <SunnahSearch onBack={() => changeView('menu')} />;
             case 'asmaulHusna': return <AsmaulHusnaTab onBack={() => changeView('menu')} />;
@@ -211,28 +227,13 @@ const OtherTab: React.FC<OtherTabProps> = ({ onOpenProfile, onOpenSettings }) =>
     };
 
     return (
-        <div className="w-full h-[100dvh] flex flex-col">
-            <header className="flex-shrink-0 flex justify-between items-center p-4">
-                 <button onClick={onOpenSettings} className="button-luminous p-2.5 text-theme-secondary hover:text-theme-primary">
-                    <SettingsIcon className="w-6 h-6 stroke-theme-accent" />
-                </button>
-                <div className="flex items-center justify-center">
-                    <h1 className="logo-main">آجر</h1>
-                </div>
-                <button onClick={onOpenProfile} className="button-luminous p-2.5 text-theme-secondary hover:text-theme-primary">
-                    <ProfileIcon className="w-6 h-6 stroke-theme-accent" />
-                </button>
-            </header>
-            <main className="flex-grow px-4 pb-40 overflow-y-auto flex flex-col">
-                <div className="view-container">
-                    <div 
-                        key={activeView} 
-                        className={`view-content ${activeView !== previousView ? 'view-enter' : ''}`}
-                    >
-                        {renderViewContent(activeView)}
-                    </div>
-                </div>
-            </main>
+        <div className="view-container">
+            <div 
+                key={activeView} 
+                className={`view-content ${activeView !== previousView ? 'view-enter' : ''}`}
+            >
+                {renderViewContent(activeView)}
+            </div>
         </div>
     );
 };

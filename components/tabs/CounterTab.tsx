@@ -3,7 +3,8 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 import type { Dhikr, Profile, Settings } from '../../types';
 import { INITIAL_DHIKR_LIST } from '../../constants';
 import Modal from '../ui/Modal';
-import { InfoIcon, ResetIcon, PlusIcon, LoopIcon, ListIcon, SoundOnIcon, SoundOffIcon } from '../icons/TabIcons';
+// Fix: The 'ResetIcon' was not found. Using the existing 'ReplayIcon' as an alias because it is visually appropriate for a reset action.
+import { InfoIcon, ReplayIcon as ResetIcon, PlusIcon, LoopIcon, ListIcon, SoundOnIcon, SoundOffIcon } from '../icons/TabIcons';
 
 interface CounterTabProps {
     settings: Settings;
@@ -177,68 +178,69 @@ const CounterTab: React.FC<CounterTabProps> = ({ settings, profile, setProfile }
             <audio ref={audioRef} src="data:audio/wav;base64,UklGRjQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAYAAAA/w//+v/5//r/9v/z//H/8P/v/+z/7P/s/+v/6//r/+v/6//q/+r/6v/q/+r/6g=="></audio>
             <div 
                 onClick={handleContainerClick}
-                className="flex flex-col h-full items-center text-center py-2 counter-bg-pattern"
+                className="flex flex-col h-full items-center text-center counter-bg-pattern justify-between pt-2"
             >
-                {/* Top Section */}
-                <div className="w-full px-4 space-y-2 flex-shrink-0">
-                    <div className="flex justify-between items-center text-sm">
-                        <span className="text-theme-secondary">الهدف اليومي: {dailyCount}/{profile.dailyGoal}</span>
-                        {currentDhikr.virtue && (
-                            <button onClick={(e) => { e.stopPropagation(); setIsVirtueModalOpen(true); }} className="p-2 text-theme-secondary/70 hover:text-theme-secondary">
-                                <InfoIcon className="w-5 h-5"/>
-                            </button>
-                        )}
-                    </div>
-                    <div className="w-full bg-black/20 rounded-theme-full h-1.5 overflow-hidden p-0.5">
-                        <div className="bg-theme-accent-primary h-full rounded-theme-full" style={{ width: `${Math.min(goalProgress, 100)}%`, transition: 'width 0.5s' }}></div>
-                    </div>
-                </div>
-
-                {/* Middle Section: Counter */}
-                <div className="flex flex-col items-center justify-center flex-grow min-h-0 py-2">
-                    <div className="text-center mb-6">
-                        <h2 className="font-amiri text-5xl text-theme-primary drop-shadow-lg">{currentDhikr.arabic}</h2>
-                        <p className="text-sm text-theme-secondary">{currentDhikr.name}</p>
-                    </div>
-                    {activeSequence && (
-                        <div className="flex gap-2 mb-4">
-                            {activeSequence.dhikrs.map((d, index) => (
-                                <div key={d.id} className={`w-2 h-2 rounded-theme-full transition-all ${index === activeSequence.currentIndex ? 'bg-theme-accent-primary scale-125' : 'bg-white/20'}`}></div>
-                            ))}
+                <div> {/* Wrapper for top and middle content */}
+                    {/* Top Section */}
+                    <div className="w-full px-4 space-y-2 flex-shrink-0">
+                        <div className="flex justify-between items-center text-sm">
+                            <span className="text-theme-secondary">الهدف اليومي: {dailyCount}/{profile.dailyGoal}</span>
+                            {currentDhikr.virtue && (
+                                <button onClick={(e) => { e.stopPropagation(); setIsVirtueModalOpen(true); }} className="p-2 text-theme-secondary/70 hover:text-theme-secondary">
+                                    <InfoIcon className="w-5 h-5"/>
+                                </button>
+                            )}
                         </div>
-                    )}
-                    <button 
-                        onClick={handleIncrement}
-                        onAnimationEnd={() => setIsPopping(false)}
-                        className={`container-luminous w-44 h-44 sm:w-48 sm:h-48 rounded-theme-full flex flex-col items-center justify-center transition-transform duration-150 active:scale-95 ${isPopping ? 'animate-pop' : ''}`}
-                    >
-                        <span className="text-6xl sm:text-7xl font-black text-white" style={{textShadow: '0 2px 10px rgba(0,0,0,0.5)'}}>{count}</span>
-                    </button>
+                        <div className="w-full bg-black/20 rounded-theme-full h-1.5 overflow-hidden p-0.5">
+                            <div className="bg-theme-accent-primary h-full rounded-theme-full" style={{ width: `${Math.min(goalProgress, 100)}%`, transition: 'width 0.5s' }}></div>
+                        </div>
+                    </div>
+
+                    {/* Middle Section: Counter */}
+                    <div className="flex flex-col items-center justify-center min-h-0 py-2">
+                        <div className="text-center mb-6">
+                            <h2 className="font-amiri text-5xl text-theme-primary drop-shadow-lg">{currentDhikr.arabic}</h2>
+                        </div>
+                        {activeSequence && (
+                            <div className="flex gap-2 mb-4">
+                                {activeSequence.dhikrs.map((d, index) => (
+                                    <div key={d.id} className={`w-2 h-2 rounded-theme-full transition-all ${index === activeSequence.currentIndex ? 'bg-theme-accent-primary scale-125' : 'bg-white/20'}`}></div>
+                                ))}
+                            </div>
+                        )}
+                        <button 
+                            onClick={handleIncrement}
+                            onAnimationEnd={() => setIsPopping(false)}
+                            className={`container-luminous w-44 h-44 sm:w-48 sm:h-48 rounded-theme-full flex flex-col items-center justify-center transition-transform duration-150 active:scale-95 ${isPopping ? 'animate-pop' : ''}`}
+                        >
+                            <span className="text-6xl sm:text-7xl font-black text-white" style={{textShadow: '0 2px 10px rgba(0,0,0,0.5)'}}>{count}</span>
+                        </button>
+                    </div>
                 </div>
                 
                 {/* Bottom Toolbar */}
-                <div className="w-full max-w-sm flex justify-around items-center p-2 container-luminous rounded-theme-full flex-shrink-0">
-                    <button onClick={(e) => { e.stopPropagation(); handleReset(); }} className="button-luminous flex flex-col items-center text-theme-danger/80 hover:text-theme-danger p-2 w-16" title="إعادة">
-                        <ResetIcon className="w-6 h-6" />
-                        <span className="text-xs font-semibold mt-1">إعادة</span>
+                <div className="w-full max-w-sm flex justify-around items-center p-1.5 container-luminous rounded-theme-full flex-shrink-0 mb-2">
+                    <button onClick={(e) => { e.stopPropagation(); handleReset(); }} className="button-luminous flex flex-col items-center text-theme-danger/80 hover:text-theme-danger p-1.5 w-14" title="إعادة">
+                        <ResetIcon className="w-5 h-5" />
+                        <span className="text-[10px] font-semibold mt-0.5">إعادة</span>
                     </button>
                     {settings.showDhikrSelection && (
-                        <button onClick={(e) => { e.stopPropagation(); setIsDhikrModalOpen(true); }} className="button-luminous flex flex-col items-center text-theme-secondary hover:text-theme-primary p-2 w-16" title="اختر ذكر">
-                            <ListIcon className="w-6 h-6" />
-                            <span className="text-xs font-semibold mt-1">الأذكار</span>
+                        <button onClick={(e) => { e.stopPropagation(); setIsDhikrModalOpen(true); }} className="button-luminous flex flex-col items-center text-theme-secondary hover:text-theme-primary p-1.5 w-14" title="اختر ذكر">
+                            <ListIcon className="w-5 h-5" />
+                            <span className="text-[10px] font-semibold mt-0.5">الأذكار</span>
                         </button>
                     )}
                     <button 
                         onClick={(e) => { e.stopPropagation(); setIsSoundEnabled(!isSoundEnabled); }}
-                        className={`button-luminous flex flex-col items-center p-2 w-16 ${isSoundEnabled ? 'text-theme-accent-primary' : 'text-theme-secondary hover:text-theme-primary'}`}
+                        className={`button-luminous flex flex-col items-center p-1.5 w-14 ${isSoundEnabled ? 'text-theme-accent-primary' : 'text-theme-secondary hover:text-theme-primary'}`}
                         title={isSoundEnabled ? 'كتم الصوت' : 'تفعيل الصوت'}
                     >
-                        {isSoundEnabled ? <SoundOnIcon className="w-6 h-6" /> : <SoundOffIcon className="w-6 h-6" />}
-                        <span className="text-xs font-semibold mt-1">الصوت</span>
+                        {isSoundEnabled ? <SoundOnIcon className="w-5 h-5" /> : <SoundOffIcon className="w-5 h-5" />}
+                        <span className="text-[10px] font-semibold mt-0.5">الصوت</span>
                     </button>
-                    <button onClick={toggleSequence} className={`button-luminous flex flex-col items-center p-2 w-16 ${activeSequence ? 'text-theme-accent-primary' : 'text-theme-secondary hover:text-theme-primary'}`} title="وضع التسبيح">
-                        <LoopIcon className="w-6 h-6" />
-                        <span className="text-xs font-semibold mt-1">تسبيح</span>
+                    <button onClick={toggleSequence} className={`button-luminous flex flex-col items-center p-1.5 w-14 ${activeSequence ? 'text-theme-accent-primary' : 'text-theme-secondary hover:text-theme-primary'}`} title="وضع التسبيح">
+                        <LoopIcon className="w-5 h-5" />
+                        <span className="text-[10px] font-semibold mt-0.5">تسبيح</span>
                     </button>
                 </div>
             </div>

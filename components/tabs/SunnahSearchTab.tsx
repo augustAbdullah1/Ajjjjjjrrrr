@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { SUNNAH_GUIDE_DATA } from '../../constants';
 import type { SunnahCategory } from '../../types';
@@ -12,7 +13,7 @@ const SunnahGuideTab: React.FC<SunnahGuideTabProps> = ({ onBack }) => {
 
     if (selectedCategory) {
         return (
-            <div className="flex flex-col gap-4 min-h-[450px]">
+            <div className="flex flex-col gap-4 min-h-full p-4 pb-28" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}>
                 <div className="flex items-center gap-2">
                     <button onClick={() => setSelectedCategory(null)} className="flex items-center gap-2 font-semibold text-theme-secondary self-start">
                         <ChevronLeftIcon className="w-5 h-5 text-theme-secondary" />
@@ -34,9 +35,9 @@ const SunnahGuideTab: React.FC<SunnahGuideTabProps> = ({ onBack }) => {
     }
 
     return (
-        <div className="flex flex-col gap-4 min-h-[450px] relative">
+        <div className="flex flex-col gap-4 min-h-full p-4 pb-28" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}>
             {onBack && (
-                <button onClick={onBack} className="absolute top-0 right-0 flex items-center gap-2 font-semibold text-theme-secondary">
+                <button onClick={onBack} className="absolute top-4 right-4 flex items-center gap-2 font-semibold text-theme-secondary" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
                     <ChevronLeftIcon className="w-5 h-5 text-theme-secondary" />
                     رجوع
                 </button>
