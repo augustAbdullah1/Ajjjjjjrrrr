@@ -135,9 +135,9 @@ export interface Settings {
     showDhikrSelection: boolean;
     prayerMethod: PrayerMethod;
     quranReaderFontSize: number;
-    autoScrollAudio: boolean;
     tapAnywhere: boolean;
     timeFormat: '12h' | '24h';
+    notificationSound: 'adhan' | 'system';
     prayerNotifications: {
         enabled: boolean;
         fajr: boolean;
@@ -214,4 +214,21 @@ export interface Challenge {
   goal: number;
   participants: ChallengeParticipant[];
   createdAt: string;
+}
+
+// NEW: Prayer Commitment Types
+export type PrayerName = 'fajr' | 'dhuhr' | 'asr' | 'maghrib' | 'isha';
+
+export interface DailyPrayers {
+    fajr: boolean;
+    dhuhr: boolean;
+    asr: boolean;
+    maghrib: boolean;
+    isha: boolean;
+}
+
+export interface PrayerCommitmentData {
+    history: Record<string, DailyPrayers>; // date string YYYY-MM-DD -> prayers
+    streak: number;
+    totalPrayed: number;
 }

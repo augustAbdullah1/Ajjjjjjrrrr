@@ -1,3 +1,5 @@
+
+
 import type { Dhikr, DuaCategory, Profile, Settings, PrayerMethod, SunnahCategory, AchievementId, PopularReciter } from './types';
 
 export const INITIAL_DHIKR_LIST: Dhikr[] = [
@@ -24,11 +26,16 @@ export const HISNUL_MUSLIM_DUAS: DuaCategory[] = [
       { "ID": 102, "ARABIC_TEXT": "قُلْ هُوَ اللَّهُ أَحَدٌ... (سورة الإخلاص)", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Surat Al-Ikhlas", "TRANSLATED_TEXT": "من قالها حين يصبح وحين يمسي كفته من كل شيء. (3 مرات)", count: 3 },
       { "ID": 103, "ARABIC_TEXT": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ... (سورة الفلق)", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Surat Al-Falaq", "TRANSLATED_TEXT": "من قالها حين يصبح وحين يمسي كفته من كل شيء. (3 مرات)", count: 3 },
       { "ID": 104, "ARABIC_TEXT": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ... (سورة الناس)", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Surat An-Nas", "TRANSLATED_TEXT": "من قالها حين يصبح وحين يمسي كفته من كل شيء. (3 مرات)", count: 3 },
-      { "ID": 105, "ARABIC_TEXT": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ...", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "We have reached the morning...", "TRANSLATED_TEXT": "(مرة واحدة)", count: 1 },
+      { "ID": 105, "ARABIC_TEXT": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، رَبِّ أَسْأَلُكَ خَيْرَ مَا فِي هَذَا الْيَوْمِ وَخَيْرَ مَا بَعْدَهُ، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِي هَذَا الْيَوْمِ وَشَرِّ مَا بَعْدَهُ، رَبِّ أَعُوذُ بِكَ مِنَ الْكَسَلِ وَسُوءِ الْكِبَرِ، رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ فِي النَّارِ وَعَذَابٍ فِي الْقَبْرِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "We have reached the morning...", "TRANSLATED_TEXT": "(مرة واحدة)", count: 1 },
       { "ID": 106, "ARABIC_TEXT": "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "O Allah, by you we greet the morning...", "TRANSLATED_TEXT": "(مرة واحدة)", count: 1 },
-      { "ID": 107, "ARABIC_TEXT": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ...", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "سيد الإستغفار", "TRANSLATED_TEXT": "من قاله موقناً به حين يصبح فمات من يومه دخل الجنة. (مرة واحدة)", count: 1 },
+      { "ID": 107, "ARABIC_TEXT": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "سيد الإستغفار", "TRANSLATED_TEXT": "من قاله موقناً به حين يصبح فمات من يومه دخل الجنة. (مرة واحدة)", count: 1 },
       { "ID": 108, "ARABIC_TEXT": "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "In the name of Allah...", "TRANSLATED_TEXT": "لم يضره من الله شيء. (3 مرات)", count: 3 },
       { "ID": 109, "ARABIC_TEXT": "سبحانَ اللهِ وبحمدِه", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "How perfect Allah is and I praise Him.", "TRANSLATED_TEXT": "حُطَّتْ خَطَايَاهُ وَإِنْ كَانَتْ مِثْلَ زَبَدِ الْبَحْرِ. (100 مرة)", count: 100 },
+      { "ID": 110, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْماً نَافِعاً، وَرِزْقاً طَيِّباً، وَعَمَلاً مُتَقَبَّلاً", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "O Allah, I ask You for knowledge...", "TRANSLATED_TEXT": "(مرة واحدة عند الصباح)", count: 1 },
+      { "ID": 111, "ARABIC_TEXT": "أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "I seek forgiveness...", "TRANSLATED_TEXT": "(100 مرة في اليوم)", count: 100 },
+      { "ID": 112, "ARABIC_TEXT": "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Send prayers upon Prophet...", "TRANSLATED_TEXT": "(10 مرات)", count: 10 },
+      { "ID": 113, "ARABIC_TEXT": "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ أَصْلِحْ لِي شَأْنِي كُلَّهُ وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "O Ever Living One...", "TRANSLATED_TEXT": "(3 مرات)", count: 3 },
+      { "ID": 114, "ARABIC_TEXT": "اللّهُـمَّ عافِـني في بَدَنـي، اللّهُـمَّ عافِـني في سَمْـعي، اللّهُـمَّ عافِـني في بَصَـري، لا إلهَ إلاّ أَنْـتَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "O Allah, make me healthy...", "TRANSLATED_TEXT": "(3 مرات)", count: 3 }
     ]
   },
   {
@@ -42,7 +49,9 @@ export const HISNUL_MUSLIM_DUAS: DuaCategory[] = [
       { "ID": 204, "ARABIC_TEXT": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ... (سورة الناس)", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Surat An-Nas", "TRANSLATED_TEXT": "من قالها حين يصبح وحين يمسي كفته من كل شيء. (3 مرات)", count: 3 },
       { "ID": 205, "ARABIC_TEXT": "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ...", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "We have reached the evening...", "TRANSLATED_TEXT": "(مرة واحدة)", count: 1 },
       { "ID": 206, "ARABIC_TEXT": "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "O Allah, by you we greet the evening...", "TRANSLATED_TEXT": "(مرة واحدة)", count: 1 },
-       { "ID": 207, "ARABIC_TEXT": "سبحانَ اللهِ وبحمدِه", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "How perfect Allah is and I praise Him.", "TRANSLATED_TEXT": "حُطَّتْ خَطَايَاهُ وَإِنْ كَانَتْ مِثْلَ زَبَدِ الْبَحْرِ. (100 مرة)", count: 100 },
+      { "ID": 207, "ARABIC_TEXT": "سبحانَ اللهِ وبحمدِه", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "How perfect Allah is and I praise Him.", "TRANSLATED_TEXT": "حُطَّتْ خَطَايَاهُ وَإِنْ كَانَتْ مِثْلَ زَبَدِ الْبَحْرِ. (100 مرة)", count: 100 },
+      { "ID": 208, "ARABIC_TEXT": "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "I seek refuge in the perfect words...", "TRANSLATED_TEXT": "من قالها لم يضره شيء تلك الليلة. (3 مرات)", count: 3 },
+      { "ID": 209, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَافِيةَ فِي الدُّنْيَا وَالآخِرَةِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي دِينِي وَدُنْيَايَ وَأَهْلِي وَمَالِي...", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "O Allah, I ask You for well-being...", "TRANSLATED_TEXT": "(مرة واحدة)", count: 1 }
     ]
   },
   {
@@ -56,6 +65,7 @@ export const HISNUL_MUSLIM_DUAS: DuaCategory[] = [
         { "ID": 304, "ARABIC_TEXT": "اللَّهُ أَكْبَرُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Allahu Akbar", "TRANSLATED_TEXT": "(33 مرة)", count: 33 },
         { "ID": 305, "ARABIC_TEXT": "لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "La ilaha illallah...", "TRANSLATED_TEXT": "تمام المئة.", count: 1 },
         { "ID": 306, "ARABIC_TEXT": "قراءة آية الكرسي", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Read Ayatul Kursi", "TRANSLATED_TEXT": "من قرأها دبر كل صلاة لم يمنعه من دخول الجنة إلا أن يموت.", count: 1 },
+        { "ID": 307, "ARABIC_TEXT": "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ، وَشُكْرِكَ، وَحُسْنِ عِبَادَتِكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "O Allah, help me...", "TRANSLATED_TEXT": "(مرة واحدة)", count: 1 }
     ]
   },
    {
@@ -66,7 +76,8 @@ export const HISNUL_MUSLIM_DUAS: DuaCategory[] = [
       { "ID": 401, "ARABIC_TEXT": "يَجْمَعُ كَفَّيْهِ ثُمَّ يَنْفُثُ فِيهِمَا فَيَقْرَأُ فِيهِمَا: «قُلْ هُوَ اللَّهُ أَحَدٌ» و «قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ» و «قُلْ أَعُوذُ بِرَبِّ النَّاسِ» ثُمَّ يَمْسَحُ بِهِمَا مَا اسْتَطَاعَ مِنْ جَسَدِهِ يَبْدَأُ بِهِمَا عَلَى رَأْسِهِ وَوَجْهِهِ وَمَا أَقْبَلَ مِنْ جَسَدِهِ، (يَفْعَلُ ذَلِكَ ثَلَاثَ مَرَّاتٍ)", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Recite the last three Surahs", "TRANSLATED_TEXT": "يقرأ السور الثلاث ويمسح جسده (3 مرات)", count: 3 },
       { "ID": 402, "ARABIC_TEXT": "بِاسْمِكَ رَبِّـي وَضَعْـتُ جَنْـبي، وَبِكَ أَرْفَعُـه، فَإِن أَمْسَـكْتَ نَفْسـي فارْحَـمْها ، وَإِنْ أَرْسَلْتَـها فاحْفَظْـها بِمـا تَحْفَـظُ بِه عِبـادَكَ الصّـالِحـين", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "With Your Name my Lord...", "TRANSLATED_TEXT": "(مرة واحدة)", count: 1 },
       { "ID": 403, "ARABIC_TEXT": "اللّهُـمَّ قِنـي عَذابَـكَ يَـوْمَ تَبْـعَثُ عِبـادَك", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "O Allah, save me from Your punishment...", "TRANSLATED_TEXT": "(3 مرات)", count: 3 },
-      { "ID": 404, "ARABIC_TEXT": "بِاسْـمِكَ اللّهُـمَّ أَمـوتُ وَأَحْـيا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "In Your Name O Allah, I die and I live", "TRANSLATED_TEXT": "(مرة واحدة)", count: 1 }
+      { "ID": 404, "ARABIC_TEXT": "بِاسْـمِكَ اللّهُـمَّ أَمـوتُ وَأَحْـيا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "In Your Name O Allah, I die and I live", "TRANSLATED_TEXT": "(مرة واحدة)", count: 1 },
+      { "ID": 405, "ARABIC_TEXT": "سُبْحَانَ اللَّهِ (33 مرة)، وَالْحَمْدُ لِلَّهِ (33 مرة)، وَاللَّهُ أَكْبَرُ (34 مرة)", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Tasbih before sleep", "TRANSLATED_TEXT": "خير من خادم.", count: 1 }
     ]
   },
    {
@@ -74,7 +85,8 @@ export const HISNUL_MUSLIM_DUAS: DuaCategory[] = [
     "TITLE": "أذكار الاستيقاظ",
     "icon": "⏰",
     "duas": [
-      { "ID": 501, "ARABIC_TEXT": "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Praise is to Allah who gives us life after He has caused us to die and to Him is the resurrection.", "TRANSLATED_TEXT": "(مرة واحدة)", "count": 1 }
+      { "ID": 501, "ARABIC_TEXT": "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Praise is to Allah who gives us life...", "TRANSLATED_TEXT": "(مرة واحدة)", "count": 1 },
+      { "ID": 502, "ARABIC_TEXT": "لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَلاَ إِلَهَ إِلاَّ اللَّهُ، وَاللَّهُ أَكْبَرُ، وَلاَ حَوْلَ وَلاَ قُوَّةَ إِلاَّ بِاللَّهِ الْعَلِيِّ الْعَظِيمِ، رَبِّ اغْفِرْ لِي", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "None has the right to be worshipped...", "TRANSLATED_TEXT": "من قالها غفر له، فإن دعا استجيب له.", "count": 1 }
     ]
   },
   {
@@ -82,7 +94,8 @@ export const HISNUL_MUSLIM_DUAS: DuaCategory[] = [
     "TITLE": "دعاء لبس الثوب",
     "icon": "👕",
     "duas": [
-      { "ID": 601, "ARABIC_TEXT": "الْحَمْدُ لِلَّهِ الَّذِي كَسَانِي هَذَا (الثَّوْبَ) وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Praise is to Allah Who has clothed me with this (garment) and provided it for me, without any power or might on my part.", "TRANSLATED_TEXT": "(مرة واحدة)", "count": 1 }
+      { "ID": 601, "ARABIC_TEXT": "الْحَمْدُ لِلَّهِ الَّذِي كَسَانِي هَذَا (الثَّوْبَ) وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Praise is to Allah Who has clothed me...", "TRANSLATED_TEXT": "من قالها غفر له ما تقدم من ذنبه. (مرة واحدة)", "count": 1 },
+      { "ID": 602, "ARABIC_TEXT": "اللَّهُمَّ لَكَ الْحَمْدُ أَنْتَ كَسَوْتَنِيهِ، أَسْأَلُكَ مِنْ خَيْرِهِ وَخَيْرِ مَا صُنِعَ لَهُ، وَأَعُوذُ بِكَ مِنْ شَرِّهِ وَشَرِّ مَا صُنِعَ لَهُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Dua for new clothes", "TRANSLATED_TEXT": "دعاء لبس الثوب الجديد.", "count": 1 }
     ]
   },
   {
@@ -100,18 +113,26 @@ export const HISNUL_MUSLIM_DUAS: DuaCategory[] = [
     "icon": "🕌",
     "duas": [
       { "ID": 801, "ARABIC_TEXT": "أَعُوذُ بِاللهِ العَظِيمِ، وَبِوَجْهِهِ الْكَرِيمِ، وَسُلْطَانِهِ الْقَدِيمِ، مِنَ الشَّيْطَانِ الرَّجِيمِ، [بِسْمِ اللهِ، وَالصَّلَاةُ وَالسَّلَامُ عَلَى رَسُولِ اللهِ]، اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "When entering the mosque", "TRANSLATED_TEXT": "دعاء دخول المسجد", "count": 1 },
-      { "ID": 802, "ARABIC_TEXT": "بِسْمِ اللهِ وَالصَّلَاةُ وَالسَّلَامُ عَلَى رَسُولِ اللهِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ، اللَّهُمَّ اعْصِمْنِي مِنَ الشَّيْطَانِ الرَّجِيمِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "When leaving the mosque", "TRANSLATED_TEXT": "دعاء الخروج من المسجد", "count": 1 }
+      { "ID": 802, "ARABIC_TEXT": "بِسْمِ اللهِ وَالصَّلَاةُ وَالسَّلَامُ عَلَى رَسُولِ اللهِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ، اللَّهُمَّ اعْصِمْنِي مِنَ الشَّيْطَانِ الرَّجِيمِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "When leaving the mosque", "TRANSLATED_TEXT": "دعاء الخروج من المسجد", "count": 1 },
+      { "ID": 803, "ARABIC_TEXT": "اللَّهُمَّ اجْعَلْ فِي قَلْبِي نُوراً، وَفِي لِسَانِي نُوراً، وَفِي سَمْعِي نُوراً، وَفِي بَصَرِي نُوراً...", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Dua going to mosque", "TRANSLATED_TEXT": "دعاء الذهاب إلى المسجد", "count": 1 }
     ]
   },
-  { "ID": 45, "TITLE": "دعاء الهم والحزن", "icon": "😔", "duas": [ { "ID": 133, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَالْعَجْزِ وَالْكَسَلِ، وَالْبُخْلِ وَالْجُبْنِ، وَضَلَعِ الدَّيْنِ وَغَلَبَةِ الرِّجَالِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Allāhumma innī aʿūdhu bika min al-hammi wa-l-ḥazan...", "TRANSLATED_TEXT": "O Allah, I seek refuge in You from anxiety and sorrow, weakness and laziness, miserliness and cowardice, the burden of debts and from being overpowered by men." } ] },
+  { "ID": 45, "TITLE": "دعاء الهم والحزن", "icon": "😔", "duas": [ 
+      { "ID": 133, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَالْعَجْزِ وَالْكَسَلِ، وَالْبُخْلِ وَالْجُبْنِ، وَضَلَعِ الدَّيْنِ وَغَلَبَةِ الرِّجَالِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Allāhumma innī aʿūdhu bika min al-hammi wa-l-ḥazan...", "TRANSLATED_TEXT": "O Allah, I seek refuge in You from anxiety and sorrow, weakness and laziness, miserliness and cowardice, the burden of debts and from being overpowered by men." },
+      { "ID": 134, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي عَبْدُكَ، ابْنُ عَبْدِكَ، ابْنُ أَمَتِكَ، نَاصِيَتِي بِيَدِكَ، مَاضٍ فِيَّ حُكْمُكَ، عَدْلٌ فِيَّ قَضَاؤُكَ، أَسْأَلُكَ بِكُلِّ اسْمٍ هُوَ لَكَ سَمَّيْتَ بِهِ نَفْسَكَ، أَوْ أَنْزَلْتَهُ فِي كِتَابِكَ، أَوْ عَلَّمْتَهُ أَحَداً مِنْ خَلْقِكَ، أَوِ اسْتَأْثَرْتَ بِهِ فِي عِلْمِ الْغَيْبِ عِنْدَكَ، أَنْ تَجْعَلَ الْقُرْآنَ رَبِيعَ قَلْبِي، وَنُورَ صَدْرِي، وَجَلاَءَ حُزْنِي، وَذَهَابَ هَمِّي", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Dua for removing anxiety", "TRANSLATED_TEXT": "ما قالها عبد إلا أذهب الله همه وأبدله مكان حزنه فرحاً." },
+      { "ID": 135, "ARABIC_TEXT": "لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Dua of Yunus (AS)", "TRANSLATED_TEXT": "دعاء ذي النون، ما دعا به مكروب إلا فرج الله عنه." }
+  ] },
   {
     "ID": 1009,
     "TITLE": "الرقية الشرعية",
     "icon": "🛡️",
     "duas": [
-      { "ID": 901, "ARABIC_TEXT": "بِسْمِ اللَّهِ أَرْقِيكَ، مِنْ كُلِّ شَيْءٍ يُؤْذِيكَ، مِنْ شَرِّ كُلِّ نَفْسٍ أَوْ عَيْنِ حَاسِدٍ، اللَّهُ يَشْفِيكَ، بِسْمِ اللَّهِ أَرْقِيكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Ruqyah for Sickness", "TRANSLATED_TEXT": "In the Name of Allah I perform Ruqyah for you, from everything that is harming you, from the evil of every soul or envious eye, may Allah cure you, in the Name of Allah I perform Ruqyah for you." },
-      { "ID": 902, "ARABIC_TEXT": "أَسْأَلُ اللَّهَ الْعَظِيمَ رَبَّ الْعَرْشِ الْعَظِيمِ أَنْ يَشْفِيَكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Dua for the Sick", "TRANSLATED_TEXT": "I ask Allah the Great, Lord of the magnificent throne, to cure you. (7 مرات)", "count": 7 },
-      { "ID": 903, "ARABIC_TEXT": "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Protection from Evil", "TRANSLATED_TEXT": "I seek refuge in the perfect words of Allah from the evil of that which He has created. (3 مرات)", "count": 3 }
+      { "ID": 901, "ARABIC_TEXT": "بِسْمِ اللَّهِ أَرْقِيكَ، مِنْ كُلِّ شَيْءٍ يُؤْذِيكَ، مِنْ شَرِّ كُلِّ نَفْسٍ أَوْ عَيْنِ حَاسِدٍ، اللَّهُ يَشْفِيكَ، بِسْمِ اللَّهِ أَرْقِيكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Ruqyah for Sickness", "TRANSLATED_TEXT": "رقية جبريل للنبي صلى الله عليه وسلم." },
+      { "ID": 902, "ARABIC_TEXT": "أَسْأَلُ اللَّهَ الْعَظِيمَ رَبَّ الْعَرْشِ الْعَظِيمِ أَنْ يَشْفِيَكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Dua for the Sick", "TRANSLATED_TEXT": "ما من عبد مسلم يعود مريضاً لم يحضر أجله فيقولها سبع مرات إلا شفي. (7 مرات)", "count": 7 },
+      { "ID": 903, "ARABIC_TEXT": "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Protection from Evil", "TRANSLATED_TEXT": "(3 مرات)", "count": 3 },
+      { "ID": 904, "ARABIC_TEXT": "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّةِ، مِنْ كُلِّ شَيْطَانٍ وَهَامَّةٍ، وَمِنْ كُلِّ عَيْنٍ لاَمَّةٍ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Protection for children", "TRANSLATED_TEXT": "تعويذة للأطفال." },
+      { "ID": 905, "ARABIC_TEXT": "اللَّهُمَّ رَبَّ النَّاسِ أَذْهِبِ الْبَاسَ، اشْفِهِ وَأَنْتَ الشَّافِي، لاَ شِفَاءَ إِلاَّ شِفَاؤُكَ، شِفَاءً لاَ يُغَادِرُ سَقَماً", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Healing Dua", "TRANSLATED_TEXT": "دعاء الشفاء." },
+      { "ID": 906, "ARABIC_TEXT": "ضَعْ يَدَكَ عَلَى الَّذِي تَأَلَّمَ مِنْ جَسَدِكَ، وَقُلْ: بِاسْمِ اللَّهِ (ثَلاثاً)، وَقُلْ (سَبْعَ مَرَّاتٍ): أَعُوذُ بِاللَّهِ وَقُدْرَتِهِ مِنْ شَرِّ مَا أَجِدُ وَأُحَاذِرُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Dua for pain", "TRANSLATED_TEXT": "دعاء لألم الجسد." }
     ]
   },
   {
@@ -119,9 +140,205 @@ export const HISNUL_MUSLIM_DUAS: DuaCategory[] = [
     "TITLE": "أدعية من القرآن",
     "icon": "📖",
     "duas": [
-      { "ID": 10101, "ARABIC_TEXT": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "سورة البقرة - 201", "TRANSLATED_TEXT": "Our Lord, give us in this world [that which is] good and in the Hereafter [that which is] good and protect us from the punishment of the Fire." },
-      { "ID": 10102, "ARABIC_TEXT": "رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِنْ لَدُنْكَ رَحْمَةً ۚ إِنَّكَ أَنْتَ الْوَهَّابُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "سورة آل عمران - 8", "TRANSLATED_TEXT": "Our Lord, let not our hearts deviate after You have guided us and grant us from Yourself mercy. Indeed, You are the Bestower." },
-      { "ID": 10103, "ARABIC_TEXT": "رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِنْ ذُرِّيَّتِي ۚ رَبَّنَا وَتَقَبَّلْ دُعَاءِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "سورة إبراهيم - 40", "TRANSLATED_TEXT": "My Lord, make me an establisher of prayer, and [many] from my descendants. Our Lord, and accept my supplication." }
+      { "ID": 10101, "ARABIC_TEXT": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "سورة البقرة - 201", "TRANSLATED_TEXT": "أكثر دعاء النبي ﷺ." },
+      { "ID": 10102, "ARABIC_TEXT": "رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِنْ لَدُنْكَ رَحْمَةً ۚ إِنَّكَ أَنْتَ الْوَهَّابُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "سورة آل عمران - 8", "TRANSLATED_TEXT": "دعاء الثبات على الحق." },
+      { "ID": 10103, "ARABIC_TEXT": "رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِنْ ذُرِّيَّتِي ۚ رَبَّنَا وَتَقَبَّلْ دُعَاءِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "سورة إبراهيم - 40", "TRANSLATED_TEXT": "دعاء إبراهيم عليه السلام." },
+      { "ID": 10104, "ARABIC_TEXT": "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "سورة الفرقان - 74", "TRANSLATED_TEXT": "دعاء لصلاح الأسرة." },
+      { "ID": 10105, "ARABIC_TEXT": "رَبِّ اشْرَحْ لِي صَدْرِي * وَيَسِّرْ لِي أَمْرِي * وَاحْلُلْ عُقْدَةً مِنْ لِسَانِي * يَفْقَهُوا قَوْلِي", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "سورة طه - 25-28", "TRANSLATED_TEXT": "دعاء موسى عليه السلام." },
+      { "ID": 10106, "ARABIC_TEXT": "رَبِّ إِنِّي ظَلَمْتُ نَفْسِي فَاغْفِرْ لِي", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "سورة القصص - 16", "TRANSLATED_TEXT": "دعاء طلب المغفرة." },
+      { "ID": 10107, "ARABIC_TEXT": "رَبَّنَا لَا تُؤَاخِذْنَا إِنْ نَسِينَا أَوْ أَخْطَأْنَا ۚ رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَا إِصْرًا كَمَا حَمَلْتَهُ عَلَى الَّذِينَ مِنْ قَبْلِنَا ۚ رَبَّنَا وَلَا تُحَمِّلْنَا مَا لَا طَاقَةَ لَنَا بِهِ ۖ وَاعْفُ عَنَّا وَاغْفِرْ لَنَا وَارْحَمْنَا ۚ أَنْتَ مَوْلَانَا فَانْصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "سورة البقرة - 286", "TRANSLATED_TEXT": "خواتيم سورة البقرة." },
+      { "ID": 10108, "ARABIC_TEXT": "حَسْبِيَ اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ ۖ عَلَيْهِ تَوَكَّلْتُ ۖ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "سورة التوبة - 129", "TRANSLATED_TEXT": "من قالها 7 مرات كفاه الله ما أهمه." },
+      { "ID": 10109, "ARABIC_TEXT": "رَبَّنَا أَفْرِغْ عَلَيْنَا صَبْرًا وَثَبِّتْ أَقْدَامَنَا وَانْصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "سورة البقرة - 250", "TRANSLATED_TEXT": "دعاء الصبر والنصر." },
+      { "ID": 10110, "ARABIC_TEXT": "رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ وَعَلَىٰ وَالِدَيَّ وَأَنْ أَعْمَلَ صَالِحًا تَرْضَاهُ وَأَدْخِلْنِي بِرَحْمَتِكَ فِي عِبَادِكَ الصَّالِحِينَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "سورة النمل - 19", "TRANSLATED_TEXT": "دعاء الشكر." },
+      { "ID": 10111, "ARABIC_TEXT": "رَبَّنَا اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ الْحِسَابُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "سورة إبراهيم - 41", "TRANSLATED_TEXT": "دعاء للوالدين." }
+    ]
+  },
+  {
+    "ID": 3001,
+    "TITLE": "أدعية الرزق وقضاء الدين",
+    "icon": "💰",
+    "duas": [
+      { "ID": 300101, "ARABIC_TEXT": "اللَّهُمَّ اكْفِنِي بِحَلالِكَ عَنْ حَرَامِكَ، وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Dua for sufficient provision", "TRANSLATED_TEXT": "دعاء قضاء الدين." },
+      { "ID": 300102, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَالْعَجْزِ وَالْكَسَلِ، وَالْبُخْلِ وَالْجُبْنِ، وَضَلَعِ الدَّيْنِ، وَغَلَبَةِ الرِّجَالِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Dua for protection from debt", "TRANSLATED_TEXT": "الاستعاذة من غلبة الدين." },
+      { "ID": 300103, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلًا مُتَقَبَّلًا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Dua for good provision", "TRANSLATED_TEXT": "بعد صلاة الفجر." },
+      { "ID": 300104, "ARABIC_TEXT": "اللَّهُمَّ رَبَّ السَّمَاوَاتِ السَّبْعِ وَرَبَّ الْعَرْشِ الْعَظِيمِ، رَبَّنَا وَرَبَّ كُلِّ شَيْءٍ، فَالِقَ الْحَبِّ وَالنَّوَى، وَمُنْزِلَ التَّوْرَاةِ وَالْإِنْجِيلِ وَالْفُرْقَانِ، أَعُوذُ بِكَ مِنْ شَرِّ كُلِّ شَيْءٍ أَنْتَ آخِذٌ بِنَاصِيَتِهِ، اللَّهُمَّ أَنْتَ الْأَوَّلُ فَلَيْسَ قَبْلَكَ شَيْءٌ، وَأَنْتَ الْآخِرُ فَلَيْسَ بَعْدَكَ شَيْءٌ، وَأَنْتَ الظَّاهِرُ فَلَيْسَ فَوْقَكَ شَيْءٌ، وَأَنْتَ الْبَاطِنُ فَلَيْسَ دُونَكَ شَيْءٌ، اقْضِ عَنَّا الدَّيْنَ وَأَغْنِنَا مِنَ الْفَقْرِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Dua for debt relief", "TRANSLATED_TEXT": "دعاء عظيم لقضاء الدين." },
+      { "ID": 300105, "ARABIC_TEXT": "اللَّهُمَّ مَالِكَ الْمُلْكِ تُؤْتِي الْمُلْكَ مَنْ تَشَاءُ وَتَنْزِعُ الْمُلْكَ مِمَّنْ تَشَاءُ وَتُعِزُّ مَنْ تَشَاءُ وَتُذِلُّ مَنْ تَشَاءُ بِيَدِكَ الْخَيْرُ إِنَّكَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، رَحْمَنَ الدُّنْيَا وَالْآخِرَةِ وَرَحِيمَهُمَا تُعْطِيهِمَا مَنْ تَشَاءُ وَتَمْنَعُ مِنْهُمَا مَنْ تَشَاءُ، ارْحَمْنِي رَحْمَةً تُغْنِينِي بِهَا عَنْ رَحْمَةِ مَنْ سِوَاكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Dua of Mulk", "TRANSLATED_TEXT": "لو كان عليك مثل جبل أحد ديناً لأداه الله عنك." },
+      { "ID": 300106, "ARABIC_TEXT": "اللَّهُمَّ يَا ذَا الرَّحْمَةِ الْوَاسِعَةِ، يَا مُطَّلِعَاً عَلَى السَّرَائِرِ وَالضَّمَائِرِ وَالْهَوَاجِسِ وَالْخَوَاطِرِ، لَا يَعْزُبُ عَنْكَ شَيْءٌ، أَسْأَلُكَ فَيْضَةً مِنْ فَيْضَانِ فَضْلِكَ، وَقَبْضَةً مِنْ نُورِ سُلْطَانِكَ، وَأُنْسَاً وَفَرَجاً مِنْ بَحْرِ كَرَمِكَ، أَنْتَ بِيَدِكَ الْأَمْرُ كُلُّهُ وَمَقَالِيدُ كُلِّ شَيْءٍ، فَهَبْ لَنَا مَا تَقَرُّ بِهِ أَعْيُنُنَا، وَتُغْنِينَا عَنْ سُؤَالِ غَيْرِكَ، فَإِنَّكَ وَاسِعُ الْكَرَمِ، كَثِيرُ الْجُودِ، حَسَنُ الشِّيمِ، فِي بَابِكَ وَاقِفُونَ، وَلِجُودِكَ الْوَاسِعِ مُنْتَظِرُونَ يَا كَرِيمُ يَا رَحِيمُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Dua for generosity", "TRANSLATED_TEXT": "" },
+      { "ID": 300107, "ARABIC_TEXT": "اللَّهُمَّ ارْزُقْنِي رِزْقًا وَاسِعًا حَلَالًا طَيِّبًا مِنْ غَيْرِ كَدٍّ، وَاسْتَجِبْ دُعَائِي مِنْ غَيْرِ رَدٍّ، وَأَعُوذُ بِكَ مِنَ الْفَضِيحَتَيْنِ: الْفَقْرِ وَالدَّيْنِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Dua for easy provision", "TRANSLATED_TEXT": "" },
+      { "ID": 300108, "ARABIC_TEXT": "اللَّهُمَّ يَا رَازِقَ السَّائِلِينَ، يَا رَاحِمَ الْمَسَاكِينَ، وَيَا ذَا الْقُوَّةِ الْمَتِينَ، وَيَا خَيْرَ النَّاصِرِينَ، يَا وَلِيَّ الْمُؤْمِنِينَ، يَا غَيَّاثَ الْمُسْتَغِيثِينَ، إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Invocation of names", "TRANSLATED_TEXT": "" },
+      { "ID": 300109, "ARABIC_TEXT": "اللَّهُمَّ إِنْ كَانَ رِزْقِي فِي السَّمَاءِ فَأَنْزِلْهُ، وَإِنْ كَانَ فِي الْأَرْضِ فَأَخْرِجْهُ، وَإِنْ كَانَ بَعِيدًا فَقَرِّبْهُ، وَإِنْ كَانَ قَرِيبًا فَيَسِّرْهُ، وَإِنْ كَانَ قَلِيلًا فَكَثِّرْهُ، وَإِنْ كَانَ كَثِيرًا فَبَارِكْ لِي فِيهِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Comprehensive Rizq Dua", "TRANSLATED_TEXT": "" },
+      { "ID": 300110, "ARABIC_TEXT": "الْحَمْدُ لِلَّهِ الَّذِي لَا يَنْسَى مَنْ ذَكَرَهُ، الْحَمْدُ لِلَّهِ الَّذِي لَا يَخِيبُ مَنْ رَجَاهُ، الْحَمْدُ لِلَّهِ الَّذِي مَنْ تَوَكَّلَ عَلَيْهِ كَفَاهُ، الْحَمْدُ لِلَّهِ الَّذِي مَنْ وَثِقَ بِهِ لَمْ يَكِلْهُ إِلَى غَيْرِهِ، الْحَمْدُ لِلَّهِ الَّذِي هُوَ ثِقَتُنَا حِينَ تَنْقَطِعُ عَنَّا الْحِيَلُ، الْحَمْدُ لِلَّهِ الَّذِي هُوَ رَجَاؤُنَا حِينَ يَسُوءُ ظَنُّنَا بِأَعْمَالِنَا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Praise for provision", "TRANSLATED_TEXT": "" }
+    ]
+  },
+  {
+    "ID": 3002,
+    "TITLE": "أدعية للوالدين",
+    "icon": "👨‍👩‍👧‍👦",
+    "duas": [
+      { "ID": 300201, "ARABIC_TEXT": "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ الْحِسَابُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Quranic Dua for Parents", "TRANSLATED_TEXT": "إبراهيم: 41" },
+      { "ID": 300202, "ARABIC_TEXT": "رَبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Mercy for Parents", "TRANSLATED_TEXT": "الإسراء: 24" },
+      { "ID": 300203, "ARABIC_TEXT": "رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ وَعَلَى وَالِدَيَّ وَأَنْ أَعْمَلَ صَالِحًا تَرْضَاهُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Gratitude for Parents", "TRANSLATED_TEXT": "النمل: 19" },
+      { "ID": 300204, "ARABIC_TEXT": "اللَّهُمَّ اغْفِرْ لِوَالِدَيَّ وَارْحَمْهُمَا وَعَافِهِمَا وَاعْفُ عَنْهُمَا، وَأَكْرِمْ نُزُلَهُمَا، وَوَسِّعْ مُدْخَلَهُمَا، وَاغْسِلْهُمَا بِالْمَاءِ وَالثَّلْجِ وَالْبَرَدِ، وَنَقِّهِمَا مِنَ الْخَطَايَا كَمَا يُنَقَّى الثَّوْبُ الْأَبْيَضُ مِنَ الدَّنَسِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Comprehensive Parents Dua", "TRANSLATED_TEXT": "" },
+      { "ID": 300205, "ARABIC_TEXT": "اللَّهُمَّ مَنْ كَانَ مِنْهُمَا حَيًّا فَمَتِّعْهُ بِالصِّحَّةِ وَالْعَافِيَةِ وَطُولِ الْعُمُرِ فِي حُسْنِ عَمَلٍ، وَمَنْ كَانَ مِنْهُمَا مَيِّتًا فَأَنْزِلْ عَلَى قَبْرِهِ شَآبِيبَ الرَّحْمَاتِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Life and Death Dua", "TRANSLATED_TEXT": "" },
+      { "ID": 300206, "ARABIC_TEXT": "اللَّهُمَّ اجْعَلْهُمَا مِنْ أَهْلِ الْجَنَّةِ، وَحَرِّمْ وُجُوهَهُمَا عَلَى النَّارِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Jannah for Parents", "TRANSLATED_TEXT": "" },
+      { "ID": 300207, "ARABIC_TEXT": "اللَّهُمَّ اجْزِهِمَا عَنِّي خَيْرَ الْجَزَاءِ، وَأَعْظَمَ الْمَثُوبَةِ، وَأَوْفَى الْأَجْرِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Reward for Parents", "TRANSLATED_TEXT": "" },
+      { "ID": 300208, "ARABIC_TEXT": "اللَّهُمَّ أَعِنِّي عَلَى بِرِّهِمَا وَالإِحْسَانِ إِلَيْهِمَا فِي حَيَاتِهِمَا وَبَعْدَ مَمَاتِهِمَا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Help to be dutiful", "TRANSLATED_TEXT": "" },
+      { "ID": 300209, "ARABIC_TEXT": "اللَّهُمَّ لَا تَجْعَلْ لَهُمَا ذَنْبًا إِلَّا غَفَرْتَهُ، وَلَا هَمًّا إِلَّا فَرَّجْتَهُ، وَلَا حَاجَةً مِنْ حَوَائِجِ الدُّنْيَا هِيَ لَكَ رِضًا وَلَهُمَا فِيهَا صَلَاحٌ إِلَّا قَضَيْتَهَا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Needs of Parents", "TRANSLATED_TEXT": "" },
+      { "ID": 300210, "ARABIC_TEXT": "اللَّهُمَّ ارْزُقْنِي رِضَاهُمَا، وَأَعِذْنِي مِنْ عُقُوقِهِمَا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Seeking Parents' Pleasure", "TRANSLATED_TEXT": "" }
+    ]
+  },
+  {
+    "ID": 3003,
+    "TITLE": "أدعية الأسرة والزواج",
+    "icon": "💍",
+    "duas": [
+      { "ID": 300301, "ARABIC_TEXT": "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Family Bliss", "TRANSLATED_TEXT": "الفرقان: 74" },
+      { "ID": 300302, "ARABIC_TEXT": "اللَّهُمَّ أَلِّفْ بَيْنَ قُلُوبِنَا، وَأَصْلِحْ ذَاتَ بَيْنِنَا، وَاهْدِنَا سُبُلَ السَّلَامِ، وَنَجِّنَا مِنَ الظُّلُمَاتِ إِلَى النُّورِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Reconciliation", "TRANSLATED_TEXT": "دعاء إصلاح ذات البين." },
+      { "ID": 300303, "ARABIC_TEXT": "اللَّهُمَّ جَنِّبْنَا الشَّيْطَانَ وَجَنِّبِ الشَّيْطَانَ مَا رَزَقْتَنَا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Before Intimacy", "TRANSLATED_TEXT": "قبل الجماع." },
+      { "ID": 300304, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَهَا وَخَيْرَ مَا جَبَلْتَهَا عَلَيْهِ، وَأَعُوذُ بِكَ مِنْ شَرِّهَا وَشَرِّ مَا جَبَلْتَهَا عَلَيْهِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Wedding Night", "TRANSLATED_TEXT": "دعاء الزوج لزوجته ليلة الزفاف." },
+      { "ID": 300305, "ARABIC_TEXT": "بَارَكَ اللَّهُ لَكَ، وَبَارَكَ عَلَيْكَ، وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Congratulating Groom", "TRANSLATED_TEXT": "تهنئة الزوج." },
+      { "ID": 300306, "ARABIC_TEXT": "اللَّهُمَّ اجْعَلْ بَيْتَنَا آمِنًا مُطْمَئِنًّا، مَمْلُوءًا بِالذِّكْرِ وَالْقُرْآنِ، وَابْعِدْ عَنْهُ الشَّيَاطِينَ وَالْفِتَنَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Peaceful Home", "TRANSLATED_TEXT": "" },
+      { "ID": 300307, "ARABIC_TEXT": "اللَّهُمَّ اهْدِ أَوْلادِي وَأَصْلِحْ أَحْوَالَهُمْ وَاجْعَلْهُمْ هُدَاةً مُهْتَدِينَ، غَيْرَ ضَالِّينَ وَلَا مُضِلِّينَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Children Guidance", "TRANSLATED_TEXT": "" },
+      { "ID": 300308, "ARABIC_TEXT": "اللَّهُمَّ بَارِكْ لِي فِي زَوْجِي (أَوْ زَوْجَتِي) وَاجْعَلْ بَيْنَنَا مَوَدَّةً وَرَحْمَةً كَمَا تُحِبُّ وَتَرْضَى", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Spouse Blessing", "TRANSLATED_TEXT": "" },
+      { "ID": 300309, "ARABIC_TEXT": "أُعِيذُكُمَا بِكَلِمَاتِ اللَّهِ التَّامَّةِ، مِنْ كُلِّ شَيْطَانٍ وَهَامَّةٍ، وَمِنْ كُلِّ عَيْنٍ لَامَّةٍ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Protecting Children", "TRANSLATED_TEXT": "تحصين الأولاد." }
+    ]
+  },
+  {
+    "ID": 3004,
+    "TITLE": "أدعية للمتوفي",
+    "icon": "⚰️",
+    "duas": [
+      { "ID": 300401, "ARABIC_TEXT": "اللَّهُمَّ اغْفِرْ لَهُ وَارْحَمْهُ، وَعَافِهِ، وَاعْفُ عَنْهُ، وَأَكْرِمْ نُزُلَهُ، وَوَسِّعْ مُدْخَلَهُ، وَاغْسِلْهُ بِالْمَاءِ وَالثَّلْجِ وَالْبَرَدِ، وَنَقِّهِ مِنَ الْخَطَايَا كَمَا نَقَّيْتَ الثَّوْبَ الْأَبْيَضَ مِنَ الدَّنَسِ، وَأَبْدِلْهُ دَاراً خَيْراً مِنْ دَارِهِ، وَأَهْلاً خَيْراً مِنْ أَهْلِهِ، وَزَوْجاً خَيْراً مِنْ زَوْجِهِ، وَأَدْخِلْهُ الْجَنَّةَ، وَأَعِذْهُ مِنْ عَذَابِ الْقَبْرِ [وَعَذَابِ النَّارِ]", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Funeral Prayer Dua 1", "TRANSLATED_TEXT": "الدعاء للميت في الصلاة عليه." },
+      { "ID": 300402, "ARABIC_TEXT": "اللَّهُمَّ اغْفِرْ لِحَيِّنَا وَمَيِّتِنَا، وَشَاهِدِنَا وَغَائِبِنَا، وَصَغِيرِنَا وَكَبِيرِنَا، وَذَكَرِنَا وَأُنْثَانَا، اللَّهُمَّ مَنْ أَحْيَيْتَهُ مِنَّا فَأَحْيِهِ عَلَى الْإِسْلَامِ، وَمَنْ تَوَفَّيْتَهُ مِنَّا فَتَوَفَّهُ عَلَى الْإِيمَانِ، اللَّهُمَّ لَا تَحْرِمْنَا أَجْرَهُ وَلَا تُضِلَّنَا بَعْدَهُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Funeral Prayer Dua 2", "TRANSLATED_TEXT": "" },
+      { "ID": 300403, "ARABIC_TEXT": "اللَّهُمَّ إِنَّ فُلاَنَ بْنَ فُلاَنٍ فِي ذِمَّتِكَ، وَحَبْلِ جِوَارِكَ، فَقِهِ مِنْ فِتْنَةِ الْقَبْرِ، وَعَذَابِ النَّارِ، وَأَنْتَ أَهْلُ الْوَفَاءِ وَالْحَقِّ، فَاغْفِرْ لَهُ وَارْحَمْهُ إِنَّكَ أَنْتَ الْغَفُورُ الرَّحِيمُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Funeral Prayer Dua 3", "TRANSLATED_TEXT": "" },
+      { "ID": 300404, "ARABIC_TEXT": "اللَّهُمَّ عَبْدُكَ وَابْنُ أَمَتِكَ احْتَاجَ إِلَى رَحْمَتِكَ، وَأَنْتَ غَنِيٌّ عَنْ عَذَابِهِ، إِنْ كَانَ مُحْسِناً فَزِدْ فِي حَسَنَاتِهِ، وَإِنْ كَانَ مُسِيئاً فَتَجَاوَزْ عَنْهُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Funeral Prayer Dua 4", "TRANSLATED_TEXT": "" },
+      { "ID": 300405, "ARABIC_TEXT": "السَّلَامُ عَلَيْكُمْ أَهْلَ الدِّيَارِ، مِنَ الْمُؤْمِنِينَ وَالْمُسْلِمِينَ، وَإِنَّا إِنْ شَاءَ اللَّهُ بِكُمْ لَاحِقُونَ، [وَيَرْحَمُ اللَّهُ الْمُسْتَقْدِمِينَ مِنَّا وَالْمُسْتَأْخِرِينَ]، أَسْأَلُ اللَّهَ لَنَا وَلَكُمُ الْعَافِيَةَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Visiting Graves", "TRANSLATED_TEXT": "دعاء زيارة القبور." },
+      { "ID": 300406, "ARABIC_TEXT": "اللَّهُمَّ آنِسْ وَحْشَتَهُ، وَارْحَمْ غُرْبَتَهُ، وَتَقَبَّلْ حَسَنَاتِهِ، وَتَجَاوَزْ عَنْ سَيِّئَاتِهِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Consolation Dua", "TRANSLATED_TEXT": "" },
+      { "ID": 300407, "ARABIC_TEXT": "اللَّهُمَّ يَمِّنْ كِتَابَهُ، وَيَسِّرْ حِسَابَهُ، وَثَقِّلْ بِالْحَسَنَاتِ مِيزَانَهُ، وَثَبِّتْ عَلَى الصِّرَاطِ أَقْدَامَهُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Judgment Day Dua", "TRANSLATED_TEXT": "" },
+      { "ID": 300408, "ARABIC_TEXT": "اللَّهُمَّ اجْعَلْ قَبْرَهُ رَوْضَةً مِنْ رِيَاضِ الْجَنَّةِ، وَلَا تَجْعَلْهُ حُفْرَةً مِنْ حُفَرِ النَّارِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Grave Dua", "TRANSLATED_TEXT": "" },
+      { "ID": 300409, "ARABIC_TEXT": "إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ، اللَّهُمَّ أْجُرْنِي فِي مُصِيبَتِي وَأَخْلِفْ لِي خَيْراً مِنْهَا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Dua for Calamity", "TRANSLATED_TEXT": "عند المصيبة." }
+    ]
+  },
+  {
+    "ID": 3005,
+    "TITLE": "أدعية الحج والعمرة",
+    "icon": "🕋",
+    "duas": [
+      { "ID": 300501, "ARABIC_TEXT": "لَبَّيْكَ اللَّهُمَّ لَبَّيْكَ، لَبَّيْكَ لَا شَرِيكَ لَكَ لَبَّيْكَ، إِنَّ الْحَمْدَ وَالنِّعْمَةَ لَكَ وَالْمُلْكَ، لَا شَرِيكَ لَكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Talbiyah", "TRANSLATED_TEXT": "التلبية." },
+      { "ID": 300502, "ARABIC_TEXT": "اللَّهُمَّ إِيمَاناً بِكَ، وَتَصْدِيقاً بِكِتَابِكَ، وَوَفَاءً بِعَهْدِكَ، وَاتِّبَاعاً لِسُنَّةِ نَبِيِّكَ مُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Black Stone Dua", "TRANSLATED_TEXT": "عند استلام الحجر الأسود." },
+      { "ID": 300503, "ARABIC_TEXT": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Between Corners", "TRANSLATED_TEXT": "بين الركن اليماني والحجر الأسود." },
+      { "ID": 300504, "ARABIC_TEXT": "أَبْدَأُ بِمَا بَدَأَ اللَّهُ بِهِ... ﴿إِنَّ الصَّفَا وَالْمَرْوَةَ مِنْ شَعَائِرِ اللَّهِ﴾... لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ، أَنْجَزَ وَعْدَهُ، وَنَصَرَ عَبْدَهُ، وَهَزَمَ الْأَحْزَابَ وَحْدَهُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Safa and Marwah", "TRANSLATED_TEXT": "عند الصفا والمروة." },
+      { "ID": 300505, "ARABIC_TEXT": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Day of Arafah", "TRANSLATED_TEXT": "خير الدعاء دعاء يوم عرفة." },
+      { "ID": 300506, "ARABIC_TEXT": "اللهُ أَكْبَرُ، اللهُ أَكْبَرُ، اللهُ أَكْبَرُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Jamarat", "TRANSLATED_TEXT": "عند رمي الجمرات مع كل حصاة." },
+      { "ID": 300507, "ARABIC_TEXT": "اللَّهُمَّ اجْعَلْهُ حَجًّا مَبْرُورًا، وَذَنْبًا مَغْفُورًا، وَسَعْيًا مَشْكُورًا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Hajj Acceptance", "TRANSLATED_TEXT": "" },
+      { "ID": 300508, "ARABIC_TEXT": "اللَّهُمَّ زِدْ هَذَا البَيْتَ تَشْرِيفًا وَتَعْظِيمًا وَتَكْرِيمًا وَمَهَابَةً، وَزِدْ مَنْ شَرَّفَهُ وَكَرَّمَهُ مِمَّنْ حَجَّهُ أَوِ اعْتَمَرَهُ تَشْرِيفًا وَتَكْرِيمًا وَتَعْظِيمًا وَبِرًّا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Seeing the Kaaba", "TRANSLATED_TEXT": "عند رؤية الكعبة." },
+      { "ID": 300509, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا وَاسِعًا، وَشِفَاءً مِنْ كُلِّ دَاءٍ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Drinking Zamzam", "TRANSLATED_TEXT": "عند شرب ماء زمزم." },
+      { "ID": 300510, "ARABIC_TEXT": "آيِبُونَ تَائِبُونَ عَابِدُونَ لِرَبِّنَا حَامِدُونَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Returning from Travel", "TRANSLATED_TEXT": "عند العودة من السفر." }
+    ]
+  },
+  {
+    "ID": 3006,
+    "TITLE": "أدعية السجود",
+    "icon": "🙇",
+    "duas": [
+      { "ID": 300601, "ARABIC_TEXT": "سُبْحَانَ رَبِّيَ الْأَعْلَى", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Subhana Rabbiyal A'la", "TRANSLATED_TEXT": "(3 مرات)", count: 3 },
+      { "ID": 300602, "ARABIC_TEXT": "سُبْحَانَكَ اللَّهُمَّ رَبَّنَا وَبِحَمْدِكَ، اللَّهُمَّ اغْفِرْ لِي", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Sujood Dua 2", "TRANSLATED_TEXT": "" },
+      { "ID": 300603, "ARABIC_TEXT": "سُبُّوحٌ قُدُّوسٌ، رَبُّ الْمَلَائِكَةِ وَالرُّوحِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Sujood Dua 3", "TRANSLATED_TEXT": "" },
+      { "ID": 300604, "ARABIC_TEXT": "اللَّهُمَّ لَكَ سَجَدْتُ، وَبِكَ آمَنْتُ، وَلَكَ أَسْلَمْتُ، سَجَدَ وَجْهِي لِلَّذِي خَلَقَهُ، وَصَوَّرَهُ، وَشَقَّ سَمْعَهُ وَبَصَرَهُ، تَبَارَكَ اللَّهُ أَحْسَنُ الْخَالِقِينَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Sujood Dua 4", "TRANSLATED_TEXT": "" },
+      { "ID": 300605, "ARABIC_TEXT": "سُبْحَانَ ذِي الْجَبَرُوتِ وَالْمَلَكُوتِ وَالْكِبْرِيَاءِ وَالْعَظَمَةِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Sujood Dua 5", "TRANSLATED_TEXT": "" },
+      { "ID": 300606, "ARABIC_TEXT": "اللَّهُمَّ اغْفِرْ لِي ذَنْبِي كُلَّهُ: دِقَّهُ وَجِلَّهُ، وَأَوَّلَهُ وَآخِرَهُ، وَعَلَانِيَتَهُ وَسِرَّهُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Sujood Dua 6", "TRANSLATED_TEXT": "" },
+      { "ID": 300607, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَعُوذُ بِرِضَاكَ مِنْ سَخَطِكَ، وَبِمُعَافَاتِكَ مِنْ عُقُوبَتِكَ، وَأَعُوذُ بِكَ مِنْكَ، لَا أُحْصِي ثَنَاءً عَلَيْكَ أَنْتَ كَمَا أَثْنَيْتَ عَلَى نَفْسِكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Sujood Dua 7", "TRANSLATED_TEXT": "" },
+      { "ID": 300608, "ARABIC_TEXT": "اللَّهُمَّ اجْعَلْ فِي قَلْبِي نُوراً، وَاجْعَلْ فِي سَمْعِي نُوراً، وَاجْعَلْ فِي بَصَرِي نُوراً، وَاجْعَلْ مِنْ تَحْتِي نُوراً، وَاجْعَلْ مِنْ فَوْقِي نُوراً، وَعَنْ يَمِينِي نُوراً، وَعَنْ يَسَارِي نُوراً، وَاجْعَلْ أَمَامِي نُوراً، وَاجْعَلْ خَلْفِي نُوراً، وَأَعْظِمْ لِي نُوراً", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Light Dua", "TRANSLATED_TEXT": "" },
+      { "ID": 300609, "ARABIC_TEXT": "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Heart Steadfastness", "TRANSLATED_TEXT": "" },
+      { "ID": 300610, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي ظَلَمْتُ نَفْسِي ظُلْمًا كَثِيرًا وَلَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ، فَاغْفِرْ لِي مَغْفِرَةً مِنْ عِنْدِكَ وَارْحَمْنِي إِنَّكَ أَنْتَ الْغَفُورُ الرَّحِيمُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Seeking Forgiveness", "TRANSLATED_TEXT": "" }
+    ]
+  },
+  {
+    "ID": 3007,
+    "TITLE": "أدعية ختم القرآن",
+    "icon": "✨",
+    "duas": [
+      { "ID": 300701, "ARABIC_TEXT": "اللَّهُمَّ ارْحَمْنِي بِالْقُرْآنِ وَاجْعَلْهُ لِي إِمَاماً وَنُوراً وَهُدًى وَرَحْمَةً", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Khatmah Dua 1", "TRANSLATED_TEXT": "" },
+      { "ID": 300702, "ARABIC_TEXT": "اللَّهُمَّ ذَكِّرْنِي مِنْهُ مَا نَسِيتُ وَعَلِّمْنِي مِنْهُ مَا جَهِلْتُ وَارْزُقْنِي تِلَاوَتَهُ آنَاءَ اللَّيْلِ وَأَطْرَافَ النَّهَارِ وَاجْعَلْهُ لِي حُجَّةً يَا رَبَّ الْعَالَمِينَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Khatmah Dua 2", "TRANSLATED_TEXT": "" },
+      { "ID": 300703, "ARABIC_TEXT": "اللَّهُمَّ أَصْلِحْ لِي دِينِي الَّذِي هُوَ عِصْمَةُ أَمْرِي، وَأَصْلِحْ لِي دُنْيَايَ الَّتِي فِيهَا مَعَاشِي، وَأَصْلِحْ لِي آخِرَتِي الَّتِي فِيهَا مَعَادِي، وَاجْعَلِ الْحَيَاةَ زِيَادَةً لِي فِي كُلِّ خَيْرٍ وَاجْعَلِ الْمَوْتَ رَاحَةً لِي مِنْ كُلِّ شَرٍّ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Khatmah Dua 3", "TRANSLATED_TEXT": "" },
+      { "ID": 300704, "ARABIC_TEXT": "اللَّهُمَّ اجْعَلْ خَيْرَ عُمْرِي آخِرَهُ وَخَيْرَ عَمَلِي خَوَاتِمَهُ وَخَيْرَ أَيَّامِي يَوْمَ أَلْقَاكَ فِيهِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Khatmah Dua 4", "TRANSLATED_TEXT": "" },
+      { "ID": 300705, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِيشَةً هَنِيَّةً وَمِيتَةً سَوِيَّةً وَمَرَدًّا غَيْرَ مُخْزٍ وَلَا فَاضِحٍ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Khatmah Dua 5", "TRANSLATED_TEXT": "" },
+      { "ID": 300706, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ الْمَسْأَلَةِ وَخَيْرَ الدُّعَاءِ وَخَيْرَ النَّجَاحِ وَخَيْرَ الْعِلْمِ وَخَيْرَ الْعَمَلِ وَخَيْرَ الثَّوَابِ وَخَيْرَ الْحَيَاةِ وَخَيْرَ الْمَمَاتِ وَثَبِّتْنِي وَثَقِّلْ مَوَازِينِي وَحَقِّقْ إِيمَانِي وَارْفَعْ دَرَجَتِي وَتَقَبَّلْ صَلَاتِي وَاغْفِرْ خَطِيئَاتِي وَأَسْأَلُكَ الْعُلَا مِنَ الْجَنَّةِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Khatmah Dua 6", "TRANSLATED_TEXT": "" },
+      { "ID": 300707, "ARABIC_TEXT": "اللَّهُمَّ اجْعَلْهُ شَفِيعاً لَنَا يَوْمَ القِيَامَةِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Intercessor", "TRANSLATED_TEXT": "" },
+      { "ID": 300708, "ARABIC_TEXT": "اللَّهُمَّ زَيِّنْ أَخْلَاقَنَا بِالْقُرْآنِ، وَنَجِّنَا مِنَ النَّارِ بِالْقُرْآنِ، وَأَدْخِلْنَا الْجَنَّةَ بِالْقُرْآنِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Decoration of Quran", "TRANSLATED_TEXT": "" }
+    ]
+  },
+  {
+    "ID": 3008,
+    "TITLE": "أدعية طلب العلم",
+    "icon": "📚",
+    "duas": [
+      { "ID": 300801, "ARABIC_TEXT": "رَبِّ زِدْنِي عِلْمًا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Increase Knowledge", "TRANSLATED_TEXT": "طه: 114" },
+      { "ID": 300802, "ARABIC_TEXT": "اللَّهُمَّ انْفَعْنِي بِمَا عَلَّمْتَنِي، وَعَلِّمْنِي مَا يَنْفَعُنِي، وَزِدْنِي عِلْمًا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Beneficial Knowledge", "TRANSLATED_TEXT": "" },
+      { "ID": 300803, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلًا مُتَقَبَّلًا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Morning Dua", "TRANSLATED_TEXT": "" },
+      { "ID": 300804, "ARABIC_TEXT": "اللَّهُمَّ فَقِّهْنِي فِي الدِّينِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Understanding Religion", "TRANSLATED_TEXT": "" },
+      { "ID": 300805, "ARABIC_TEXT": "اللَّهُمَّ يَا مُعَلِّمَ إِبْرَاهِيمَ عَلِّمْنِي، وَيَا مُفَهِّمَ سُلَيْمَانَ فَهِّمْنِي", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Teacher of Ibrahim", "TRANSLATED_TEXT": "" },
+      { "ID": 300806, "ARABIC_TEXT": "اللَّهُمَّ ذَكِّرْنِي مَا نَسِيتُ، وَاحْفَظْ عَلَيَّ مَا عَلِمْتُ، وَزِدْنِي عِلْمًا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Memory Dua", "TRANSLATED_TEXT": "" },
+      { "ID": 300807, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عِلْمٍ لَا يَنْفَعُ، وَمِنْ قَلْبٍ لَا يَخْشَعُ، وَمِنْ نَفْسٍ لَا تَشْبَعُ، وَمِنْ دَعْوَةٍ لَا يُسْتَجَابُ لَهَا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Useless Knowledge", "TRANSLATED_TEXT": "" },
+      { "ID": 300808, "ARABIC_TEXT": "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي وَاحْلُلْ عُقْدَةً مِنْ لِسَانِي يَفْقَهُوا قَوْلِي", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Moses Dua", "TRANSLATED_TEXT": "" }
+    ]
+  },
+  {
+    "ID": 3009,
+    "TITLE": "أدعية الصبر والفرج",
+    "icon": "🤲",
+    "duas": [
+      { "ID": 300901, "ARABIC_TEXT": "إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ، اللَّهُمَّ أْجُرْنِي فِي مُصِيبَتِي وَأَخْلِفْ لِي خَيْراً مِنْهَا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Patience in Calamity", "TRANSLATED_TEXT": "" },
+      { "ID": 300902, "ARABIC_TEXT": "رَبَّنَا أَفْرِغْ عَلَيْنَا صَبْرًا وَثَبِّتْ أَقْدَامَنَا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Pour Patience", "TRANSLATED_TEXT": "البقرة: 250" },
+      { "ID": 300903, "ARABIC_TEXT": "لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Yunus Dua", "TRANSLATED_TEXT": "" },
+      { "ID": 300904, "ARABIC_TEXT": "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ، وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Istighatha", "TRANSLATED_TEXT": "" },
+      { "ID": 300905, "ARABIC_TEXT": "اللَّهُمَّ رَحْمَتَكَ أَرْجُو، فَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ، وَأَصْلِحْ لِي شَأْنِي كُلَّهُ، لَا إِلَهَ إِلَّا أَنْتَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Hope for Mercy", "TRANSLATED_TEXT": "" },
+      { "ID": 300906, "ARABIC_TEXT": "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Allah is Sufficient", "TRANSLATED_TEXT": "آل عمران: 173" },
+      { "ID": 300907, "ARABIC_TEXT": "اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Ease Difficulties", "TRANSLATED_TEXT": "" },
+      { "ID": 300908, "ARABIC_TEXT": "اللَّهُمَّ فَرِّجْ هَمِّي، وَاكْشِفْ غَمِّي، وَأَهْلِكْ عَدُوِّي، وَعَافِنِي فِي نَفْسِي وَأَهْلِي وَمَالِي", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Remove Distress", "TRANSLATED_TEXT": "" }
+    ]
+  },
+  {
+    "ID": 3010,
+    "TITLE": "أدعية الخوف والفزع",
+    "icon": "😨",
+    "duas": [
+      { "ID": 301001, "ARABIC_TEXT": "لَا إِلَهَ إِلَّا اللَّهُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Upon Waking startled", "TRANSLATED_TEXT": "عند الفزع من النوم." },
+      { "ID": 301002, "ARABIC_TEXT": "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ غَضَبِهِ وَعِقَابِهِ، وَشَرِّ عِبَادِهِ، وَمِنْ هَمَزَاتِ الشَّيَاطِينِ وَأَنْ يَحْضُرُونِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Fear in Sleep", "TRANSLATED_TEXT": "دعاء الفزع في النوم." },
+      { "ID": 301003, "ARABIC_TEXT": "اللَّهُمَّ اكْفِنِيهِمْ بِمَا شِئْتَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Fear of Enemy", "TRANSLATED_TEXT": "عند الخوف من قوم." },
+      { "ID": 301004, "ARABIC_TEXT": "اللَّهُمَّ إِنَّا نَجْعَلُكَ فِي نُحُورِهِمْ، وَنَعُوذُ بِكَ مِنْ شُرُورِهِمْ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Facing Enemy", "TRANSLATED_TEXT": "عند لقاء العدو." },
+      { "ID": 301005, "ARABIC_TEXT": "اللَّهُمَّ أَنْتَ عَضُدِي، وَأَنْتَ نَصِيرِي، بِكَ أَحُولُ، وَبِكَ أَصُولُ، وَبِكَ أُقَاتِلُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Seeking Help", "TRANSLATED_TEXT": "" },
+      { "ID": 301006, "ARABIC_TEXT": "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Sufficient is Allah", "TRANSLATED_TEXT": "" },
+      { "ID": 301007, "ARABIC_TEXT": "اللَّهُمَّ اسْتُرْ عَوْرَاتِي وَآمِنْ رَوْعَاتِي", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Safety", "TRANSLATED_TEXT": "" }
+    ]
+  },
+  {
+    "ID": 3011,
+    "TITLE": "أدعية المطر والريح",
+    "icon": "⛈️",
+    "duas": [
+      { "ID": 301101, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَهَا، وَخَيْرَ مَا فِيهَا، وَخَيْرَ مَا أُرْسِلَتْ بِهِ، وَأَعُوذُ بِكَ مِنْ شَرِّهَا، وَشَرِّ مَا فِيهَا، وَشَرِّ مَا أُرْسِلَتْ بِهِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Wind Dua", "TRANSLATED_TEXT": "عند هبوب الريح." },
+      { "ID": 301102, "ARABIC_TEXT": "اللَّهُمَّ لَا تَقْتُلْنَا بِغَضَبِكَ، وَلَا تُهْلِكْنَا بِعَذَابِكَ، وَعَافِنَا قَبْلَ ذَلِكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Thunder Dua", "TRANSLATED_TEXT": "عند سماع الرعد." },
+      { "ID": 301103, "ARABIC_TEXT": "سُبْحَانَ الَّذِي يُسَبِّحُ الرَّعْدُ بِحَمْدِهِ وَالْمَلَائِكَةُ مِنْ خِيفَتِهِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Praise in Thunder", "TRANSLATED_TEXT": "" },
+      { "ID": 301104, "ARABIC_TEXT": "اللَّهُمَّ اسْقِنَا غَيْثاً مُغِيثاً مَرِيئاً مَرِيعاً، نَافِعاً غَيْرَ ضَارٍّ، عَاجِلاً غَيْرَ آجِلٍ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Rain Request", "TRANSLATED_TEXT": "دعاء الاستسقاء." },
+      { "ID": 301105, "ARABIC_TEXT": "اللَّهُمَّ أَغِثْنَا، اللَّهُمَّ أَغِثْنَا، اللَّهُمَّ أَغِثْنَا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Help with Rain", "TRANSLATED_TEXT": "" },
+      { "ID": 301106, "ARABIC_TEXT": "اللَّهُمَّ صَيِّباً نَافِعاً", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "When Raining", "TRANSLATED_TEXT": "عند نزول المطر." },
+      { "ID": 301107, "ARABIC_TEXT": "مُطِرْنَا بِفَضْلِ اللَّهِ وَرَحْمَتِهِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "After Rain", "TRANSLATED_TEXT": "بعد نزول المطر." },
+      { "ID": 301108, "ARABIC_TEXT": "اللَّهُمَّ حَوَالَيْنَا وَلَا عَلَيْنَا، اللَّهُمَّ عَلَى الْآكَامِ وَالظِّرَابِ، وَبُطُونِ الْأَوْدِيَةِ، وَمَنَابِتِ الشَّجَرِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Excessive Rain", "TRANSLATED_TEXT": "إذا كثر المطر وخيف منه الضرر." }
+    ]
+  },
+  {
+    "ID": 3012,
+    "TITLE": "أدعية الصائم",
+    "icon": "🍲",
+    "duas": [
+      { "ID": 301201, "ARABIC_TEXT": "ذَهَبَ الظَّمَأُ، وَابْتَلَّتِ الْعُرُوقُ، وَثَبَتَ الْأَجْرُ إِنْ شَاءَ اللَّهُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Breaking Fast", "TRANSLATED_TEXT": "عند الإفطار." },
+      { "ID": 301202, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي لَكَ صُمْتُ، وَعَلَى رِزْقِكَ أَفْطَرْتُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Iftar Dua", "TRANSLATED_TEXT": "" },
+      { "ID": 301203, "ARABIC_TEXT": "أَفْطَرَ عِنْدَكُمُ الصَّائِمُونَ، وَأَكَلَ طَعَامَكُمُ الْأَبْرَارُ، وَصَلَّتْ عَلَيْكُمُ الْمَلَائِكَةُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Guest Dua", "TRANSLATED_TEXT": "دعاء الضيف لأهل الطعام." },
+      { "ID": 301204, "ARABIC_TEXT": "اللَّهُمَّ بَارِكْ لَهُمْ فِيمَا رَزَقْتَهُمْ، وَاغْفِرْ لَهُمْ وَارْحَمْهُمْ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Blessing Food", "TRANSLATED_TEXT": "" },
+      { "ID": 301205, "ARABIC_TEXT": "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Laylatul Qadr", "TRANSLATED_TEXT": "ليلة القدر." },
+      { "ID": 301206, "ARABIC_TEXT": "اللَّهُمَّ سَلِّمْنِي لِرَمَضَانَ، وَسَلِّمْ رَمَضَانَ لِي، وَتَسَلَّمْهُ مِنِّي مُتَقَبَّلاً", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Ramadan Reception", "TRANSLATED_TEXT": "استقبال رمضان." },
+      { "ID": 301207, "ARABIC_TEXT": "اللَّهُمَّ أَهِلَّهُ عَلَيْنَا بِالْأَمْنِ وَالْإِيمَانِ، وَالسَّلَامَةِ وَالْإِسْلَامِ، رَبِّي وَرَبُّكَ اللَّهُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "New Moon", "TRANSLATED_TEXT": "رؤية الهلال." }
     ]
   },
   {
@@ -131,7 +348,14 @@ export const HISNUL_MUSLIM_DUAS: DuaCategory[] = [
     "duas": [
       { "ID": 1101, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Guidance and Piety", "TRANSLATED_TEXT": "O Allah, I ask You for guidance, piety, chastity, and self-sufficiency." },
       { "ID": 1102, "ARABIC_TEXT": "اللَّهُمَّ مُصَرِّفَ الْقُلُوبِ صَرِّفْ قُلُوبَنَا عَلَى طَاعَتِكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Steadfastness of the Heart", "TRANSLATED_TEXT": "O Allah, Turner of the hearts, turn our hearts to Your obedience." },
-      { "ID": 1103, "ARABIC_TEXT": "اللَّهُمَّ آتِ نَفْسِي تَقْوَاهَا، وَزَكِّهَا أَنْتَ خَيْرُ مَنْ زَكَّاهَا، أَنْتَ وَلِيُّهَا وَمَوْلَاهَا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Purity of the Soul", "TRANSLATED_TEXT": "O Allah, grant my soul its piety and purify it, You are the best to purify it, You are its Guardian and Master." }
+      { "ID": 1103, "ARABIC_TEXT": "اللَّهُمَّ آتِ نَفْسِي تَقْوَاهَا، وَزَكِّهَا أَنْتَ خَيْرُ مَنْ زَكَّاهَا، أَنْتَ وَلِيُّهَا وَمَوْلَاهَا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Purity of the Soul", "TRANSLATED_TEXT": "O Allah, grant my soul its piety and purify it, You are the best to purify it, You are its Guardian and Master." },
+      { "ID": 1104, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَسْأَلُكَ حُبَّكَ، وَحُبَّ مَنْ يُحِبُّكَ، وَالْعَمَلَ الَّذِي يُبَلِّغُنِي حُبَّكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Love of Allah", "TRANSLATED_TEXT": "طلب حب الله." },
+      { "ID": 1105, "ARABIC_TEXT": "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Aid in Worship", "TRANSLATED_TEXT": "" },
+      { "ID": 1106, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ زَوَالِ نِعْمَتِكَ، وَتَحَوُّلِ عَافِيَتِكَ، وَفُجَاءَةِ نِقْمَتِكَ، وَجَمِيعِ سَخَطِكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Protection from Loss", "TRANSLATED_TEXT": "" },
+      { "ID": 1107, "ARABIC_TEXT": "اللَّهُمَّ اغْفِرْ لِي خَطِيئَتِي وَجَهْلِي، وَإِسْرَافِي فِي أَمْرِي، وَمَا أَنْتَ أَعْلَمُ بِهِ مِنِّي", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Forgiveness of Errors", "TRANSLATED_TEXT": "" },
+      { "ID": 1108, "ARABIC_TEXT": "اللَّهُمَّ أَصْلِحْ لِي دِينِي الَّذِي هُوَ عِصْمَةُ أَمْرِي، وَأَصْلِحْ لِي دُنْيَايَ الَّتِي فِيهَا مَعَاشِي، وَأَصْلِحْ لِي آخِرَتِي الَّتِي فِيهَا مَعَادِي", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Religious and Worldly Affairs", "TRANSLATED_TEXT": "" },
+      { "ID": 1109, "ARABIC_TEXT": "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Steadfast Heart", "TRANSLATED_TEXT": "" },
+      { "ID": 1110, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي ظَلَمْتُ نَفْسِي ظُلْمًا كَثِيرًا، وَلَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ، فَاغْفِرْ لِي مَغْفِرَةً مِنْ عِنْدِكَ، وَارْحَمْنِي إِنَّكَ أَنْتَ الْغَفُورُ الرَّحِيمُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Abu Bakr's Dua", "TRANSLATED_TEXT": "" }
     ]
   },
   {
@@ -240,7 +464,9 @@ export const HISNUL_MUSLIM_DUAS: DuaCategory[] = [
       { "ID": 2099, "ARABIC_TEXT": "وَلَا تَجْعَلِ الدُّنْيَا أَكْبَرَ هَمِّنَا، وَلَا مَبْلَغَ عِلْمِنَا، وَلَا تُسَلِّطْ عَلَيْنَا مَنْ لَا يَرْحَمُنَا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "رواه الترمذي", "TRANSLATED_TEXT": "" },
       { "ID": 2100, "ARABIC_TEXT": "اللَّهُمَّ اغْفِرْ لِحَيِّنَا وَمَيِّتِنَا، وَشَاهِدِنَا وَغَائِبِنَا، وَصَغِيرِنَا وَكَبِيرِنَا، وَذَكَرِنَا وَأُنْثَانَا", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "رواه أبو داود", "TRANSLATED_TEXT": "" },
       { "ID": 2101, "ARABIC_TEXT": "اللَّهُمَّ مَنْ أَحْيَيْتَهُ مِنَّا فَأَحْيِهِ عَلَى الْإِسْلَامِ، وَمَنْ تَوَفَّيْتَهُ مِنَّا فَتَوَفَّهُ عَلَى الْإِيمَانِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "رواه أبو داود", "TRANSLATED_TEXT": "" },
-      { "ID": 2102, "ARABIC_TEXT": "اللَّهُمَّ لَا تَحْرِمْنَا أَجْرَهُ، وَلَا تُضِلَّنَا بَعْدَهُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "رواه ابن ماجه", "TRANSLATED_TEXT": "دعاء صلاة الجنازة" }
+      { "ID": 2102, "ARABIC_TEXT": "اللَّهُمَّ لَا تَحْرِمْنَا أَجْرَهُ، وَلَا تُضِلَّنَا بَعْدَهُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "رواه ابن ماجه", "TRANSLATED_TEXT": "دعاء صلاة الجنازة" },
+      { "ID": 2103, "ARABIC_TEXT": "اللَّهُمَّ أَنْتَ الْمَلِكُ لَا إِلَهَ إِلَّا أَنْتَ، أَنْتَ رَبِّي وَأَنَا عَبْدُكَ، ظَلَمْتُ نَفْسِي وَاعْتَرَفْتُ بِذَنْبِي، فَاغْفِرْ لِي ذُنُوبِي جَمِيعًا، إِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Du'a al-Istiftah", "TRANSLATED_TEXT": "" },
+      { "ID": 2104, "ARABIC_TEXT": "اللَّهُمَّ بَاعِدْ بَيْنِي وَبَيْنَ خَطَايَايَ كَمَا بَاعَدْتَ بَيْنَ الْمَشْرِقِ وَالْمَغْرِبِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Distance from Sins", "TRANSLATED_TEXT": "" }
     ]
   },
   {
@@ -248,7 +474,10 @@ export const HISNUL_MUSLIM_DUAS: DuaCategory[] = [
     "TITLE": "دعاء السفر",
     "icon": "✈️",
     "duas": [
-      { "ID": 1201, "ARABIC_TEXT": "اللهُ أَكْبَرُ، اللهُ أَكْبَرُ، اللهُ أَكْبَرُ، سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ، وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Upon Mounting a Vehicle", "TRANSLATED_TEXT": "Allah is the Most Great... Glory is to Him Who has provided this for us though we could never have had it by our own efforts. And we will surely return to our Lord." }
+      { "ID": 1201, "ARABIC_TEXT": "اللهُ أَكْبَرُ، اللهُ أَكْبَرُ، اللهُ أَكْبَرُ، سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ، وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Upon Mounting a Vehicle", "TRANSLATED_TEXT": "Allah is the Most Great... Glory is to Him Who has provided this for us though we could never have had it by our own efforts. And we will surely return to our Lord." },
+      { "ID": 1202, "ARABIC_TEXT": "اللَّهُمَّ إِنَّا نَسْأَلُكَ فِي سَفَرِنَا هَذَا الْبِرَّ وَالتَّقْوَى، وَمِنَ الْعَمَلِ مَا تَرْضَى، اللَّهُمَّ هَوِّنْ عَلَيْنَا سَفَرَنَا هَذَا وَاطْوِ عَنَّا بُعْدَهُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Travel Dua 2", "TRANSLATED_TEXT": "" },
+      { "ID": 1203, "ARABIC_TEXT": "اللَّهُمَّ أَنْتَ الصَّاحِبُ فِي السَّفَرِ، وَالْخَلِيفَةُ فِي الْأَهْلِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Travel Dua 3", "TRANSLATED_TEXT": "" },
+      { "ID": 1204, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ وَعْثَاءِ السَّفَرِ، وَكَآبَةِ الْمَنْظَرِ، وَسُوءِ الْمُنْقَلَبِ فِي الْمَالِ وَالْأَهْلِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Travel Protection", "TRANSLATED_TEXT": "" }
     ]
   },
   {
@@ -256,13 +485,20 @@ export const HISNUL_MUSLIM_DUAS: DuaCategory[] = [
     "TITLE": "دعاء زيارة المريض",
     "icon": "🩹",
     "duas": [
-      { "ID": 1301, "ARABIC_TEXT": "لَا بَأْسَ طَهُورٌ إِنْ شَاءَ اللَّهُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "To the Sick Person", "TRANSLATED_TEXT": "Do not worry, it will be a purification (for you), God willing." }
+      { "ID": 1301, "ARABIC_TEXT": "لَا بَأْسَ طَهُورٌ إِنْ شَاءَ اللَّهُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "To the Sick Person", "TRANSLATED_TEXT": "Do not worry, it will be a purification (for you), God willing." },
+      { "ID": 1302, "ARABIC_TEXT": "أَسْأَلُ اللَّهَ الْعَظِيمَ رَبَّ الْعَرْشِ الْعَظِيمِ أَنْ يَشْفِيَكَ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Seven times Dua", "TRANSLATED_TEXT": "(7 مرات)" }
     ]
   },
   { "ID": 1014, "TITLE": "دعاء الكرب", "icon": "😥", "duas": [ { "ID": 1401, "ARABIC_TEXT": "لَا إِلَهَ إِلَّا اللَّهُ الْعَظِيمُ الْحَلِيمُ، لَا إِلَهَ إِلَّا اللَّهُ رَبُّ الْعَرْشِ الْعَظِيمِ، لَا إِلَهَ إِلَّا اللَّهُ رَبُّ السَّمَاوَاتِ وَرَبُّ الْأَرْضِ وَرَبُّ الْعَرْشِ الْكَرِيمِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Dua for distress", "TRANSLATED_TEXT": "None has the right to be worshipped but Allah the Incomparably Great, the Forbearing. None has the right to be worshipped but Allah the Lord of the Mighty Throne..." } ] },
   { "ID": 1015, "TITLE": "دعاء الاستخارة", "icon": "🤔", "duas": [ { "ID": 1501, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي أَسْتَخِيرُكَ بِعِلْمِكَ، وَأَسْتَقْدِرُكَ بِقُدْرَتِكَ، وَأَسْأَلُكَ مِنْ فَضْلِكَ الْعَظِيمِ...", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Dua for Istikharah", "TRANSLATED_TEXT": "O Allah, I seek Your guidance [in making a choice] by virtue of Your knowledge, and I seek ability by virtue of Your power, and I ask You of Your great bounty..." } ] },
   { "ID": 1016, "TITLE": "أذكار الأذان", "icon": "🔊", "duas": [ { "ID": 1601, "ARABIC_TEXT": "يَقُولُ مِثْلَ مَا يَقُولُ الْمُؤَذِّنُ إِلَّا فِي «حَيَّ عَلَى الصَّلَاةِ» وَ «حَيَّ عَلَى الْفَلَاحِ» فَيَقُولُ: «لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ».", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "During the Adhan", "TRANSLATED_TEXT": "Repeat what the Mu'adhin says, except for 'Hayya 'alas-Salah' and 'Hayya 'alal-Falah', for which one should say 'La hawla wa la quwwata illa billah'." }, { "ID": 1602, "ARABIC_TEXT": "اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ، وَالصَّلَاةِ الْقَائِمَةِ، آتِ مُحَمَّدًا الْوَسِيلَةَ وَالْفَضِيلَةَ، وَابْعَثْهُ مَقَامًا مَحْمُودًا الَّذِي وَعَدْتَهُ.", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "After the Adhan", "TRANSLATED_TEXT": "O Allah, Lord of this perfect call and established prayer, grant Muhammad the distinction and the rank of honor, and raise him to the praised station You have promised him." } ] },
-  { "ID": 1017, "TITLE": "أذكار المنزل", "icon": "🏠", "duas": [ { "ID": 1701, "ARABIC_TEXT": "بِسْمِ اللَّهِ وَلَجْنَا، وَبِسْمِ اللَّهِ خَرَجْنَا، وَعَلَى رَبِّنَا تَوَكَّلْنَا، ثُمَّ لِيُسَلِّمْ عَلَى أَهْلِهِ.", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Entering the house", "TRANSLATED_TEXT": "In the Name of Allah we enter, in the Name of Allah we leave, and upon our Lord we depend." }, { "ID": 1702, "ARABIC_TEXT": "بِسْمِ اللَّهِ، تَوَكَّلْتُ عَلَى اللَّهِ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ.", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Leaving the house", "TRANSLATED_TEXT": "In the Name of Allah, I have placed my trust in Allah; there is no might and no power except by Allah." } ] }
+  { "ID": 1017, "TITLE": "أذكار المنزل", "icon": "🏠", "duas": [ { "ID": 1701, "ARABIC_TEXT": "بِسْمِ اللَّهِ وَلَجْنَا، وَبِسْمِ اللَّهِ خَرَجْنَا، وَعَلَى رَبِّنَا تَوَكَّلْنَا، ثُمَّ لِيُسَلِّمْ عَلَى أَهْلِهِ.", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Entering the house", "TRANSLATED_TEXT": "In the Name of Allah we enter, in the Name of Allah we leave, and upon our Lord we depend." }, { "ID": 1702, "ARABIC_TEXT": "بِسْمِ اللَّهِ، تَوَكَّلْتُ عَلَى اللَّهِ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ.", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Leaving the house", "TRANSLATED_TEXT": "In the Name of Allah, I have placed my trust in Allah; there is no might and no power except by Allah." } ] },
+  { "ID": 3013, "TITLE": "جوامع الاستغفار", "icon": "📿", "duas": [
+      { "ID": 301301, "ARABIC_TEXT": "أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ الَّذِي لَا إِلَهَ إِلَّا هُوَ الْحَيَّ الْقَيُّومَ وَأَتُوبُ إِلَيْهِ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Great Istighfar", "TRANSLATED_TEXT": "" },
+      { "ID": 301302, "ARABIC_TEXT": "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Forgiveness and Repentance", "TRANSLATED_TEXT": "" },
+      { "ID": 301303, "ARABIC_TEXT": "اللَّهُمَّ اغْفِرْ لِي ذَنْبِي كُلَّهُ، دِقَّهُ وَجِلَّهُ، وَأَوَّلَهُ وَآخِرَهُ، وَعَلَانِيَتَهُ وَسِرَّهُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Comprehensive Forgiveness", "TRANSLATED_TEXT": "" },
+      { "ID": 301304, "ARABIC_TEXT": "اللَّهُمَّ إِنِّي ظَلَمْتُ نَفْسِي ظُلْمًا كَثِيرًا، وَلَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ، فَاغْفِرْ لِي مَغْفِرَةً مِنْ عِنْدِكَ، وَارْحَمْنِي إِنَّكَ أَنْتَ الْغَفُورُ الرَّحِيمُ", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Self-Oppression", "TRANSLATED_TEXT": "" }
+  ]}
 ];
 
 export const DEFAULT_PROFILE: Profile = {
@@ -289,9 +525,9 @@ export const DEFAULT_SETTINGS: Settings = {
     showDhikrSelection: true,
     prayerMethod: 4,
     quranReaderFontSize: 1.75,
-    autoScrollAudio: true,
     tapAnywhere: false,
     timeFormat: '12h',
+    notificationSound: 'adhan',
     prayerNotifications: {
         enabled: false,
         fajr: true,
@@ -401,7 +637,7 @@ export const ASMAUL_HUSNA_DATA: { id: number; name: string; meaning: string; }[]
     { id: 1, name: 'الرحمن', meaning: 'واسع الرحمة الذي وسعت رحمته كل شيء وعمّت كل حي' },
     { id: 2, name: 'الرحيم', meaning: 'دائم الرحمة، الذي يخص بها المؤمنين يوم القيامة' },
     { id: 3, name: 'الملك', meaning: 'المتصرف في ملكه كيف يشاء، الذي لا يشاركه في ملكه أحد' },
-    { id: 4, name: 'القدوس', meaning: 'الطاهر المنزه عن כל نقص وعيب، والموصوف بكل كمال' },
+    { id: 4, name: 'القدوس', meaning: 'الطاهر المنزه عن كل نقص وعيب، والموصوف بكل كمال' },
     { id: 5, name: 'السلام', meaning: 'الذي سلِم من كل عيب، وهو مصدر السلام والأمان لخلقه' },
     { id: 6, name: 'المؤمن', meaning: 'الذي يصدّق رسله، ويؤمِّن عباده من الخوف والظلم يوم القيامة' },
     { id: 7, name: 'المهيمن', meaning: 'الرقيب الحافظ لكل شيء، والشاهد على خلقه بأعمالهم' },
@@ -410,9 +646,9 @@ export const ASMAUL_HUSNA_DATA: { id: number; name: string; meaning: string; }[]
     { id: 10, name: 'المتكبر', meaning: 'العظيم الذي يتكبر عن كل سوء ونقص' },
     { id: 11, name: 'الخالق', meaning: 'الموجد للأشياء من العدم، والمقدر لها قبل وجودها' },
     { id: 12, name: 'البارئ', meaning: 'الذي خلق الخلق وبرأهم من العدم، وميز صورهم' },
-    { id: 13, name: 'المصور', meaning: 'الذي أعطى כל مخلوق صورته الخاصة وهيئته المميزة' },
+    { id: 13, name: 'المصور', meaning: 'الذي أعطى كل مخلوق صورته الخاصة وهيئته المميزة' },
     { id: 14, name: 'الغفار', meaning: 'كثير المغفرة، الذي يستر الذنوب ويتجاوز عن السيئات مرة بعد مرة' },
-    { id: 15, name: 'القهار', meaning: 'الغالب فوق عباده، الذي قهر כל شيء وخضع له كل مخلوق' },
+    { id: 15, name: 'القهار', meaning: 'الغالب فوق عباده، الذي قهر كل شيء وخضع له كل مخلوق' },
     { id: 16, name: 'الوهاب', meaning: 'كثير الهبات والعطايا، الذي يهب بلا عوض وبغير سؤال' },
     { id: 17, name: 'الرزاق', meaning: 'المتكفل بأرزاق جميع خلقه، فلا ينسى أحدًا' },
     { id: 18, name: 'الفتاح', meaning: 'الذي يفتح أبواب الرحمة والرزق والنصر لعباده' },
@@ -423,7 +659,7 @@ export const ASMAUL_HUSNA_DATA: { id: number; name: string; meaning: string; }[]
     { id: 23, name: 'الرافع', meaning: 'الذي يرفع المؤمنين في الدنيا والآخرة بالعلم والإيمان' },
     { id: 24, name: 'المعز', meaning: 'الذي يهب العزة والقوة لمن يشاء من عباده بطاعته' },
     { id: 25, name: 'المذل', meaning: 'الذي يذل من يشاء من أعدائه بعصيانهم له' },
-    { id: 26, name: 'السميع', meaning: 'الذي يسمع כל الأصوات والنجوى، ويجيب دعاء الداعين' },
+    { id: 26, name: 'السميع', meaning: 'الذي يسمع كل الأصوات والنجوى، ويجيب دعاء الداعين' },
     { id: 27, name: 'البصير', meaning: 'الذي يرى كل شيء ويبصر أعمال خلقه، لا يغيب عن بصره شيء' },
     { id: 28, name: 'الحكم', meaning: 'الذي يفصل بين الخلق بالعدل، ولا راد لقضائه' },
     { id: 29, name: 'العدل', meaning: 'الذي لا يظلم أبدًا، وحكمه هو العدل المحض' },
@@ -442,7 +678,7 @@ export const ASMAUL_HUSNA_DATA: { id: number; name: string; meaning: string; }[]
     { id: 42, name: 'الكريم', meaning: 'الكثير الخير، الذي يعطي بسخاء ولا ينفد عطاؤه' },
     { id: 43, name: 'الرقيب', meaning: 'المطلع على أعمال العباد وأسرارهم، لا يغفل عنهم طرفة عين' },
     { id: 44, name: 'المجيب', meaning: 'الذي يستجيب لدعاء عباده، ويكشف السوء عنهم' },
-    { id: 45, name: 'الواسع', meaning: 'الذي وسعت رحمته وعلمه ورزقه כל شيء' },
+    { id: 45, name: 'الواسع', meaning: 'الذي وسعت رحمته وعلمه ورزقه كل شيء' },
     { id: 46, name: 'الحكيم', meaning: 'الذي يضع الأمور في مواضعها، ولا يفعل إلا ما فيه حكمة وصواب' },
     { id: 47, name: 'الودود', meaning: 'المحب لأوليائه، والمحبوب في قلوبهم' },
     { id: 48, name: 'المجيد', meaning: 'العظيم في صفاته وأفعاله، له المجد الكامل' },
@@ -454,7 +690,7 @@ export const ASMAUL_HUSNA_DATA: { id: number; name: string; meaning: string; }[]
     { id: 54, name: 'المتين', meaning: 'شديد القوة الذي لا تلحقه مشقة ولا يمسه لغوب' },
     { id: 55, name: 'الولي', meaning: 'المتولي لأمور عباده المؤمنين، ناصرهم ومعينهم' },
     { id: 56, name: 'الحميد', meaning: 'المحمود في ذاته وأفعاله، المستحق للحمد والثناء' },
-    { id: 57, name: 'المحصي', meaning: 'الذي أحصى כל شيء بعلمه، عددًا وكمًا وكيفًا' },
+    { id: 57, name: 'المحصي', meaning: 'الذي أحصى كل شيء بعلمه، عددًا وكمًا وكيفًا' },
     { id: 58, name: 'المبدئ', meaning: 'الذي بدأ الخلق وأنشأه من غير مثال سابق' },
     { id: 59, name: 'المعيد', meaning: 'الذي يعيد الخلق بعد فنائهم كما بدأهم أول مرة' },
     { id: 60, name: 'المحيي', meaning: 'الذي يهب الحياة لمن يشاء' },
@@ -475,7 +711,7 @@ export const ASMAUL_HUSNA_DATA: { id: number; name: string; meaning: string; }[]
     { id: 75, name: 'الظاهر', meaning: 'الظاهر فوق كل شيء، الذي ظهرت دلائل وجوده في كل شيء' },
     { id: 76, name: 'الباطن', meaning: 'المحتجب عن أبصار الخلق، والعالم بالخفيات' },
     { id: 77, name: 'الوالي', meaning: 'المتصرف في شؤون خلقه وتدبير أمورهم' },
-    { id: 78, name: 'المتعالي', meaning: 'الرفيع المنزه عن صفات المخلوقين وعن כל نقص' },
+    { id: 78, name: 'المتعالي', meaning: 'الرفيع المنزه عن صفات المخلوقين وعن كل نقص' },
     { id: 79, name: 'البر', meaning: 'الكثير الإحسان والخير، الذي يعم إحسانه جميع خلقه' },
     { id: 80, name: 'التواب', meaning: 'الذي يوفق عباده للتوبة ويقبلها منهم' },
     { id: 81, name: 'المنتقم', meaning: 'الذي يعاقب من يستحق العقوبة من الظالمين والمجرمين بعدله' },
@@ -485,14 +721,14 @@ export const ASMAUL_HUSNA_DATA: { id: number; name: string; meaning: string; }[]
     { id: 85, name: 'ذو الجلال والإكرام', meaning: 'صاحب العظمة والكبرياء، ومكرم أوليائه' },
     { id: 86, name: 'المقسط', meaning: 'العادل في حكمه، الذي ينصف المظلوم من الظالم' },
     { id: 87, name: 'الجامع', meaning: 'الذي يجمع الخلائق في يوم لا ريب فيه' },
-    { id: 88, name: 'الغني', meaning: 'المستغني عن כל ما سواه، والمفتقر إليه כל ما عداه' },
+    { id: 88, name: 'الغني', meaning: 'المستغني عن كل ما سواه، والمفتقر إليه كل ما عداه' },
     { id: 89, name: 'المغني', meaning: 'الذي يغني عباده ويكفيهم بحوله وقوته' },
     { id: 90, name: 'المانع', meaning: 'الذي يمنع العطاء حفظًا وحماية، أو يمنع أسباب الهلاك' },
     { id: 91, name: 'الضار', meaning: 'الذي يقدّر الضر لمن يشاء من عباده ابتلاءً أو عقوبةً بحكمته' },
     { id: 92, name: 'النافع', meaning: 'الذي يقدّر النفع لمن يشاء من عباده فضلًا ورحمة' },
     { id: 93, name: 'النور', meaning: 'الذي يهدي بنوره من يشاء، وهو نور السماوات والأرض' },
     { id: 94, name: 'الهادي', meaning: 'الذي يهدي ويرشد عباده إلى ما فيه صلاحهم' },
-    { id: 95, name: 'البديع', meaning: 'المبدع الذي خلق כל شيء على غير مثال سابق' },
+    { id: 95, name: 'البديع', meaning: 'المبدع الذي خلق كل شيء على غير مثال سابق' },
     { id: 96, name: 'الباقي', meaning: 'الدائم الذي لا يفنى ولا يزول' },
     { id: 97, name: 'الوارث', meaning: 'الذي يبقى بعد فناء الخلق، ويرث الأرض ومن عليها' },
     { id: 98, name: 'الرشيد', meaning: 'الذي يرشد خلقه إلى مصالحهم، ويدبر الأمور بحكمته' },
@@ -522,7 +758,6 @@ export const DAILY_HADITH_DATA: { arabic: string; narrator: string; }[] = [
     { arabic: "اغْتَنِمْ خَمْسًا قَبْلَ خَمْسٍ: شَبَابَكَ قَبْلَ هَرَمِكَ، وَصِحَّتَكَ قَبْلَ سَقَمِكَ، وَغِنَاكَ قَبْلَ فَقْرِكَ، وَفَرَاغَكَ قَبْلَ شُغْلِكَ، وَحَيَاتَكَ قَبْلَ مَوْتِكَ.", narrator: "ابن عباس - رواه الحاكم" },
 ];
 
-// FIX: Add list of popular reciters for the YouTube download feature.
 export const POPULAR_RECITERS_YOUTUBE: PopularReciter[] = [
     { name: 'مشاري العفاسي', style: 'مرتل', youtubeQuery: 'Mishary Alafasy', imageUrl: 'https://i.pravatar.cc/150?u=alafasy' },
     { name: 'عبد الباسط عبد الصمد', style: 'مجود', youtubeQuery: 'Abdul Basit Abdus Samad', imageUrl: 'https://i.pravatar.cc/150?u=abdulbasit' },

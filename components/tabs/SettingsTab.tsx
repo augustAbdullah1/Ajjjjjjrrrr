@@ -1,11 +1,13 @@
-import React, { useRef, useState } from 'react';
+
+import React, { useState } from 'react';
 import type { Theme, Settings, PrayerMethod, Profile } from '../../types';
 import { PRAYER_METHODS } from '../../constants';
 import { requestPermission } from '../../services/notificationService';
 import ToggleSwitch from '../ui/ToggleSwitch';
 import { 
     ChevronLeftIcon, AppearanceIcon, InfoIcon, FontSizeIcon,
-    WorshipIcon, QuranIcon, InstagramIcon, BellIcon, CounterIcon
+    WorshipIcon, QuranIcon, InstagramIcon, BellIcon, CounterIcon,
+    CheckCircleIcon
 } from '../icons/TabIcons';
 
 interface SettingsTabProps {
@@ -18,38 +20,52 @@ interface SettingsTabProps {
     onClose: () => void;
 }
 
-const THEMES_PREVIEW: { id: Theme, name: string, gradient: string, colors: string[] }[] = [
-    { id: 'dark', name: 'مظلم', gradient: 'from-[#1E1E1E] to-[#121212]', colors: ['#E0E0E0', '#9E9E9E', '#FFFFFF'] },
-    { id: 'light', name: 'فاتح', gradient: 'from-[#FAFAFA] to-[#F5F5F5]', colors: ['#212121', '#757575', '#212121'] },
-    { id: 'amoled', name: 'AMOLED', gradient: 'from-[#0A0A0A] to-[#000000]', colors: ['#D1D1D1', '#8A8A8A', '#FFFFFF'] },
+const THEMES_PREVIEW: { id: Theme, name: string, gradient: string, ringColor: string }[] = [
+    { id: 'dark', name: 'ليلي', gradient: 'bg-[#1E1E1E]', ringColor: 'ring-gray-500' },
+    { id: 'light', name: 'نهاري', gradient: 'bg-[#F5F5F5]', ringColor: 'ring-yellow-500' },
+    { id: 'amoled', name: 'داكن', gradient: 'bg-[#000000]', ringColor: 'ring-white' },
 ];
 
 const SettingHeader: React.FC<{ title: string; onClose: () => void }> = ({ title, onClose }) => (
-    <header className="flex-shrink-0 w-full max-w-md mx-auto sticky top-0 bg-theme-primary/80 backdrop-blur-md z-10 flex items-center justify-between p-4">
-        <div className="w-8"></div>
-        <h1 className="font-black text-xl text-theme-accent">{title}</h1>
-        <button onClick={onClose} className="p-2 text-theme-secondary hover:text-theme-primary transition-colors">
-            <ChevronLeftIcon className="w-7 h-7 stroke-current" style={{transform: 'scaleX(-1)'}} />
+    <header className="flex-shrink-0 w-full max-w-md mx-auto sticky top-0 bg-theme-primary/95 backdrop-blur-md z-20 flex items-center justify-between p-4 border-b border-white/5">
+        <div className="w-10"></div>
+        <h1 className="font-bold text-xl text-theme-accent heading-amiri tracking-wide">{title}</h1>
+        <button onClick={onClose} className="p-2 w-10 h-10 flex items-center justify-center rounded-full bg-theme-card/50 text-theme-secondary hover:text-theme-primary hover:bg-theme-card transition-all">
+            <ChevronLeftIcon className="w-6 h-6 stroke-current" style={{transform: 'scaleX(-1)'}} />
         </button>
     </header>
 );
 
-const SettingSection: React.FC<{ title: string; icon: React.ReactNode; children: React.ReactNode }> = ({ title, icon, children }) => (
-    <div className="container-luminous rounded-theme-card">
-        <div className="flex items-center gap-3 p-4">
-            <div className="text-theme-accent">{icon}</div>
-            <h3 className="font-bold text-lg text-theme-accent">{title}</h3>
-        </div>
-        <div className="px-2 pb-2 space-y-1">{children}</div>
+const SectionTitle: React.FC<{ title: string; icon?: React.ReactNode }> = ({ title, icon }) => (
+    <div className="flex items-center gap-2 px-2 mb-3 mt-2">
+        {icon && <span className="text-theme-accent-primary">{icon}</span>}
+        <h3 className="font-bold text-base text-theme-secondary">{title}</h3>
     </div>
 );
 
-const SettingRow: React.FC<{ label: string; description?: string; children: React.ReactNode; }> = ({ label, description, children }) => (
-    <div className="bg-white/5 p-3 rounded-lg flex justify-between items-center min-h-[56px] text-right">
-        <div className="flex-shrink-0">{children}</div>
-        <div className="flex-grow pr-4">
-            <span className="font-semibold text-sm text-theme-primary">{label}</span>
-            {description && <p className="text-xs text-theme-secondary/70">{description}</p>}
+const SettingCard: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = "" }) => (
+    <div className={`container-luminous rounded-[1.5rem] p-1 overflow-hidden ${className}`}>
+        {children}
+    </div>
+);
+
+const SettingItem: React.FC<{ 
+    label: string; 
+    description?: string; 
+    icon?: React.ReactNode;
+    action: React.ReactNode; 
+    isLast?: boolean;
+}> = ({ label, description, icon, action, isLast = false }) => (
+    <div className={`flex items-center justify-between p-4 ${!isLast ? 'border-b border-white/5' : ''}`}>
+        <div className="flex items-center gap-3 overflow-hidden">
+            {icon && <div className="text-theme-secondary/80">{icon}</div>}
+            <div className="flex flex-col text-right">
+                <span className="font-semibold text-theme-primary text-sm">{label}</span>
+                {description && <span className="text-xs text-theme-secondary/70 truncate max-w-[200px]">{description}</span>}
+            </div>
+        </div>
+        <div className="flex-shrink-0 mr-3">
+            {action}
         </div>
     </div>
 );
@@ -59,7 +75,7 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ theme, setTheme, settings, se
 
     const handleClose = () => {
         setIsClosing(true);
-        setTimeout(onClose, 300); // Corresponds to animation duration
+        setTimeout(onClose, 300);
     };
 
     const handleSettingChange = <K extends keyof Settings>(key: K, value: Settings[K]) => {
@@ -89,128 +105,168 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ theme, setTheme, settings, se
     return (
         <div className={`fixed inset-0 bg-theme-primary z-[100] flex flex-col ${isClosing ? 'animate-scale-out-tr' : 'animate-scale-in-tr'}`}>
             <SettingHeader title="الإعدادات" onClose={handleClose} />
-            <main className="flex-grow overflow-y-auto w-full max-w-md mx-auto p-2 space-y-3">
+            
+            <main className="flex-grow overflow-y-auto w-full max-w-md mx-auto p-4 space-y-6 pb-48 custom-scrollbar">
                 
-                <SettingSection title="المظهر" icon={<AppearanceIcon className="w-6 h-6"/>}>
-                    <div className="bg-white/5 p-3 rounded-lg text-right">
-                        <div className="grid grid-cols-3 gap-3">
-                            {THEMES_PREVIEW.map(t => (
-                                <button key={t.id} onClick={() => setTheme(t.id)}
-                                    className={`p-3 rounded-theme-card border-2 transition-all ${theme === t.id ? 'border-theme-primary-accent' : 'border-transparent'}`}
+                {/* Theme Section */}
+                <section>
+                    <SectionTitle title="المظهر" icon={<AppearanceIcon className="w-5 h-5"/>} />
+                    <div className="grid grid-cols-3 gap-3">
+                        {THEMES_PREVIEW.map(t => {
+                            const isActive = theme === t.id;
+                            return (
+                                <button 
+                                    key={t.id} 
+                                    onClick={() => setTheme(t.id)}
+                                    className={`
+                                        relative h-24 rounded-[1.5rem] border-2 transition-all duration-300 flex flex-col items-center justify-center gap-2 overflow-hidden group
+                                        ${isActive ? `border-theme-accent-primary shadow-lg shadow-theme-accent-primary/10` : 'border-transparent bg-theme-card opacity-70 hover:opacity-100'}
+                                    `}
                                 >
-                                    <div className={`w-full h-12 rounded-lg bg-gradient-to-br ${t.gradient} mb-2`}></div>
-                                    <h4 className="font-semibold text-sm text-center text-theme-primary">{t.name}</h4>
-                                    <div className="flex justify-center gap-1.5 mt-2">
-                                        {t.colors.map(color => <div key={color} className="w-4 h-4 rounded-full" style={{ backgroundColor: color }}></div>)}
+                                    <div className={`absolute inset-0 ${t.gradient} opacity-20 group-hover:opacity-30 transition-opacity`}></div>
+                                    <div className={`w-8 h-8 rounded-full ${t.gradient} shadow-inner border border-white/10 flex items-center justify-center`}>
+                                        {isActive && <CheckCircleIcon className="w-5 h-5 text-theme-primary" />}
                                     </div>
+                                    <span className={`text-sm font-bold ${isActive ? 'text-theme-accent-primary' : 'text-theme-secondary'}`}>
+                                        {t.name}
+                                    </span>
                                 </button>
-                            ))}
-                        </div>
+                            );
+                        })}
                     </div>
-                </SettingSection>
+                </section>
 
-                <SettingSection title="إعدادات السبحة" icon={<CounterIcon className="w-6 h-6"/>}>
-                    <SettingRow label="اهتزاز عند التسبيح" description="تفعيل الاهتزاز عند كل تسبيحة">
-                        <ToggleSwitch 
-                            checked={settings.vibration}
-                            onChange={v => handleSettingChange('vibration', v)}
+                {/* Quran Settings */}
+                <section>
+                    <SectionTitle title="القرآن الكريم" icon={<QuranIcon className="w-5 h-5"/>} />
+                    <SettingCard>
+                         <div className="p-4">
+                             <div className="flex justify-between items-center mb-2">
+                                 <span className="font-semibold text-theme-primary text-sm flex items-center gap-2">
+                                     <FontSizeIcon className="w-4 h-4"/>
+                                     حجم الخط
+                                 </span>
+                                 <span className="text-xs text-theme-secondary font-mono">{settings.quranReaderFontSize}x</span>
+                             </div>
+                             <input 
+                                type="range" 
+                                min="1.5" 
+                                max="4" 
+                                step="0.1" 
+                                value={settings.quranReaderFontSize}
+                                onChange={(e) => handleSettingChange('quranReaderFontSize', parseFloat(e.target.value))}
+                                className="w-full h-2 bg-theme-card rounded-lg appearance-none cursor-pointer accent-theme-accent-primary"
+                             />
+                             <p className="text-center mt-3 font-amiri text-theme-primary/80" style={{ fontSize: `${Math.min(settings.quranReaderFontSize, 2.5)}rem` }}>
+                                 بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+                             </p>
+                         </div>
+                    </SettingCard>
+                </section>
+
+                {/* Prayer Notifications */}
+                <section>
+                    <SectionTitle title="التنبيهات" icon={<BellIcon className="w-5 h-5"/>} />
+                    <SettingCard>
+                        <SettingItem 
+                            label="تنبيهات الصلاة" 
+                            description="تفعيل الإشعارات عند دخول وقت الصلاة"
+                            action={
+                                <ToggleSwitch 
+                                    checked={settings.prayerNotifications.enabled} 
+                                    onChange={handlePrayerNotificationToggle}
+                                />
+                            }
                         />
-                    </SettingRow>
-                    <SettingRow label="الضغط في أي مكان للتسبيح">
-                        <ToggleSwitch checked={settings.tapAnywhere} onChange={v => handleSettingChange('tapAnywhere', v)} />
-                    </SettingRow>
-                </SettingSection>
-
-                <SettingSection title="القرآن الكريم" icon={<QuranIcon className="w-6 h-6 stroke-current"/>}>
-                     <SettingRow label="حجم الخط" description={`${((settings.quranReaderFontSize - 1.75) / 1.25 * 100).toFixed(0)}%`}>
-                        <div className="flex items-center gap-2">
-                           <FontSizeIcon className="w-4 h-4 text-theme-secondary"/>
-                           <input type="range" min="1.75" max="3.0" step="0.125" value={settings.quranReaderFontSize}
-                            onChange={e => handleSettingChange('quranReaderFontSize', parseFloat(e.target.value))}
-                            className="w-24 accent-theme-accent-primary" />
-                           <FontSizeIcon className="w-6 h-6 text-theme-secondary"/>
-                        </div>
-                    </SettingRow>
-                    <SettingRow label="التمرير التلقائي مع الصوت">
-                        <ToggleSwitch checked={settings.autoScrollAudio} onChange={v => handleSettingChange('autoScrollAudio', v)} />
-                    </SettingRow>
-                </SettingSection>
-
-                <SettingSection title="إعدادات العبادة" icon={<WorshipIcon className="w-6 h-6" />}>
-                     <SettingRow label="طريقة حساب المواقيت">
-                         <select value={settings.prayerMethod} onChange={(e) => handleSettingChange('prayerMethod', parseInt(e.target.value) as PrayerMethod)}
-                             className="p-1 input-luminous text-theme-primary rounded text-xs text-right outline-none max-w-[120px]">
-                             {PRAYER_METHODS.map(method => (
-                                 <option key={method.id} value={method.id}>{method.name}</option>
-                             ))}
-                         </select>
-                     </SettingRow>
-                      <SettingRow label="الهدف اليومي للذكر">
-                        <input type="number" value={profile.dailyGoal} min="1"
-                           onChange={(e) => setProfile(p => ({ ...p, dailyGoal: parseInt(e.target.value) || 100 }))}
-                           className="w-20 p-1 input-luminous text-theme-primary rounded text-center font-bold" />
-                      </SettingRow>
-                    <SettingRow label="تنسيق الوقت">
-                        <div className="flex items-center text-xs font-bold p-1 bg-black/20 rounded-theme-full">
-                            <button onClick={() => handleSettingChange('timeFormat', '12h')} className={`px-3 py-1 rounded-theme-full ${settings.timeFormat === '12h' ? 'bg-theme-accent-primary text-theme-accent-primary-text' : 'text-theme-secondary'}`}>12 ساعة</button>
-                            <button onClick={() => handleSettingChange('timeFormat', '24h')} className={`px-3 py-1 rounded-theme-full ${settings.timeFormat === '24h' ? 'bg-theme-accent-primary text-theme-accent-primary-text' : 'text-theme-secondary'}`}>24 ساعة</button>
-                        </div>
-                    </SettingRow>
-                    <div className="bg-white/5 p-3 rounded-lg flex flex-col gap-3 text-right">
-                        <div className="flex justify-between items-center">
-                            <ToggleSwitch checked={settings.prayerNotifications.enabled} onChange={handlePrayerNotificationToggle} />
-                            <div className="flex items-center gap-2 pr-1">
-                                <BellIcon className="w-5 h-5" />
-                                <span className="font-semibold text-sm text-theme-primary">تنبيهات الصلاة</span>
-                            </div>
-                        </div>
                         {settings.prayerNotifications.enabled && (
-                            <div className="border-t border-white/10 pt-3 space-y-2 pr-2 animate-in fade-in-0">
-                                <div className="flex justify-between items-center">
-                                    <ToggleSwitch checked={settings.prayerNotifications.fajr} onChange={v => handlePrayerNotificationChange('fajr', v)} />
-                                    <span>الفجر</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <ToggleSwitch checked={settings.prayerNotifications.dhuhr} onChange={v => handlePrayerNotificationChange('dhuhr', v)} />
-                                    <span>الظهر</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <ToggleSwitch checked={settings.prayerNotifications.asr} onChange={v => handlePrayerNotificationChange('asr', v)} />
-                                    <span>العصر</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <ToggleSwitch checked={settings.prayerNotifications.maghrib} onChange={v => handlePrayerNotificationChange('maghrib', v)} />
-                                    <span>المغرب</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <ToggleSwitch checked={settings.prayerNotifications.isha} onChange={v => handlePrayerNotificationChange('isha', v)} />
-                                    <span>العشاء</span>
-                                </div>
+                            <div className="grid grid-cols-5 gap-2 p-4 pt-0 border-t border-white/5 bg-black/10">
+                                {[
+                                    { k: 'fajr', l: 'الفجر' }, { k: 'dhuhr', l: 'الظهر' }, { k: 'asr', l: 'العصر' }, 
+                                    { k: 'maghrib', l: 'المغرب' }, { k: 'isha', l: 'العشاء' }
+                                ].map((p) => (
+                                    <button 
+                                        key={p.k}
+                                        onClick={() => handlePrayerNotificationChange(p.k as any, !settings.prayerNotifications[p.k as keyof typeof settings.prayerNotifications])}
+                                        className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all ${settings.prayerNotifications[p.k as keyof typeof settings.prayerNotifications] ? 'bg-theme-accent-primary text-theme-accent-primary-text' : 'text-theme-secondary hover:bg-white/5'}`}
+                                    >
+                                        <span className="text-[10px] font-bold">{p.l}</span>
+                                    </button>
+                                ))}
                             </div>
                         )}
-                    </div>
-                </SettingSection>
+                    </SettingCard>
+                </section>
 
-                <SettingSection title="عن التطبيق" icon={<InfoIcon className="w-6 h-6"/>}>
-                    <div className="bg-white/5 p-4 rounded-lg text-right text-sm space-y-2">
-                        <div className="flex justify-between"><span>إصدار التطبيق</span><span className="font-bold">3.00</span></div>
-                        <div className="flex justify-between"><span>المطور</span><span className="font-bold">عبدالله أبوشكير</span></div>
-                        <p className="text-xs text-theme-secondary/70 pt-2">هذا التطبيق صدقة جارية لصاحبه ووالديه واخوانه ومن يحب.</p>
+                {/* General Settings */}
+                <section>
+                    <SectionTitle title="عام" icon={<InfoIcon className="w-5 h-5"/>} />
+                    <SettingCard>
+                         <SettingItem 
+                            label="طريقة الحساب"
+                            description="طريقة حساب مواقيت الصلاة"
+                            icon={<WorshipIcon className="w-4 h-4"/>}
+                            action={
+                                <select 
+                                    value={settings.prayerMethod} 
+                                    onChange={(e) => handleSettingChange('prayerMethod', parseInt(e.target.value) as PrayerMethod)}
+                                    className="bg-theme-tab-bar text-theme-primary text-xs p-2 rounded-lg border border-white/10 outline-none focus:border-theme-accent-primary max-w-[120px]"
+                                >
+                                    {PRAYER_METHODS.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                                </select>
+                            }
+                        />
+                         <SettingItem 
+                            label="الاهتزاز"
+                            description="عند التسبيح أو النقر"
+                            icon={<CounterIcon className="w-4 h-4"/>}
+                            action={
+                                <ToggleSwitch 
+                                    checked={settings.vibration} 
+                                    onChange={(c) => handleSettingChange('vibration', c)} 
+                                />
+                            }
+                        />
+                        <SettingItem 
+                            label="النقر في أي مكان"
+                            description="للتسبيح في صفحة السبحة"
+                            action={
+                                <ToggleSwitch 
+                                    checked={settings.tapAnywhere} 
+                                    onChange={(c) => handleSettingChange('tapAnywhere', c)} 
+                                />
+                            }
+                        />
+                    </SettingCard>
+                </section>
+
+                {/* About */}
+                <section className="text-center pt-8 pb-12 px-6">
+                    
+                    {/* Charity Dedication */}
+                    <div className="mb-6 p-4 rounded-[1.5rem] bg-theme-card/30 border border-white/5 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-10 h-10 bg-theme-accent-primary/5 rounded-bl-full"></div>
+                        <p className="text-sm text-theme-secondary leading-relaxed font-amiri opacity-90 relative z-10">
+                            "التطبيق صدقة لصاحبه واهله واخوانه واخواته ومن يحب"
+                        </p>
                     </div>
-                </SettingSection>
+
+                    <div className="flex flex-col items-center gap-3">
+                        <p className="text-[10px] text-theme-secondary/50 uppercase tracking-widest">تواصل مع المطور</p>
+                        <a 
+                            href="https://www.instagram.com/7ir7u/" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-3 px-5 py-2.5 rounded-full bg-theme-card border border-white/10 text-theme-secondary hover:text-[#E1306C] hover:border-[#E1306C]/30 hover:bg-[#E1306C]/5 transition-all duration-300 group active:scale-95"
+                        >
+                            <InstagramIcon className="w-5 h-5 group-hover:scale-110 transition-transform"/>
+                            <span className="text-xs font-bold dir-ltr font-mono">@7ir7u</span>
+                        </a>
+                    </div>
+
+                    <p className="text-[10px] text-theme-secondary/30 font-mono mt-8">الإصدار 1.0.0</p>
+                </section>
+
             </main>
-            
-            <footer className="w-full max-w-md mx-auto text-center p-4 flex-shrink-0">
-                <a 
-                    href="https://www.instagram.com/7ir7u/" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="inline-flex items-center gap-2 button-luminous py-2 px-4 rounded-theme-full"
-                >
-                    <InstagramIcon className="w-5 h-5"/>
-                    <span className="font-semibold text-sm">حساب المطور</span>
-                </a>
-            </footer>
         </div>
     );
 };

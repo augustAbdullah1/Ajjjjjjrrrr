@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import type { DuaCategory, Dua } from '../../types';
+import type { DuaCategory } from '../../types';
 import useLocalStorage from '../../hooks/useLocalStorage';
+import { ChevronLeftIcon, CheckCircleIcon, ReplayIcon } from '../icons/TabIcons';
 
 interface DuaSequenceProps {
     category: DuaCategory;
@@ -49,6 +50,9 @@ const DuaSequence: React.FC<DuaSequenceProps> = ({ category, onClose }) => {
     const handleCount = () => {
         const currentCount = progress.counts[currentDua.ID] || 0;
         const newCount = currentCount + 1;
+        
+        // Haptic feedback
+        if (navigator.vibrate) navigator.vibrate(15);
 
         if (newCount >= (currentDua.count || 1)) {
             // Reset count for this dua and move to next
@@ -70,15 +74,21 @@ const DuaSequence: React.FC<DuaSequenceProps> = ({ category, onClose }) => {
     
     if (progress.completed) {
         return (
-            <div className="flex flex-col items-center justify-center text-center h-full p-4 pb-28 animate-in fade-in-0" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-24 h-24 text-green-400 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-                <h2 className="text-2xl font-bold text-theme-accent">أحسنت!</h2>
-                <p className="text-theme-text/80 mb-6">لقد أتممت {category.TITLE}.</p>
-                <div className="flex items-center gap-4">
-                    <button onClick={onClose} className="px-6 py-2 button-luminous rounded-theme-full font-semibold">العودة</button>
-                    <button onClick={handleRepeat} className="px-6 py-2 button-luminous bg-theme-accent-primary text-theme-accent-primary-text rounded-theme-full font-bold">إعادة</button>
+            <div className="flex flex-col items-center justify-center text-center h-full p-6 pb-44 animate-in fade-in-0 zoom-in-95 duration-300 bg-theme-primary" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}>
+                <div className="w-28 h-28 bg-green-500/10 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-green-500/5">
+                    <CheckCircleIcon className="w-16 h-16 text-green-500 animate-pop" />
+                </div>
+                <h2 className="text-3xl font-bold text-theme-primary mb-2 heading-amiri">تقبل الله طاعتكم</h2>
+                <p className="text-theme-secondary/80 mb-10 text-lg">لقد أتممت {category.TITLE} لهذا اليوم.</p>
+                
+                <div className="flex flex-col w-full max-w-xs gap-3">
+                    <button onClick={onClose} className="w-full p-4 button-luminous bg-theme-accent-primary text-theme-accent-primary-text rounded-[1.5rem] font-bold text-lg shadow-lg">
+                        العودة للرئيسية
+                    </button>
+                    <button onClick={handleRepeat} className="w-full p-4 text-theme-secondary hover:text-theme-primary font-semibold flex items-center justify-center gap-2 transition-colors">
+                        <ReplayIcon className="w-5 h-5"/>
+                        <span>إعادة القراءة</span>
+                    </button>
                 </div>
             </div>
         );
@@ -91,39 +101,69 @@ const DuaSequence: React.FC<DuaSequenceProps> = ({ category, onClose }) => {
     const counterProgress = (currentCount / targetCount) * 100;
 
     return (
-        <div className="flex flex-col h-full p-4 pb-28" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}>
-            <div className="flex items-center gap-4 mb-4">
-                <button onClick={onClose} className="text-2xl font-light text-theme-accent/70 hover:text-theme-accent transition-colors">&times;</button>
-                <div className="w-full bg-black/20 rounded-full h-2">
-                    <div className="bg-theme-accent-primary h-2 rounded-full transition-all duration-300" style={{ width: `${progressPercentage}%` }}></div>
+        <div className="flex flex-col min-h-full p-5 pb-56 bg-theme-primary" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}>
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+                <div className="flex flex-col items-start">
+                     <span className="text-xs text-theme-secondary font-bold mb-1">{category.TITLE}</span>
+                     <span className="text-xl font-black text-theme-primary font-mono">{currentIndex + 1} <span className="text-theme-secondary/40 text-base font-normal">/ {total}</span></span>
                 </div>
-                 <span className="text-sm font-bold text-theme-accent">{currentIndex + 1}/{total}</span>
-            </div>
-            
-            <div className="flex-grow flex flex-col justify-center items-center text-center p-4 container-luminous rounded-2xl my-4">
-                 <p className="text-2xl font-amiri leading-loose text-theme-primary mb-4">{currentDua.ARABIC_TEXT}</p>
-                 <p className="text-sm text-theme-secondary/80">{currentDua.TRANSLATED_TEXT}</p>
-            </div>
-            
-            {targetCount > 1 ? (
-                 <div className="flex flex-col items-center justify-center gap-4">
-                    <button onClick={handleCount} className="w-32 h-32 rounded-theme-full container-luminous flex flex-col items-center justify-center shadow-lg transition-transform active:scale-95">
-                        <span className="text-4xl font-black text-theme-accent-primary">{currentCount}</span>
-                        <span className="text-lg font-bold text-theme-secondary opacity-95">/ {targetCount}</span>
-                    </button>
-                    <p className="text-sm text-theme-secondary">اضغط للعد</p>
-                </div>
-            ) : (
-                 <button onClick={handleNext} className="w-full p-4 button-luminous bg-theme-accent-primary text-theme-accent-primary-text rounded-theme-full font-bold text-lg">
-                    {currentIndex === total - 1 ? 'إتمام' : 'التالي'}
-                 </button>
-            )}
-
-            <div className="flex justify-between items-center mt-6">
-                <button onClick={handlePrev} disabled={currentIndex === 0} className="px-6 py-2 button-luminous rounded-theme-full font-semibold disabled:opacity-50">السابق</button>
-                <button onClick={handleNext} className="px-6 py-2 button-luminous rounded-theme-full font-semibold">
-                    {currentIndex === total - 1 ? 'إنهاء' : 'تخطي'}
+                <button onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-full bg-theme-card hover:bg-theme-border-color transition-colors text-theme-secondary hover:text-theme-primary">
+                    &times;
                 </button>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="w-full bg-theme-border-color/30 rounded-full h-1.5 mb-8">
+                <div className="bg-theme-accent-primary h-full rounded-full transition-all duration-500 ease-out" style={{ width: `${progressPercentage}%` }}></div>
+            </div>
+            
+            {/* Card */}
+            <div className="flex-grow flex flex-col justify-center items-center text-center relative">
+                 <div className="w-full p-6 md:p-8 container-luminous rounded-[2.5rem] shadow-2xl relative overflow-hidden min-h-[300px] flex flex-col justify-center items-center">
+                     <div className="absolute top-0 left-0 w-full h-1 bg-theme-accent-primary/10"></div>
+                     <p className="text-2xl md:text-3xl font-amiri leading-[2.2] text-theme-primary mb-6 select-text">
+                        {currentDua.ARABIC_TEXT}
+                     </p>
+                     {currentDua.TRANSLATED_TEXT && (
+                        <div className="bg-black/5 rounded-xl p-3 border border-black/5 w-full">
+                             <p className="text-sm text-theme-secondary/90 leading-relaxed">{currentDua.TRANSLATED_TEXT}</p>
+                        </div>
+                     )}
+                 </div>
+            </div>
+            
+            {/* Footer Controls */}
+            <div className="mt-8">
+                {targetCount > 1 ? (
+                     <button 
+                        onClick={handleCount} 
+                        className="w-full h-24 rounded-[2rem] bg-theme-accent-primary text-theme-accent-primary-text shadow-lg shadow-theme-accent-primary/30 active:scale-[0.98] transition-all flex items-center justify-center relative overflow-hidden group"
+                    >
+                        <div className="absolute inset-0 bg-black/10" style={{ width: `${counterProgress}%`, transition: 'width 0.2s ease-out' }}></div>
+                        <div className="relative z-10 flex flex-col items-center">
+                            <span className="text-3xl font-black">{currentCount}</span>
+                            <span className="text-xs font-bold opacity-80 uppercase tracking-wider">اضغط للعد ({targetCount})</span>
+                        </div>
+                    </button>
+                ) : (
+                     <button 
+                        onClick={handleNext} 
+                        className="w-full h-20 rounded-[2rem] bg-theme-accent-primary text-theme-accent-primary-text shadow-lg shadow-theme-accent-primary/30 active:scale-[0.98] transition-all flex items-center justify-center text-xl font-bold"
+                    >
+                        {currentIndex === total - 1 ? 'إتمام' : 'التالي'}
+                     </button>
+                )}
+
+                <div className="flex justify-center mt-4">
+                    <button 
+                        onClick={handlePrev} 
+                        disabled={currentIndex === 0} 
+                        className="text-sm font-bold text-theme-secondary px-4 py-2 rounded-full hover:bg-theme-card transition-colors disabled:opacity-0"
+                    >
+                        السابق
+                    </button>
+                </div>
             </div>
         </div>
     );

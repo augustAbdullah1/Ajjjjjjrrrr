@@ -1,11 +1,14 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { HISNUL_MUSLIM_DUAS } from '../../constants';
 import type { DuaCategory, Dua } from '../../types';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import DuaSequence from './DuaSequence';
 import Modal from '../ui/Modal';
-import { BookmarkIcon, CopyIcon, ChevronLeftIcon, CheckCircleIcon, TrashIcon, SaveIcon, PlusIcon } from '../icons/TabIcons';
+import { 
+    BookmarkIcon, CopyIcon, ChevronLeftIcon, CheckCircleIcon, 
+    TrashIcon, SaveIcon, PlusIcon, SearchIcon, ShareIcon 
+} from '../icons/TabIcons';
 
 // --- CONSTANTS & TYPES ---
 const FEATURED_ADHAKR_IDS = [1001, 1002, 1003, 1004]; // Morning, Evening, Post-Prayer, Sleep
@@ -36,7 +39,6 @@ const useCompletionStatus = () => {
 
     return { completionStatus: status, refreshCompletionStatus: refreshStatus };
 };
-
 
 // --- Main Dua Tab Component ---
 const DuasTab: React.FC = () => {
@@ -110,75 +112,261 @@ const MainDuaView: React.FC<{
 }> = ({ onStartSequence, onCategoryClick, onMyDuasClick, completionStatus }) => {
     
     const [searchQuery, setSearchQuery] = useState('');
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    const handleScroll = () => {
+        if (scrollRef.current) {
+            setIsScrolled(scrollRef.current.scrollTop > 50);
+        }
+    };
     
     const featuredAdhkar = HISNUL_MUSLIM_DUAS.filter(c => FEATURED_ADHAKR_IDS.includes(c.ID));
+    
+    // Sort featured adhkar based on time of day logic for UX
+    const sortedFeatured = useMemo(() => {
+        const hour = new Date().getHours();
+        const isMorning = hour >= 4 && hour < 12;
+        const isEvening = hour >= 12 && hour < 20;
+        // Reorder: if morning, put Morning Adhkar first, etc.
+        return [...featuredAdhkar].sort((a, b) => {
+            if (isMorning && a.ID === 1001) return -1;
+            if (isEvening && a.ID === 1002) return -1;
+            if (!isMorning && !isEvening && a.ID === 1004) return -1; // Sleep time
+            return 0;
+        });
+    }, [featuredAdhkar]);
+
     const otherCategories = HISNUL_MUSLIM_DUAS.filter(c => 
         !FEATURED_ADHAKR_IDS.includes(c.ID) &&
         (c.TITLE.toLowerCase().includes(searchQuery.toLowerCase()) || 
          c.duas.some(d => d.ARABIC_TEXT.includes(searchQuery)))
     );
 
-    return (
-        <div className="flex flex-col gap-6 p-4 pb-28" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}>
-            <h2 className="text-3xl font-bold text-center heading-amiri">حصن المسلم</h2>
+    // Greeting based on time
+    const greeting = useMemo(() => {
+        const hr = new Date().getHours();
+        if (hr >= 5 && hr < 12) return { text: 'صباح الخير', sub: 'بداية مباركة بذكر الله', icon: '☀️' };
+        if (hr >= 12 && hr < 17) return { text: 'طاب يومك', sub: 'لا تنس أذكار المساء', icon: '🌤️' };
+        if (hr >= 17 && hr < 21) return { text: 'مساء الخير', sub: 'هدوء وسكينة مع الذكر', icon: '🌆' };
+        return { text: 'تصبح على خير', sub: 'اختم يومك بذكر الله', icon: '🌙' };
+    }, []);
 
-            {/* Featured Adhkar Carousel */}
-            <div>
-                <h3 className="font-bold text-xl mb-2 text-theme-accent heading-amiri">الأذكار اليومية</h3>
-                <div className="flex gap-3 overflow-x-auto pb-3 -mx-4 px-4">
-                    {featuredAdhkar.map((category, index) => (
-                        <div key={category.ID} className="container-luminous flex-shrink-0 w-48 h-56 rounded-theme-card p-4 flex flex-col justify-between items-start text-right relative stagger-item" style={{ animationDelay: `${index * 70}ms` }}>
-                             {completionStatus[category.ID] && (
-                                <div className="absolute top-2 left-2 p-1 bg-green-500/20 rounded-theme-full">
-                                    <CheckCircleIcon className="w-5 h-5 text-green-400"/>
-                                </div>
-                            )}
-                            <div>
-                                <p className="text-4xl">{category.icon}</p>
-                                <h4 className="font-bold mt-2 text-theme-primary">{category.TITLE}</h4>
-                            </div>
-                            <button onClick={() => onStartSequence(category)} className="w-full text-sm font-semibold p-2 button-luminous bg-theme-accent-card text-theme-accent-primary rounded-lg">
-                                ابدأ
-                            </button>
-                        </div>
-                    ))}
+    return (
+        <div 
+            ref={scrollRef}
+            onScroll={handleScroll}
+            className="flex flex-col gap-6 p-5 pb-44 h-full overflow-y-auto custom-scrollbar" 
+            style={{ paddingTop: 'calc(2rem + env(safe-area-inset-top))' }}
+        >
+            
+            {/* Header Section */}
+            <div className="flex justify-between items-start mb-2">
+                <div>
+                    <h1 className="text-3xl font-bold text-theme-primary heading-amiri mb-1">
+                        {greeting.text}
+                    </h1>
+                    <p className="text-sm text-theme-secondary">{greeting.sub}</p>
+                </div>
+                <div className="w-12 h-12 rounded-full bg-theme-card/50 flex items-center justify-center text-2xl shadow-inner">
+                    {greeting.icon}
                 </div>
             </div>
 
-             {/* My Duas Card */}
-            <div className="grid grid-cols-1 gap-3">
-                <button onClick={onMyDuasClick} className="p-4 container-luminous rounded-theme-card text-right flex items-center gap-4">
-                     <div className="w-12 h-12 flex items-center justify-center container-luminous rounded-xl text-theme-accent-primary">
-                        <BookmarkIcon className="w-7 h-7"/>
-                    </div>
-                    <div>
-                        <h4 className="font-bold text-lg">أدعيتي المحفوظة</h4>
-                        <p className="text-sm text-theme-secondary">أدعيتك الخاصة في مكان واحد.</p>
-                    </div>
-                </button>
-            </div>
-            
-            {/* All Categories List */}
+            {/* Featured Adhkar (Horizontal Scroll) */}
             <div>
-                <h3 className="font-bold text-xl mb-2 text-theme-accent heading-amiri">جميع الفئات</h3>
-                 <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="ابحث في فئات الأدعية..."
-                    className="w-full p-3 mb-3 input-luminous text-theme-primary rounded-theme-card text-right"
-                />
-                <div className="space-y-2 pr-2">
-                    {otherCategories.map((category, index) => (
-                        <button key={category.ID} onClick={() => onCategoryClick(category)} className="w-full p-3 container-luminous rounded-lg text-right font-semibold flex justify-between items-center stagger-item" style={{ animationDelay: `${index * 50}ms` }}>
-                            <div className="flex items-center gap-3">
-                                <span className="text-2xl">{category.icon}</span>
-                                <span>{category.TITLE}</span>
+                <h3 className="font-bold text-lg mb-3 text-theme-primary heading-amiri px-1">الأذكار الأساسية</h3>
+                <div className="flex gap-3 overflow-x-auto pb-4 -mx-5 px-5 scrollbar-hide snap-x snap-mandatory">
+                    {sortedFeatured.map((category, index) => {
+                        const isCompleted = completionStatus[category.ID];
+                        // Dynamic colors based on ID for visual distinction
+                        let bgClass = "from-blue-500/20 to-purple-500/20"; // Default Evening
+                        if (category.ID === 1001) bgClass = "from-orange-400/20 to-yellow-400/20"; // Morning
+                        if (category.ID === 1004) bgClass = "from-indigo-900/40 to-slate-800/40"; // Sleep
+                        if (category.ID === 1003) bgClass = "from-emerald-500/20 to-teal-500/20"; // Post Prayer
+
+                        return (
+                            <button 
+                                key={category.ID} 
+                                onClick={() => onStartSequence(category)}
+                                className={`
+                                    relative flex-shrink-0 w-36 h-48 rounded-[2rem] snap-center flex flex-col justify-between p-4 text-right overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-95
+                                    bg-gradient-to-b ${bgClass} border border-white/5 backdrop-blur-sm group
+                                `}
+                            >
+                                <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <div className="relative z-10 flex justify-between items-start">
+                                    <span className="text-3xl drop-shadow-sm">{category.icon}</span>
+                                    {isCompleted && <CheckCircleIcon className="w-5 h-5 text-green-400 drop-shadow-md" />}
+                                </div>
+                                <div className="relative z-10">
+                                    <h4 className="font-bold text-theme-primary leading-tight mb-1">{category.TITLE}</h4>
+                                    <p className="text-[10px] text-theme-primary/70">{category.duas.length} ذكر</p>
+                                </div>
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* Search & Grid */}
+            <div>
+                <div className="grid grid-cols-2 gap-3">
+                    <button 
+                        onClick={onMyDuasClick} 
+                        className="col-span-2 p-4 container-luminous rounded-[1.5rem] flex items-center justify-between group hover:bg-theme-card/80 transition-colors"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-theme-accent-primary/10 flex items-center justify-center text-theme-accent-primary">
+                                <BookmarkIcon className="w-5 h-5" />
                             </div>
-                            <ChevronLeftIcon className="w-5 h-5 text-theme-secondary" style={{ transform: 'scaleX(-1)' }}/>
+                            <div className="text-right">
+                                <h4 className="font-bold text-theme-primary">أدعيتي المحفوظة</h4>
+                                <p className="text-xs text-theme-secondary">أدعيتك الخاصة</p>
+                            </div>
+                        </div>
+                        <ChevronLeftIcon className="w-5 h-5 text-theme-secondary group-hover:-translate-x-1 transition-transform" style={{ transform: 'scaleX(-1)' }}/>
+                    </button>
+
+                    {otherCategories.map((category, index) => (
+                        <button 
+                            key={category.ID} 
+                            onClick={() => onCategoryClick(category)} 
+                            className="container-luminous p-4 rounded-[1.5rem] text-right flex flex-col items-start justify-between h-32 hover:-translate-y-1 transition-all duration-300 stagger-item"
+                            style={{ animationDelay: `${index * 30}ms` }}
+                        >
+                            <span className="text-3xl mb-2 filter drop-shadow-sm">{category.icon}</span>
+                            <div>
+                                <h4 className="font-bold text-sm text-theme-primary line-clamp-2">{category.TITLE}</h4>
+                                <p className="text-[10px] text-theme-secondary mt-1">{category.duas.length} دعاء</p>
+                            </div>
                         </button>
                     ))}
                 </div>
+            </div>
+
+            {/* Floating Search Button (Smart Scroll) */}
+            <div 
+                className={`fixed bottom-24 left-1/2 transform -translate-x-1/2 z-30 transition-all duration-500 ease-out ${isSearchOpen ? 'w-[90%] max-w-md scale-100' : 'w-auto scale-100'}`}
+            >
+                <div className={`shadow-2xl shadow-black/40 ${isSearchOpen ? 'rounded-[2rem]' : 'rounded-full'}`}>
+                    {isSearchOpen ? (
+                        <div className="flex items-center bg-theme-card/95 backdrop-blur-xl border border-theme-accent-primary/20 rounded-[2rem] p-2 animate-in zoom-in-95 duration-300 ring-1 ring-theme-accent-primary/10">
+                            <input 
+                                type="search"
+                                autoFocus
+                                value={searchQuery} 
+                                onChange={e => setSearchQuery(e.target.value)} 
+                                placeholder="ابحث في الأدعية..." 
+                                className="flex-grow h-12 px-4 bg-transparent text-theme-primary text-right outline-none placeholder:text-theme-secondary/50 text-base font-medium" 
+                            />
+                            <button onClick={() => { setIsSearchOpen(false); setSearchQuery(''); }} className="w-10 h-10 rounded-full flex items-center justify-center bg-theme-tab-bar text-theme-secondary hover:text-theme-danger transition-colors">
+                                ✕
+                            </button>
+                        </div>
+                    ) : (
+                        <button 
+                            onClick={() => setIsSearchOpen(true)} 
+                            className={`
+                                flex items-center justify-center bg-theme-card/80 backdrop-blur-xl border border-white/10 rounded-full text-theme-primary hover:bg-theme-card hover:border-theme-accent-primary/30 transition-all duration-500 ease-out hover:scale-105
+                                ${isScrolled ? 'w-12 h-12' : 'px-6 py-3.5 gap-2'}
+                            `}
+                        >
+                            <SearchIcon className="w-5 h-5" />
+                            <span className={`text-sm font-bold whitespace-nowrap overflow-hidden transition-all duration-500 ${isScrolled ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}>
+                                بحث في الأدعية
+                            </span>
+                        </button>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// --- Sub-component: Category Detail View ---
+const DuaCategoryDetailView: React.FC<{
+    category: DuaCategory;
+    onBack: () => void;
+}> = ({ category, onBack }) => {
+    
+    const handleShare = (dua: Dua) => {
+        if (navigator.share) {
+            navigator.share({
+                title: 'دعاء من تطبيق آجر',
+                text: `${dua.ARABIC_TEXT}\n\n${dua.TRANSLATED_TEXT || ''}\n\nتم النسخ من تطبيق آجر`
+            }).catch(console.error);
+        } else {
+            navigator.clipboard.writeText(dua.ARABIC_TEXT);
+            alert('تم نسخ الدعاء');
+        }
+    };
+
+    return (
+        <div className="flex flex-col h-full bg-theme-primary">
+            {/* Sticky Header */}
+            <header className="sticky top-0 z-20 bg-theme-primary/95 backdrop-blur-md border-b border-white/5 pt-[env(safe-area-inset-top)]">
+                <div className="flex items-center justify-between px-4 py-4">
+                     <div className="w-10"></div> {/* Spacer for centering */}
+                    <h2 className="text-xl font-bold heading-amiri flex items-center gap-2">
+                        <span>{category.icon}</span>
+                        <span>{category.TITLE}</span>
+                    </h2>
+                    <button onClick={onBack} className="w-10 h-10 flex items-center justify-center rounded-full bg-theme-card/50 text-theme-secondary hover:text-theme-primary transition-colors">
+                        <ChevronLeftIcon className="w-6 h-6 stroke-current" style={{ transform: 'scaleX(-1)' }} />
+                    </button>
+                </div>
+            </header>
+
+            <div className="flex-grow overflow-y-auto p-4 pb-44 space-y-4">
+                {category.duas.map((dua, index) => (
+                    <div 
+                        key={dua.ID} 
+                        className="container-luminous rounded-[2rem] p-6 text-right relative group stagger-item"
+                        style={{ animationDelay: `${index * 50}ms` }}
+                    >
+                        {/* Dua Text */}
+                        <p className="font-amiri text-2xl leading-[2.2] text-theme-primary mb-4">
+                            {dua.ARABIC_TEXT}
+                        </p>
+                        
+                        {/* Translation/Note */}
+                        {dua.TRANSLATED_TEXT && (
+                            <div className="bg-black/10 rounded-xl p-3 mb-4 border-r-2 border-theme-accent-primary/30">
+                                <p className="text-sm text-theme-secondary/90 leading-relaxed">
+                                    {dua.TRANSLATED_TEXT}
+                                </p>
+                            </div>
+                        )}
+
+                        {/* Footer Actions */}
+                        <div className="flex justify-between items-center pt-2 border-t border-white/5">
+                            <div className="flex gap-2">
+                                <button 
+                                    onClick={() => { navigator.clipboard.writeText(dua.ARABIC_TEXT); }} 
+                                    className="p-2 rounded-full hover:bg-white/10 text-theme-secondary hover:text-theme-primary transition-colors"
+                                    title="نسخ"
+                                >
+                                    <CopyIcon className="w-5 h-5"/>
+                                </button>
+                                <button 
+                                    onClick={() => handleShare(dua)}
+                                    className="p-2 rounded-full hover:bg-white/10 text-theme-secondary hover:text-theme-primary transition-colors"
+                                    title="مشاركة"
+                                >
+                                    <ShareIcon className="w-5 h-5"/>
+                                </button>
+                            </div>
+                            
+                            {dua.count && dua.count > 1 && (
+                                <span className="text-xs font-bold bg-theme-accent-primary/10 text-theme-accent-primary px-3 py-1 rounded-full border border-theme-accent-primary/20">
+                                    {dua.count} مرات
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );
@@ -216,34 +404,46 @@ const MyDuasView: React.FC<{
     };
 
     return (
-        <div className="flex flex-col gap-4 p-4 pb-28" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}>
-            <header className="flex items-center gap-4">
-                <button onClick={onBack} className="p-2 text-theme-secondary hover:text-theme-primary"><ChevronLeftIcon className="w-7 h-7" style={{ transform: 'scaleX(-1)' }}/></button>
-                <h2 className="text-2xl font-bold heading-amiri">أدعيتي المحفوظة</h2>
+        <div className="flex flex-col h-full bg-theme-primary">
+             <header className="sticky top-0 z-20 bg-theme-primary/95 backdrop-blur-md border-b border-white/5 pt-[env(safe-area-inset-top)]">
+                <div className="flex items-center justify-between px-4 py-4">
+                     <div className="w-10"></div>
+                    <h2 className="text-xl font-bold heading-amiri">أدعيتي المحفوظة</h2>
+                    <button onClick={onBack} className="w-10 h-10 flex items-center justify-center rounded-full bg-theme-card/50 text-theme-secondary hover:text-theme-primary transition-colors">
+                        <ChevronLeftIcon className="w-6 h-6 stroke-current" style={{ transform: 'scaleX(-1)' }} />
+                    </button>
+                </div>
             </header>
-            <div className="space-y-3 pr-2">
+
+            <div className="flex-grow overflow-y-auto p-4 pb-44 space-y-4">
                 <button 
                     onClick={() => setIsAddModalOpen(true)}
-                    className="w-full p-4 container-luminous rounded-theme-card border-2 border-dashed border-theme-accent-faded flex flex-col items-center justify-center gap-2 text-theme-accent-primary hover:border-theme-accent-primary transition-all"
+                    className="w-full p-5 container-luminous rounded-[2rem] border-2 border-dashed border-theme-accent-primary/30 flex flex-col items-center justify-center gap-2 text-theme-accent-primary hover:bg-theme-accent-primary/5 hover:border-theme-accent-primary transition-all group"
                 >
-                    <PlusIcon className="w-8 h-8"/>
-                    <span className="font-bold">إضافة دعاء جديد</span>
+                    <div className="w-12 h-12 rounded-full bg-theme-accent-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <PlusIcon className="w-6 h-6"/>
+                    </div>
+                    <span className="font-bold text-sm">إضافة دعاء جديد</span>
                 </button>
 
                 {userDuas.length > 0 ? userDuas.map((dua, index) => (
-                     <div key={dua.ID} className="p-4 container-luminous rounded-theme-card flex flex-col items-end gap-2 text-right stagger-item" style={{ animationDelay: `${index * 50}ms` }}>
-                        <p className="font-amiri text-2xl leading-relaxed text-theme-primary">{dua.ARABIC_TEXT}</p>
-                        {dua.LANGUAGE_ARABIC_TRANSLATED_TEXT && <p className="text-xs text-theme-secondary/70">{dua.LANGUAGE_ARABIC_TRANSLATED_TEXT}</p>}
-                        <div className="self-start flex gap-2 pt-2">
-                             <button onClick={() => navigator.clipboard.writeText(dua.ARABIC_TEXT)} className="p-2 button-luminous rounded-lg"><CopyIcon className="w-5 h-5"/></button>
-                             <button onClick={() => handleDelete(dua.ID)} className="p-2 button-luminous text-red-400 rounded-lg"><TrashIcon className="w-5 h-5"/></button>
+                     <div key={dua.ID} className="container-luminous rounded-[2rem] p-6 flex flex-col items-end gap-4 text-right stagger-item" style={{ animationDelay: `${index * 50}ms` }}>
+                        <p className="font-amiri text-xl leading-loose text-theme-primary">{dua.ARABIC_TEXT}</p>
+                        <div className="w-full flex justify-between items-center pt-2 border-t border-white/5">
+                             <div className="flex gap-2">
+                                <button onClick={() => navigator.clipboard.writeText(dua.ARABIC_TEXT)} className="p-2 text-theme-secondary hover:text-theme-primary transition-colors"><CopyIcon className="w-5 h-5"/></button>
+                                <button onClick={() => handleDelete(dua.ID)} className="p-2 text-red-400 hover:text-red-500 transition-colors"><TrashIcon className="w-5 h-5"/></button>
+                             </div>
+                             <span className="text-[10px] text-theme-secondary/50 font-mono">{new Date(dua.ID).toLocaleDateString('ar-EG')}</span>
                         </div>
                     </div>
                 )) : (
-                     <div className="text-center text-theme-secondary/70 pt-8 flex flex-col items-center gap-4">
-                        <BookmarkIcon className="w-16 h-16 opacity-30" />
-                        <h3 className="text-xl font-bold text-theme-primary">لا توجد أدعية محفوظة</h3>
-                        <p className="max-w-xs">انقر على زر الإضافة لبدء حفظ أدعيتك الخاصة والرجوع إليها في أي وقت.</p>
+                     <div className="flex flex-col items-center justify-center py-20 text-center opacity-60">
+                        <div className="w-20 h-20 bg-theme-card rounded-full flex items-center justify-center mb-4">
+                            <BookmarkIcon className="w-8 h-8 text-theme-secondary" />
+                        </div>
+                        <h3 className="text-lg font-bold text-theme-primary">لا توجد أدعية محفوظة</h3>
+                        <p className="text-sm text-theme-secondary mt-1 max-w-[200px]">اكتب أدعيتك الخاصة واحفظها هنا للرجوع إليها لاحقاً.</p>
                     </div>
                 )}
             </div>
@@ -254,9 +454,9 @@ const MyDuasView: React.FC<{
                         value={newDuaText}
                         onChange={(e) => setNewDuaText(e.target.value)}
                         placeholder="اكتب دعاءك هنا..."
-                        className="w-full h-40 p-3 input-luminous text-theme-primary rounded-theme-card text-right resize-none"
+                        className="w-full h-40 p-4 input-luminous text-theme-primary rounded-[1.5rem] text-right resize-none text-lg leading-relaxed"
                     />
-                    <button onClick={handleSave} className="w-full p-3 button-luminous bg-theme-accent-primary text-theme-accent-primary-text rounded-theme-full font-bold flex items-center justify-center gap-2">
+                    <button onClick={handleSave} className="w-full p-4 button-luminous bg-theme-accent-primary text-theme-accent-primary-text rounded-[1.5rem] font-bold flex items-center justify-center gap-2 shadow-lg shadow-theme-accent-primary/20 hover:scale-[1.02] transition-transform">
                         <SaveIcon className="w-5 h-5" />
                         <span>حفظ الدعاء</span>
                     </button>
@@ -265,31 +465,5 @@ const MyDuasView: React.FC<{
         </div>
     );
 };
-
-
-// --- Sub-component: Category Detail View ---
-const DuaCategoryDetailView: React.FC<{
-    category: DuaCategory;
-    onBack: () => void;
-}> = ({ category, onBack }) => (
-    <div className="flex flex-col gap-4 p-4 pb-28" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}>
-        <header className="flex items-center gap-4">
-            <button onClick={onBack} className="p-2 text-theme-secondary hover:text-theme-primary"><ChevronLeftIcon className="w-7 h-7" style={{ transform: 'scaleX(-1)' }} /></button>
-            <h2 className="text-2xl font-bold heading-amiri">{category.icon} {category.TITLE}</h2>
-        </header>
-        <div className="space-y-3 pr-2">
-            {category.duas.map((dua, index) => (
-                <div key={dua.ID} className="p-4 container-luminous rounded-theme-card flex flex-col items-end gap-2 text-right stagger-item" style={{ animationDelay: `${index * 50}ms` }}>
-                    <p className="font-amiri text-2xl leading-relaxed text-theme-primary">{dua.ARABIC_TEXT}</p>
-                    {dua.TRANSLATED_TEXT && <p className="text-sm text-theme-secondary/70">{dua.TRANSLATED_TEXT}</p>}
-                    <div className="self-start pt-2">
-                        <button onClick={() => navigator.clipboard.writeText(dua.ARABIC_TEXT)} className="p-2 button-luminous rounded-lg"><CopyIcon className="w-5 h-5"/></button>
-                    </div>
-                </div>
-            ))}
-        </div>
-    </div>
-);
-
 
 export default DuasTab;

@@ -1,9 +1,9 @@
 
-
-import type { SurahSummary, Surah, QuranReciter } from '../types';
+import type { SurahSummary, Surah, QuranReciter, Ayah } from '../types';
 import { QURAN_SURAH_LIST } from '../data/surah-list';
+import { LOCAL_QURAN_TEXT } from '../data/quran_text';
 
-const QURAN_TEXT_API_BASE = 'https://api.alquran.cloud/v1';
+const QURAN_TEXT_API = 'https://api.alquran.cloud/v1/surah';
 const QURAN_AUDIO_API_QURAN_COM = 'https://api.quran.com/api/v4';
 const MP3QURAN_API_BASE = 'https://www.mp3quran.net/api/v3';
 
@@ -27,7 +27,6 @@ export const getReciterList = async (): Promise<QuranReciter[]> => {
         const formattedReciters: QuranReciter[] = [];
         data.reciters.forEach((reciter: any) => {
             reciter.moshaf.forEach((moshaf: any) => {
-                // We only want recitations that have all 114 surahs
                 if (parseInt(moshaf.surah_total) === 114) {
                     formattedReciters.push({
                         id: moshaf.server,
@@ -45,26 +44,16 @@ export const getReciterList = async (): Promise<QuranReciter[]> => {
                     return i;
                 }
             }
-            return -1; // Not a preferred reciter
+            return -1;
         };
 
         formattedReciters.sort((a, b) => {
             const indexA = getPreferredIndex(a.name);
             const indexB = getPreferredIndex(b.name);
 
-            // Both are preferred, sort by the specified order
-            if (indexA !== -1 && indexB !== -1) {
-                return indexA - indexB;
-            }
-            // Only A is preferred, it comes first
-            if (indexA !== -1) {
-                return -1;
-            }
-            // Only B is preferred, it comes first
-            if (indexB !== -1) {
-                return 1;
-            }
-            // Neither are preferred, sort alphabetically
+            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+            if (indexA !== -1) return -1;
+            if (indexB !== -1) return 1;
             return a.name.localeCompare(b.name, 'ar');
         });
 
@@ -73,14 +62,13 @@ export const getReciterList = async (): Promise<QuranReciter[]> => {
 
     } catch (error) {
         console.error("Error fetching reciter list:", error);
-        // Fallback or error handling
         return [];
     }
 };
 
 export const getSurahContent = async (
     surahNumber: number, 
-    reciterId: string, // Now it's always a string (the server URL)
+    reciterId: string,
     audioOnly: boolean = false
 ): Promise<Partial<Surah> | null> => {
     try {
@@ -92,41 +80,94 @@ export const getSurahContent = async (
             return { audioUrl };
         }
 
-        const [textResponse, segmentsResponse] = await Promise.all([
-            fetch(`${QURAN_TEXT_API_BASE}/surah/${surahNumber}`),
-            fetch(`${QURAN_AUDIO_API_QURAN_COM}/quran/recitations/7/by_chapter/${surahNumber}?segments=true`) // Using Mishary for reliable timestamps
-        ]);
+        // 1. Get Metadata
+        const surahMeta = QURAN_SURAH_LIST.find(s => s.number === surahNumber);
+        if (!surahMeta) throw new Error(`Surah ${surahNumber} not found in metadata.`);
 
-        if (!textResponse.ok) throw new Error(`Failed to fetch text for surah ${surahNumber}`);
-        const textData = await textResponse.json();
-        const textEdition = textData.data;
-        if (!textEdition) return null;
-
+        // 2. Fetch Audio Timestamps (Segments) - Hybrid Approach
+        // We fetch timestamps for Mishary Rashid (reciter ID 7 on quran.com) as a standard reference.
         let segments: any[] = [];
-        if (segmentsResponse.ok) {
-            const segmentsData = await segmentsResponse.json();
-            segments = segmentsData.audio_files[0]?.segments || [];
-        } else {
-             console.warn(`Could not fetch timestamps for surah ${surahNumber}`);
+        try {
+            const segmentsResponse = await fetch(`${QURAN_AUDIO_API_QURAN_COM}/quran/recitations/7/by_chapter/${surahNumber}?segments=true`);
+            if (segmentsResponse.ok) {
+                const segmentsData = await segmentsResponse.json();
+                // audio_files[0].segments is array of [ayah_number, start_ms, end_ms]
+                segments = segmentsData.audio_files[0]?.segments || [];
+            }
+        } catch (e) {
+            console.log("Timestamps fetch failed (offline mode or API error)", e);
         }
 
-        const ayahsWithTimestamps = textEdition.ayahs.map((ayah: any, index: number) => {
-            const segment = segments.find(seg => seg[0] === index + 1);
+        // 3. Try Fetching Text from API (Primary Source)
+        try {
+            const response = await fetch(`${QURAN_TEXT_API}/${surahNumber}/quran-uthmani`);
+            
+            if (response.ok) {
+                const data = await response.json();
+                const apiAyahs: any[] = data.data.ayahs;
+
+                const ayahs: Ayah[] = apiAyahs.map((apiAyah) => {
+                    const segment = segments.find(seg => seg[0] === apiAyah.numberInSurah);
+                    return {
+                        number: apiAyah.number,
+                        text: apiAyah.text,
+                        numberInSurah: apiAyah.numberInSurah,
+                        juz: apiAyah.juz,
+                        manzil: apiAyah.manzil,
+                        page: apiAyah.page,
+                        ruku: apiAyah.ruku,
+                        hizbQuarter: apiAyah.hizbQuarter,
+                        sajda: apiAyah.sajda,
+                        timestamps: segment ? { start: segment[1], end: segment[2] } : undefined,
+                    };
+                });
+
+                return {
+                    ...surahMeta,
+                    ayahs: ayahs,
+                    audioUrl: audioUrl,
+                };
+            } else {
+                throw new Error("API Response not OK");
+            }
+        } catch (apiError) {
+            console.warn(`API failed for Surah ${surahNumber}, falling back to local data.`);
+            
+            // 4. Fallback to Local Data (Offline Mode)
+            const localAyahsText = LOCAL_QURAN_TEXT[surahNumber];
+            
+            if (!localAyahsText) {
+                // If we don't have local text for this surah
+                throw new Error(`No text found for Surah ${surahNumber} (Online or Offline).`);
+            }
+
+            const ayahs = localAyahsText.map((text, index) => {
+                const numberInSurah = index + 1;
+                const segment = segments.find(seg => seg[0] === numberInSurah);
+                
+                return {
+                    number: 0, // Global number unavailable in simple local data
+                    text: text,
+                    numberInSurah: numberInSurah,
+                    juz: 0, // Metadata unavailable locally without bloating file
+                    manzil: 0, 
+                    page: 0, 
+                    ruku: 0, 
+                    hizbQuarter: 0, 
+                    sajda: false,
+                    timestamps: segment ? { start: segment[1], end: segment[2] } : undefined,
+                };
+            });
+
             return {
-                ...ayah,
-                timestamps: segment ? { start: segment[1], end: segment[2] } : undefined,
+                ...surahMeta,
+                ayahs: ayahs,
+                audioUrl: audioUrl,
             };
-        });
+        }
 
-        const surah: Surah = {
-            ...textEdition,
-            ayahs: ayahsWithTimestamps,
-            audioUrl: audioUrl,
-        };
-
-        return surah;
     } catch (error) {
-        console.error(`Error fetching content for surah ${surahNumber}:`, error);
+        console.error(`Error constructing content for surah ${surahNumber}:`, error);
         return null;
     }
 };

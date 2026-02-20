@@ -1,3 +1,4 @@
+
 import type { PrayerTimes, Settings } from '../types';
 
 const NOTIFICATION_TAG_PREFIX = 'prayer-time-';
@@ -35,10 +36,15 @@ export const requestPermission = async (): Promise<boolean> => {
 };
 
 export const cancelAllNotifications = async () => {
-    if (!('serviceWorker' in navigator) || !navigator.serviceWorker.ready) return;
+    if (!('serviceWorker' in navigator)) return;
     
     try {
-        const registration = await navigator.serviceWorker.getRegistration();
+        // Handle potential errors in sandboxed environments (e.g. origin mismatch)
+        const registration = await navigator.serviceWorker.getRegistration().catch(e => {
+            console.warn("Service Worker registration access failed:", e);
+            return undefined;
+        });
+        
         if (!registration || !registration.getNotifications) return;
 
         const notifications = await registration.getNotifications();
@@ -48,7 +54,7 @@ export const cancelAllNotifications = async () => {
             }
         });
     } catch (e) {
-        console.error("Error cancelling notifications:", e);
+        console.warn("Error cancelling notifications:", e);
     }
 };
 
@@ -69,8 +75,8 @@ export const schedulePrayerNotifications = async (
         return;
     }
     
-    if (!('serviceWorker' in navigator) || !navigator.serviceWorker.ready) {
-        console.error('Service worker not ready to schedule notifications.');
+    if (!('serviceWorker' in navigator)) {
+        console.error('Service worker not supported.');
         return;
     }
 
@@ -82,7 +88,11 @@ export const schedulePrayerNotifications = async (
     }
 
     try {
-        const registration = await navigator.serviceWorker.getRegistration();
+        const registration = await navigator.serviceWorker.getRegistration().catch(e => {
+             console.warn("Service Worker registration access failed:", e);
+             return undefined;
+        });
+
         if (!registration) return;
 
         const prayersToSchedule: { name: string; time: string; key: keyof typeof notificationSettings }[] = [
